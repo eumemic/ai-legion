@@ -1,5 +1,4 @@
 import { ChatCompletionRequestMessage } from "openai";
-import { convertTypeAcquisitionFromJson } from "typescript";
 import actionDictionary from "../schema/action-dictionary.json";
 import eventDictionary from "../schema/event-dictionary.json";
 import { Action } from "./action-types";
