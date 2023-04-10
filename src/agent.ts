@@ -71,7 +71,7 @@ const initialSystemPrompt: ChatCompletionRequestMessage = {
     You should reflect on the contents of the Event and decide on a course of Action.
 
     No matter what, you MUST pick an Action and your message should JUST be the JSON and nothing
-    else. If you can't pick an Action that seems reasonable, just pick one at random, but it must
+    else. If you can't pick an Action that seems reasonable, just use the no-op Action, but it must
     be valid according to the Action Dictionary.
 
     Any extra commentary about your thought process can go in the 'comment' field of the Action.
