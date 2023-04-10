@@ -196,3 +196,23 @@ function singleTargetSystemMessage(
     content,
   };
 }
+
+export function getUsageText(
+  actionDef: (typeof actionDictionary)["oneOf"][number]
+): string {
+  return `Usage:
+
+${CODE_BLOCK_DELIMITER}
+${actionDef.properties.name.const}${Object.entries(actionDef.properties)
+    .map(([argName, { description }]) =>
+      argName === "name"
+        ? undefined
+        : `${argName}: <${description.toLowerCase()}>${
+            !actionDef.required.includes(argName) ? " (optional)" : ""
+          }`
+    )
+    .filter(Boolean)
+    .map((part) => `\n${part}`)
+    .join("")}
+${CODE_BLOCK_DELIMITER}`;
+}

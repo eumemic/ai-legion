@@ -1,22 +1,23 @@
+import { readdir, readFile, statSync, writeFile } from "fs";
+import { join as joinPath, resolve as resolvePath } from "path";
 import { Action } from "./action-types";
-import { agentSource, Message, messageBuilder } from "./message";
+import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import { readdir, readFile, writeFile, statSync } from "fs";
-import { resolve as resolvePath, join as joinPath } from "path";
 
 export default class ActionHandler {
   constructor(private agentIds: string[], private messageBus: MessageBus) {}
 
   async handle(agentId: string, action: Action) {
     switch (action.name) {
-      // case "no-op":
-      //   this.messageBus.send(
-      //     messageBuilder.generic(
-      //       agentId,
-      //       `Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
-      //     )
-      //   );
-      //   break;
+      case "no-op":
+        //   this.messageBus.send(
+        //     messageBuilder.generic(
+        //       agentId,
+        //       `Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
+        //     )
+        //   );
+        break;
+
       case "help":
         if (!action.aboutAction) {
           this.messageBus.send(messageBuilder.listAllActions(agentId));
@@ -26,9 +27,11 @@ export default class ActionHandler {
           );
         }
         break;
+
       case "query-agent-registry":
         this.messageBus.send(messageBuilder.listAgents(agentId, this.agentIds));
         break;
+
       case "send-message":
         const { targetAgentId } = action;
         // if (targetAgentId === "0")
@@ -57,6 +60,7 @@ export default class ActionHandler {
             )
           );
         break;
+
       case "list-directory":
         if (!this.checkPath(agentId, action.path)) break;
         readdir(action.path, (err, files) => {
@@ -81,6 +85,7 @@ export default class ActionHandler {
           }
         });
         break;
+
       case "read-file":
         if (!this.checkPath(agentId, action.path)) break;
         readFile(action.path, "utf8", (err, data) => {
@@ -99,6 +104,7 @@ export default class ActionHandler {
           }
         });
         break;
+
       case "write-file":
         if (!this.checkPath(agentId, action.path)) break;
         writeFile(action.path, action.newContent, "utf8", (err) => {
@@ -112,6 +118,10 @@ export default class ActionHandler {
             );
           }
         });
+        break;
+
+      default:
+        assertNever(action);
         break;
     }
   }
@@ -140,3 +150,5 @@ export default class ActionHandler {
     return true;
   }
 }
+
+function assertNever(never: never) {}

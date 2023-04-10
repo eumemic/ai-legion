@@ -1,7 +1,8 @@
+import { Action } from "./action-types";
 import parseAction from "./parse-action";
 
 test("case 1", () => {
-  checkParsing(`
+  assertValid(`
 send-message
 targetAgentId: 0
 message:
@@ -14,7 +15,7 @@ This is another line.
 });
 
 test("case 2", () => {
-  checkParsing(`
+  assertValid(`
 send-message
 targetAgentId: 0
 message:
@@ -30,7 +31,7 @@ This is the third line.
 });
 
 test("case 3", () => {
-  checkParsing(`
+  assertValid(`
 write-file
 path: ./schema/action-dictionary.json
 newContent:
@@ -68,8 +69,49 @@ newContent:
 `);
 });
 
-function checkParsing(text: string) {
+test("invalid command name", () => {
+  expect(assertInvalid("foo")).toEqual(
+    "Unknown action `foo`, please consult `help`."
+  );
+});
+
+test("missing required argument", () => {
+  expect(assertInvalid("send-message\ntargetAgentId: 0")).toEqual(
+    `Missing required argument \`message\`. Usage:
+
+\`\`\`
+send-message
+targetAgentId: <the target agent's id>
+message: <the content of the message>
+\`\`\``
+  );
+});
+
+test("extra argument", () => {
+  expect(assertInvalid("no-op\nfoo: bar")).toEqual(
+    `Extraneous argument \`foo\`. Usage:
+
+\`\`\`
+no-op
+\`\`\``
+  );
+});
+
+function assertValid(text: string): Action {
   const result = parseAction(text);
   if (result.type === "error") throw Error(`Parse failed: ${result.message}`);
   return result.value;
+}
+
+function assertInvalid(text: string): string {
+  const result = parseAction(text);
+  if (result.type === "success")
+    throw Error(
+      `Parse succeeded when it should've failed: ${JSON.stringify(
+        result.value,
+        null,
+        2
+      )}`
+    );
+  return result.message;
 }
