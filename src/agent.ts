@@ -50,6 +50,8 @@ export class Agent {
   }
 
   private async takeAction(): Promise<void> {
+    await sleep(5000);
+
     try {
       let events = await this.memory.retrieve();
 
@@ -77,8 +79,6 @@ export class Agent {
         )} encountered the following problem while attempting to take action:`
       );
       console.error(e);
-    } finally {
-      await sleep(5000);
     }
   }
 }
