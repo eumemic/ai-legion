@@ -1,7 +1,8 @@
 import { encode } from "gpt-3-encoder";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
-import { messageBuilder, primerMessage } from "../message";
+import { messageBuilder } from "../message";
+import { primer } from "../primer";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
 
@@ -26,10 +27,7 @@ export class Memory {
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
-    return [
-      { type: "message", message: primerMessage(this.agentId) },
-      ...events,
-    ];
+    return [{ type: "message", message: primer(this.agentId) }, ...events];
   }
 
   /**
