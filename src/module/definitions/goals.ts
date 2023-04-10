@@ -59,20 +59,20 @@ ${currentGloals}
     completeGoal: {
       description: "Mark a goal as complete.",
       parameters: {
-        goalIndex: {
-          description: "The index of the goal you want to mark as complete",
+        goalNumber: {
+          description: "The number of the goal you want to mark as complete",
         },
       },
       async execute({
-        parameters: { goalIndex },
+        parameters: { goalNumber },
         context: { agentId, state },
         sendMessage,
       }) {
-        const idx = parseInt(goalIndex);
+        const idx = parseInt(goalNumber) - 1;
         const goals = (await state.get(KEY)) || [];
         if (isNaN(idx) || idx < 0 || idx >= goals.length)
           return sendMessage(
-            messageBuilder.error(agentId, `Invalid goal index: ${goalIndex}`)
+            messageBuilder.error(agentId, `Invalid goal index: ${goalNumber}`)
           );
         await state.set(KEY, [
           ...goals.slice(0, idx),
