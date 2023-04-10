@@ -5,12 +5,12 @@ import { InMemoryMemory } from "./in-memory-memory";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import { primerMessage } from "./messages";
+import { heartbeatMessage, primerMessage } from "./message";
 
 dotenv.config();
 
 const numberOfAgents = 1;
-const pollingInterval = 10000;
+const pollingInterval = 20000;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
@@ -33,11 +33,11 @@ async function main() {
       if (action) actionHandler.handle(action);
     });
 
-    messageBus.send({ content: primerMessage(agent.id) });
+    messageBus.send(primerMessage(agent.id));
   }
 
   while (true) {
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
-    messageBus.send({ content: "heartbeat" });
+    messageBus.send(heartbeatMessage);
   }
 }

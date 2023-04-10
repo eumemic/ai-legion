@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
-import { MessageBus, Message } from "./message-bus";
+import { MessageBus } from "./message-bus";
+import { Message } from "./message";
 
 export class InMemoryMessageBus implements MessageBus {
   private emitter: EventEmitter;

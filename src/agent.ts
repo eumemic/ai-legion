@@ -1,6 +1,7 @@
 import { Action } from "./action-types";
 import { Memory } from "./memory";
-import { Message, MessageBus } from "./message-bus";
+import { MessageBus } from "./message-bus";
+import { malformattedResponseMessage, Message } from "./message";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
 
@@ -14,7 +15,7 @@ export class Agent {
   async receive({ content }: Message): Promise<Action | undefined> {
     const messages = await this.memory.append({
       name: "control",
-      role: "user",
+      role: "system",
       content,
     });
 
@@ -48,11 +49,7 @@ export class Agent {
 
     const result = parseAction(actionJson);
     if (result.type === "error") {
-      this.messageBus.send({
-        targetAgentIds: [this.id],
-        content:
-          "Error parsing and validating action. Make sure you are only sending JSON and that it conforms to the Action Dictionary! Confine all natural language to the 'comment' field",
-      });
+      this.messageBus.send(malformattedResponseMessage(this.id));
       return;
     }
 

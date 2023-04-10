@@ -6,7 +6,7 @@ export default async function generateText(
 ) {
   return openai().createChatCompletion({
     model: "gpt-3.5-turbo",
-    // model: "gpt-3.4",
+    // model: "gpt-4",
     messages: messages,
   });
 }

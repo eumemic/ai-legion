@@ -1,5 +1,6 @@
 import { createClient, RedisClientType } from "redis";
-import { MessageBus, Message } from "./message-bus";
+import { MessageBus } from "./message-bus";
+import { Message } from "./message";
 
 export class RedisMessageBus implements MessageBus {
   private publisher: RedisClientType;
