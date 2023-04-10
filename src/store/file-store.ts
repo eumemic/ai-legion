@@ -32,7 +32,7 @@ export class FileStore implements Store {
 
   async list() {
     await this.mkdirs();
-    return readdir(this.dirPath);
+    return (await readdir(this.dirPath)).map(decodeFilename);
   }
 
   private async mkdirs() {
@@ -40,7 +40,7 @@ export class FileStore implements Store {
   }
 
   private pathFor(key: string) {
-    return path.join(this.dirPath, key);
+    return path.join(this.dirPath, encodeFilename(key));
   }
 
   private get dirPath() {
@@ -61,4 +61,28 @@ async function checkExists(path: string) {
       throw e;
     }
   }
+}
+
+function encodeChar(char: string): string {
+  return "%" + char.charCodeAt(0).toString(16);
+}
+
+function decodeChar(encodedChar: string): string {
+  return String.fromCharCode(parseInt(encodedChar.slice(1), 16));
+}
+
+function encodeFilename(filename: string): string {
+  // Replace invalid characters with their encoded versions
+  const replaced = filename.replace(/[\\/:*?"<>|]/g, encodeChar);
+
+  // Limit the filename length, as some file systems have restrictions
+  const maxLength = 255;
+  const trimmed = replaced.slice(0, maxLength);
+
+  return trimmed;
+}
+
+function decodeFilename(filename: string): string {
+  // Decode the escaped characters back to their original form
+  return filename.replace(/%[0-9a-fA-F]{2}/g, decodeChar);
 }
