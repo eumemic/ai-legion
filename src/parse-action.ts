@@ -19,9 +19,19 @@ export default function parseAction(
   dict: ActionDictionary,
   text: string
 ): ParseResult {
-  text = `name: ${text.trim()}`;
-
   try {
+    text = text.trim();
+
+    if (!/^\S+(?=\n|$)/.test(text.split("\n")[0])) {
+      return {
+        type: "error",
+        message:
+          "Your action could not be parsed. Did you forget to format your entire response as an action?",
+      };
+    }
+
+    text = `name: ${text}`;
+
     const jsonText =
       "{" +
       text
@@ -37,7 +47,7 @@ export default function parseAction(
           const colonIndex = line.indexOf(":");
           if (colonIndex < 0)
             throw new Error(
-              `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`${MULTILINE_DELIMITER}\`)?`
+              `Your action could not be parsed. Did you fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`${MULTILINE_DELIMITER}\`)?`
             );
           const key = line.substring(0, colonIndex).trim();
           let value = line.substring(colonIndex + 1).trim();

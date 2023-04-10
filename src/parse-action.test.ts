@@ -85,7 +85,7 @@ message: Hello Control, here's a list of things,
 - a very big balloon
   `)
   ).toEqual(
-    `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`% ff9d7713-0bb0-40d4-823c-5a66de48761b\`)?`
+    `Your action could not be parsed. Did you fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`% ff9d7713-0bb0-40d4-823c-5a66de48761b\`)?`
   );
 });
 
@@ -112,13 +112,19 @@ message
 });
 
 test("invalid command name", () => {
-  expect(assertInvalid("foo")).toEqual(
+  expect(assertInvalid("foo")).toBe(
     "Unknown action `foo`, please consult `help`."
   );
 });
 
+test("invalid raw text", () => {
+  expect(assertInvalid("Hello Control, how are you doing?")).toBe(
+    "Your action could not be parsed. Did you forget to format your entire response as an action?"
+  );
+});
+
 test("missing required parameter", () => {
-  expect(assertInvalid("send-message\ntargetAgentId: 0")).toEqual(
+  expect(assertInvalid("send-message\ntargetAgentId: 0")).toBe(
     `Missing required parameter \`message\`. Usage:
 
 \`\`\`
