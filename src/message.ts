@@ -1,5 +1,8 @@
 import actionDictionary from "../schema/action-dictionary.json";
-import { ChatCompletionRequestMessage } from "openai";
+import {
+  ChatCompletionRequestMessage,
+  ChatCompletionRequestMessageRoleEnum,
+} from "openai";
 
 export interface Message {
   standardMessageType?: StandardMessageType;

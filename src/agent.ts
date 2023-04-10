@@ -7,7 +7,7 @@ import { parseAction } from "./parsers";
 import ActionHandler from "./action-handler";
 import { last } from "lodash";
 
-const pollingInterval = 1000;
+const pollingInterval = 10000;
 
 export class Agent {
   constructor(
@@ -22,14 +22,11 @@ export class Agent {
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-
-      const action = await this.handle(message);
-      if (action) {
-        await this.actionHandler.handle(action);
-      }
+      await this.memory.append(message);
+      await this.takeAction();
     });
 
-    this.messageBus.send(standardMessages.primer(this.id));
+    await this.takeAction();
 
     while (true) {
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
@@ -41,8 +38,8 @@ export class Agent {
     }
   }
 
-  private async handle(message: Message): Promise<Action | undefined> {
-    const messages = await this.memory.append(message);
+  private async takeAction(): Promise<void> {
+    const messages = await this.memory.retrieve();
 
     let response: Awaited<ReturnType<typeof generateText>>;
     try {
@@ -73,6 +70,8 @@ export class Agent {
       return;
     }
 
-    return result.value;
+    if (result.value) {
+      await this.actionHandler.handle(result.value);
+    }
   }
 }
