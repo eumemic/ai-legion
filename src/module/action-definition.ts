@@ -1,4 +1,4 @@
-import { Context } from ".";
+import { ModuleContext } from ".";
 import { Message } from "../message";
 
 export interface ActionDefinition<S = void, P extends string = string>
@@ -26,7 +26,7 @@ export type ActionHandler<S = void, P extends string = string> = (
 
 export interface ActionHandlerInputs<S = void, P extends string = string> {
   parameters: Record<P, string>;
-  context: Context<S>;
+  context: ModuleContext<S>;
   sendMessage: (message: Message) => void;
 }
-export { Context };
+export { ModuleContext as Context };

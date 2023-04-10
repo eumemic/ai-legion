@@ -1,5 +1,4 @@
 import { ModuleManager } from "./module/module-manager";
-import { getActionState } from "./module/definitions";
 import { MessageBus } from "./message-bus";
 import { Action } from "./parse-action";
 
@@ -15,8 +14,9 @@ export default class ActionHandler {
       context: {
         sourceAgentId: agentId,
         allAgentIds: this.agentIds,
-        moduleManager: this.moduleManager,
-        state: getActionState(agentId, actionDef.name),
+        getActionDefinition: (name) =>
+          this.moduleManager.getActionDefinition(name),
+        state: this.moduleManager.getState(actionDef.name),
       },
       parameters,
       sendMessage: (message) => this.messageBus.send(message),

@@ -1,19 +1,18 @@
-import { ActionDefinition, PartialActionDefinition } from "./action-definition";
 import { Message } from "../message";
-import { ModuleManager } from "./module-manager";
+import { ActionDefinition, PartialActionDefinition } from "./action-definition";
 
-export interface Module<S = any, A extends string = string>
-  extends ModuleInputs1<S> {
+export interface ModuleDefinition<S = any, A extends string = string>
+  extends ModuleDefinitionInputs1<S> {
   actions: Record<A, ActionDefinition<S>>;
 }
 
-export interface ModuleInputs1<S> {
+export interface ModuleDefinitionInputs1<S> {
   name: string;
   createState?: (params: ModuleStateInputs) => S;
 }
 
-export interface ModuleInputs2<S, A extends string> {
-  pinnedMessage?: (context: Context<S>) => Message;
+export interface ModuleDefinitionInputs2<S, A extends string> {
+  pinnedMessage?: (context: ModuleContext<S>) => Message;
   actions: Record<A, PartialActionDefinition<S, string>>;
 }
 
@@ -21,9 +20,9 @@ export interface ModuleStateInputs {
   agentId: string;
 }
 
-export interface Context<S> {
+export interface ModuleContext<S> {
   sourceAgentId: string;
   allAgentIds: string[];
-  moduleManager: ModuleManager;
+  getActionDefinition: (name: string) => ActionDefinition | undefined;
   state: S;
 }

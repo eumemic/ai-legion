@@ -1,12 +1,13 @@
-import { ModuleManager } from "./module/module-manager";
-import { allActionDefinitions } from "./module/definitions";
 import core from "./module/definitions/core";
+import filesystem from "./module/definitions/filesystem";
 import messaging from "./module/definitions/messaging";
+import notes from "./module/definitions/notes";
+import { ModuleManager } from "./module/module-manager";
 import { getUsageText } from "./module/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 
-const dict = new ModuleManager(allActionDefinitions);
+const dict = new ModuleManager("1", [core, notes, messaging, filesystem]);
 
 test("case 1", () => {
   assertValid(`

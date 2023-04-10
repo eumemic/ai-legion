@@ -39,7 +39,7 @@ ${CODE_BLOCK_DELIMITER}
 
 2) These are the actions at your disposal:
 
-${moduleManager.definitions
+${moduleManager.actionDefinitions
   .map((actionDef) => `\`${actionDef.name}\` - ${actionDef.description}`)
   .join("\n")}
 
