@@ -3,6 +3,7 @@ import {
   ChatCompletionRequestMessage,
   ChatCompletionRequestMessageRoleEnum,
 } from "openai";
+import { agentName } from "./util";
 
 export interface Message {
   messageType: MessageType;
@@ -18,9 +19,9 @@ export type MessageType = keyof typeof messageBuilder;
 
 export const messageBuilder = addMessageTypes({
   primer: singleTargetMessageBuilder(
-    (
+    (agentId) => `You are ${agentName(
       agentId
-    ) => `You are Agent ${agentId}, and I am Control. Pleased to meet you. You are one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out Actions which you send in response to my messages.
+    )}, and I am Control. Pleased to meet you. You are one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out Actions which you send in response to my messages.
 
 I will send you messages in natural language, but you will always respond with an Action, which is a strictly formatted JSON message conforming to the following Action Dictionary (in JSON schema format):
 
@@ -58,14 +59,26 @@ In the course of our work I or other agents may assign you tasks, at which point
 
   malformattedResponseError: singleTargetMessageBuilder(
     (agentId) =>
-      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the action. If you need to view the Action Dictionary again, use the 'view-action-dictionary' action by responding with:
-
-{
-  "payload": { "type": "view-action-dictionary" }
-  "comment": "Your comment here..."
-}
-`
+      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the action. If you need to view the Action Dictionary again, use the 'view-action-dictionary' action by responding with:\n\n${JSON.stringify(
+        {
+          payload: { type: "view-action-dictionary" },
+          comment: "Your comment here...",
+        },
+        null,
+        2
+      )}`
   ),
+
+  listAgents: (agentId: string, agentIds: string[]) =>
+    singleTargetMessageBuilder(
+      (agentId) =>
+        `Hello ${agentName(agentId)}, these are the agents in the system:\n\n${[
+          "0",
+          ...agentIds,
+        ]
+          .map((id) => `${agentName(id)} [agentId="${id}"]`)
+          .join("\n")}`
+    )(agentId),
 
   generic: (agentId: string, content: string) =>
     singleTargetMessageBuilder(() => content)(agentId),
@@ -75,7 +88,7 @@ In the course of our work I or other agents may assign you tasks, at which point
     targetAgentIds,
     openaiMessage: {
       role: "assistant",
-      content,
+      content: annotateContent(sourceAgentId, targetAgentIds, content),
     },
   }),
 
@@ -110,9 +123,17 @@ function singleTargetMessageBuilder(
     targetAgentIds: [agentId],
     openaiMessage: {
       role,
-      content: `Hello Agent ${agentId}, this is Control. ${getContent(
-        agentId
-      )}`,
+      content: annotateContent("0", [agentId], getContent(agentId)),
     },
   });
+}
+
+function annotateContent(
+  sourceAgentId: string,
+  targetAgentIds: string[],
+  content: string
+) {
+  return `--- INCOMING MESSAGE FROM ${agentName(
+    sourceAgentId
+  ).toUpperCase()} ---\n\n${content}`;
 }

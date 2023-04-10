@@ -1,5 +1,6 @@
 import { Memory } from "./memory";
 import { Message } from "./message";
+import { agentName } from "./util";
 
 export class InMemoryMemory implements Memory {
   private messages: Message[] = [];
@@ -10,7 +11,7 @@ export class InMemoryMemory implements Memory {
   }
 
   async append(message: Message): Promise<Message[]> {
-    if (message.messageType === "agentToAgent") printMessage(message);
+    if (true || message.messageType === "agentToAgent") printMessage(message);
     this.messages.push(message);
     return this.messages;
   }
@@ -22,8 +23,10 @@ export class InMemoryMemory implements Memory {
 
 function printMessage(message: Message) {
   console.log(
-    `Agent ${message.sourceAgentId} -> ${message.targetAgentIds
-      ?.map((id) => `Agent ${id}`)
-      .join(",")}:\n\n${message.openaiMessage.content.trim()}\n\n========\n`
+    `${agentName(message.sourceAgentId)} -> ${message.targetAgentIds
+      ?.map(agentName)
+      .join(
+        ","
+      )}:\n\n${message.openaiMessage.content.trim()}\n\n=============\n`
   );
 }

@@ -13,3 +13,7 @@ export function sleepUntil(condition: () => boolean): Promise<void> {
     }, 1000);
   });
 }
+
+export function agentName(agentId: string) {
+  return `${agentId === "0" ? "Control" : `Agent ${agentId}`}`;
+}

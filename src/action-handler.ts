@@ -1,6 +1,7 @@
 import { Action } from "./action-types";
 import { Message, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
+import { agentName } from "./util";
 
 export default class ActionHandler {
   constructor(private agentIds: string[], private messageBus: MessageBus) {}
@@ -16,14 +17,7 @@ export default class ActionHandler {
       //   );
       //   break;
       case "query-agent-registry":
-        this.messageBus.send(
-          messageBuilder.generic(
-            agentId,
-            `These are the agents in the system:\n\nControl [agentId="0"]\n${this.agentIds
-              .map((id) => `Agent ${id} [agentId="${id}"]`)
-              .join("\n")}`
-          )
-        );
+        this.messageBus.send(messageBuilder.listAgents(agentId, this.agentIds));
         break;
       case "send-message":
         const { targetAgentId } = payload;
