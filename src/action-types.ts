@@ -9,7 +9,14 @@ export interface Action {
   /**
    * The payload that's specific to a particular action.
    */
-  payload: NoOpAction | ViewActionDictionaryAction | QueryAgentRegistryAction | SendMessageAction;
+  payload:
+    | NoOpAction
+    | ViewActionDictionaryAction
+    | QueryAgentRegistryAction
+    | SendMessageAction
+    | ListDirectory
+    | ReadFile
+    | WriteFile;
   /**
    * Use this field to articulate your thought process in choosing this action.
    */
@@ -46,4 +53,38 @@ export interface SendMessageAction {
    * The content of the message.
    */
   message: string;
+}
+/**
+ * Inspect the contents of a particular directory.
+ */
+export interface ListDirectory {
+  type: "list-directory";
+  /**
+   * The path of the directory you want to inspect.
+   */
+  path: string;
+}
+/**
+ * Read the contents of a particular file.
+ */
+export interface ReadFile {
+  type: "read-file";
+  /**
+   * The path of the file you want to inspect.
+   */
+  path: string;
+}
+/**
+ * Write the contents of a particular file.
+ */
+export interface WriteFile {
+  type: "write-file";
+  /**
+   * The path of the file you want to write to.
+   */
+  path: string;
+  /**
+   * The new content of the file.
+   */
+  newContent: string;
 }

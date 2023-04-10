@@ -2,6 +2,8 @@ import { Action } from "./action-types";
 import { Message, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import { agentName } from "./util";
+import { readdir, readFile, writeFile, statSync } from "fs";
+import { resolve as resolvePath, join as joinPath } from "path";
 
 export default class ActionHandler {
   constructor(private agentIds: string[], private messageBus: MessageBus) {}
@@ -47,6 +49,86 @@ export default class ActionHandler {
             )
           );
         break;
+      case "list-directory":
+        if (!this.checkPath(agentId, payload.path)) break;
+        readdir(payload.path, (err, files) => {
+          if (err) {
+            this.messageBus.send(
+              messageBuilder.generic(agentId, JSON.stringify(err))
+            );
+          } else {
+            this.messageBus.send(
+              messageBuilder.generic(
+                agentId,
+                `Here are the contents of ${payload.path}:\n${files
+                  .map((file) => {
+                    const stats = statSync(joinPath(payload.path, file));
+                    return `${file} ${
+                      stats.isDirectory() ? "[directory]" : "[file]"
+                    }`;
+                  })
+                  .join("\n")}`
+              )
+            );
+          }
+        });
+        break;
+      case "read-file":
+        if (!this.checkPath(agentId, payload.path)) break;
+        readFile(payload.path, "utf8", (err, data) => {
+          // If there's an error, log it and exit
+          if (err) {
+            this.messageBus.send(
+              messageBuilder.generic(agentId, JSON.stringify(err))
+            );
+          } else {
+            this.messageBus.send(
+              messageBuilder.generic(
+                agentId,
+                `Contents of ${payload.path}:\n${data}`
+              )
+            );
+          }
+        });
+        break;
+      case "write-file":
+        if (!this.checkPath(agentId, payload.path)) break;
+        writeFile(payload.path, payload.newContent, "utf8", (err) => {
+          if (err) {
+            this.messageBus.send(
+              messageBuilder.generic(agentId, JSON.stringify(err))
+            );
+          } else {
+            this.messageBus.send(
+              messageBuilder.generic(agentId, `Wrote to ${payload.path}.`)
+            );
+          }
+        });
+        break;
     }
+  }
+
+  checkPath(agentId: string, path: string) {
+    const currentDirectory = process.cwd();
+    const resolvedPath = resolvePath(path);
+    if (!resolvedPath.startsWith(currentDirectory)) {
+      this.messageBus.send(
+        messageBuilder.generic(
+          agentId,
+          "Invalid path; must be within the current directory."
+        )
+      );
+      return false;
+    }
+    if (
+      resolvedPath.includes(".git") ||
+      resolvedPath.includes("node_modules")
+    ) {
+      this.messageBus.send(
+        messageBuilder.generic(agentId, "That path is off-limits!")
+      );
+      return false;
+    }
+    return true;
   }
 }
