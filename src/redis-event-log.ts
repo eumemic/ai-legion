@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { Event } from "./event";
+import { Event } from "./event-types";
 import { EventLog } from "./event-log";
 
 export class RedisEventLog implements EventLog {

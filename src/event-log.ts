@@ -1,4 +1,4 @@
-import { Event } from "./event";
+import { Event } from "./event-types";
 
 export interface EventLog {
   subscribe(listener: (event: Event) => void): void;

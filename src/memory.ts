@@ -1,5 +1,5 @@
-import { Event } from "./event";
-import { Action } from "./action";
+import { Event } from "./event-types";
+import { Action } from "./action-types";
 
 export type Memento = EventMemento | ActionMemento;
 
