@@ -58,12 +58,10 @@ const initialSystemPrompt: ChatCompletionRequestMessage = {
     Every message you send to me must be a valid JSON object that conforms exactly to this schema.
     You should reflect on the contents of the Event and decide on a course of Action.
 
-    No matter what, you MUST pick an Action and your message should JUST be that action JSON and
-    nothing else. If you can't pick an Action that seems reasonable, just pick one at random, but
-    it must be valid according to the Action Dictionary!
+    No matter what, you MUST pick an Action and your message should JUST be the JSON and nothing
+    else. If you can't pick an Action that seems reasonable, just pick one at random, but it must
+    be valid according to the Action Dictionary.
 
-    Note: although there is no information attached to the 'heartbeat' event, it is still critical
-    that you pick a valid action and respond with it, and ONLY it. NO NATURAL LANGUAGE TEXT, JUST
-    RESPOND WITH JSON.
+    Any extra commentary about your thought process can go in the 'comment' field of the Action.
   `,
 };

@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const numberOfAgents = 1;
-const pollingInterval = 60000;
+const pollingInterval = 10000;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
