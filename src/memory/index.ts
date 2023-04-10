@@ -10,7 +10,7 @@ export interface MessageMemento {
 }
 
 export interface DecisionMemento {
-  type: "action";
+  type: "decision";
   agentId: string;
   decision: Decision;
 }
@@ -20,5 +20,5 @@ export function messageMemento(message: Message): Memento {
 }
 
 export function decisionMemento(agentId: string, decision: Decision): Memento {
-  return { type: "action", agentId, decision };
+  return { type: "decision", agentId, decision };
 }

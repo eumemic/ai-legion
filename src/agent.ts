@@ -38,7 +38,7 @@ export class Agent {
     this.taskQueue.runPeriodically(async () => {
       const messages = await this.memory.retrieve();
       const lastMessage = last(messages);
-      if (lastMessage?.type === "action") {
+      if (lastMessage?.type === "decision") {
         this.messageBus.send(
           messageBuilder.standard(
             this.id,
@@ -52,8 +52,8 @@ export class Agent {
   private async takeAction(): Promise<void> {
     const mementos = await this.memory.retrieve();
 
-    // Do not act again if the last message was an action
-    if (last(mementos)?.type === "action") return;
+    // Do not act again if the last event was a decision
+    if (last(mementos)?.type === "decision") return;
 
     const decision = await makeDecision(this.id, mementos);
     if (!decision) return;
