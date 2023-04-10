@@ -72,13 +72,5 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
         role: "assistant",
         content: event.decision.actionText,
       };
-    case "summary": {
-      const { summary } = event;
-      const summarizedContent = `Several events are omitted here to free up space in your context window, summarized as follows:\n\n${summary}`;
-      return {
-        role: "system",
-        content: summarizedContent,
-      };
-    }
   }
 }
