@@ -1,6 +1,6 @@
 import { Store } from ".";
 
-export class InMemoryStore implements Store {
+export class InMemoryStore implements Store<string> {
   private map = new Map<string, string>();
 
   async get(key: string) {
@@ -15,7 +15,7 @@ export class InMemoryStore implements Store {
     return this.map.delete(key);
   }
 
-  async list() {
+  async getKeys() {
     return [...this.map.keys()];
   }
 }

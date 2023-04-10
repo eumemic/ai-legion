@@ -1,6 +1,6 @@
-export interface Store {
-  get(key: string): Promise<string | undefined>;
-  set(key: string, value: string): Promise<void>;
+export interface Store<T = string> {
+  get(key: string): Promise<T | undefined>;
+  set(key: string, value: T): Promise<void>;
   delete(key: string): Promise<boolean>;
-  list(): Promise<string[]>;
+  getKeys(): Promise<string[]>;
 }

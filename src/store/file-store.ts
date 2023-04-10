@@ -4,7 +4,7 @@ import path from "path";
 
 const STORE_DIR = ".store";
 
-export class FileStore implements Store {
+export class FileStore implements Store<string> {
   constructor(private namespaces: string[]) {}
 
   async get(key: string) {
@@ -30,7 +30,7 @@ export class FileStore implements Store {
     return true;
   }
 
-  async list() {
+  async getKeys() {
     await this.mkdirs();
     const fileNames = await readdir(this.dirPath);
 

@@ -8,7 +8,7 @@ export default defineModule<Store>({
   createState: ({ agentId }) => new FileStore([agentId, "notes"]),
 }).with({
   async pinnedMessage({ agentId, state }) {
-    const noteTitles = await state.list();
+    const noteTitles = await state.getKeys();
     return messageBuilder.spontaneous(
       agentId,
       noteTitles.length
