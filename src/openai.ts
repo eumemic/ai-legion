@@ -27,34 +27,33 @@ export function createChatCompletion(
   request: CreateChatCompletionRequest,
   options?: AxiosRequestConfig
 ): Promise<CreateChatCompletionResponse> {
-  const decisionPromise = taskQueue.run(
-    async (): Promise<CreateChatCompletionResponse> => {
-      try {
-        const response = await openai().createChatCompletion(request, options);
-        return response.data;
-      } catch (e) {
-        const { response } = e as AxiosError;
-        switch (response?.status) {
-          case 400:
-            console.error(`ERROR: context window is full.`);
-            break;
-          case 429:
-            console.error(`ERROR: rate limited.`);
-            break;
-          default:
-            console.error(e);
-            break;
-        }
-        throw e;
+  const task = async (): Promise<CreateChatCompletionResponse> => {
+    try {
+      const response = await openai().createChatCompletion(request, options);
+      return response.data;
+    } catch (e) {
+      const { response } = e as AxiosError;
+      switch (response?.status) {
+        case 400:
+          console.error(`ERROR: context window is full.`);
+          break;
+        case 429:
+          console.error(`ERROR: rate limited.`);
+          break;
+        default:
+          console.error(e);
+          break;
       }
+      throw e;
     }
-  );
+  };
 
   // avoid rate limits
   if (request.model === "gpt-4")
-    decisionPromise.finally(() => taskQueue.run(() => sleep(GPT4_DELAY)));
-
-  return decisionPromise;
+    return taskQueue
+      .run(task)
+      .finally(() => taskQueue.run(() => sleep(GPT4_DELAY)));
+  else return task();
 }
 
 // lazy load to avoid accessing OPENAI_API_KEY before env has been loaded
