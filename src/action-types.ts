@@ -5,23 +5,15 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface Action {
-  /**
-   * The payload that's specific to a particular action.
-   */
-  payload:
-    | NoOpAction
-    | ViewActionDictionaryAction
-    | QueryAgentRegistryAction
-    | SendMessageAction
-    | ListDirectory
-    | ReadFile
-    | WriteFile;
-  /**
-   * Use this field to articulate your thought process in choosing this action.
-   */
-  comment: string;
-}
+export type Action =
+  | NoOpAction
+  | ViewActionDictionaryAction
+  | QueryAgentRegistryAction
+  | SendMessageAction
+  | ListDirectory
+  | ReadFile
+  | WriteFile;
+
 /**
  * Do nothing.
  */

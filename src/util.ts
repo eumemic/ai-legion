@@ -17,3 +17,5 @@ export function sleepUntil(condition: () => boolean): Promise<void> {
 export function agentName(agentId: string) {
   return `${agentId === "0" ? "Control" : `Agent ${agentId}`}`;
 }
+
+export const MULTILINE_DELIMITER = `% ${"ff9d7713-0bb0-40d4-823c-5a66de48761b"}`;

@@ -7,7 +7,9 @@
     "build": "npm run generate && npm run compile",
     "compile": "tsc",
     "generate": "npx json2ts schema/action-dictionary.json > src/action-types.ts",
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -18,12 +20,15 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.3",
     "ajv": "^8.12.0",
     "dotenv": "^16.0.3",
+    "jest": "^29.5.0",
     "lodash": "^4.17.21",
     "openai": "^3.2.1",
-    "redis": "^4.6.5"
+    "redis": "^4.6.5",
+    "ts-jest": "^29.0.5"
   }
 }

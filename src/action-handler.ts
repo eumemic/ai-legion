@@ -8,8 +8,8 @@ import { resolve as resolvePath, join as joinPath } from "path";
 export default class ActionHandler {
   constructor(private agentIds: string[], private messageBus: MessageBus) {}
 
-  async handle(agentId: string, { payload }: Action) {
-    switch (payload.type) {
+  async handle(agentId: string, action: Action) {
+    switch (action.type) {
       // case "no-op":
       //   this.messageBus.send(
       //     messageBuilder.generic(
@@ -25,7 +25,7 @@ export default class ActionHandler {
         this.messageBus.send(messageBuilder.showActionDictionary(agentId));
         break;
       case "send-message":
-        const { targetAgentId } = payload;
+        const { targetAgentId } = action;
         // if (targetAgentId === "0")
         //   this.messageBus.send(
         //     messageBuilder.generic(
@@ -34,12 +34,12 @@ export default class ActionHandler {
         //     )
         //   );
         // else
-        if (this.agentIds.includes(payload.targetAgentId))
+        if (this.agentIds.includes(action.targetAgentId))
           this.messageBus.send(
             messageBuilder.agentToAgent(
               agentId,
               [targetAgentId],
-              payload.message
+              action.message
             )
           );
         else
@@ -47,14 +47,14 @@ export default class ActionHandler {
             messageBuilder.generic(
               agentId,
               `You tried to send your message to an invalid targetAgentId (${JSON.stringify(
-                payload.targetAgentId
+                action.targetAgentId
               )}). You can use the 'query-agent-registry' action to see a list of available agents and their agent IDs.`
             )
           );
         break;
       case "list-directory":
-        if (!this.checkPath(agentId, payload.path)) break;
-        readdir(payload.path, (err, files) => {
+        if (!this.checkPath(agentId, action.path)) break;
+        readdir(action.path, (err, files) => {
           if (err) {
             this.messageBus.send(
               messageBuilder.generic(agentId, JSON.stringify(err))
@@ -63,9 +63,9 @@ export default class ActionHandler {
             this.messageBus.send(
               messageBuilder.generic(
                 agentId,
-                `Here are the contents of ${payload.path}:\n${files
+                `Here are the contents of ${action.path}:\n${files
                   .map((file) => {
-                    const stats = statSync(joinPath(payload.path, file));
+                    const stats = statSync(joinPath(action.path, file));
                     return `${file} ${
                       stats.isDirectory() ? "[directory]" : "[file]"
                     }`;
@@ -77,8 +77,8 @@ export default class ActionHandler {
         });
         break;
       case "read-file":
-        if (!this.checkPath(agentId, payload.path)) break;
-        readFile(payload.path, "utf8", (err, data) => {
+        if (!this.checkPath(agentId, action.path)) break;
+        readFile(action.path, "utf8", (err, data) => {
           // If there's an error, log it and exit
           if (err) {
             this.messageBus.send(
@@ -88,22 +88,22 @@ export default class ActionHandler {
             this.messageBus.send(
               messageBuilder.generic(
                 agentId,
-                `Contents of ${payload.path}:\n${data}`
+                `Contents of ${action.path}:\n${data}`
               )
             );
           }
         });
         break;
       case "write-file":
-        if (!this.checkPath(agentId, payload.path)) break;
-        writeFile(payload.path, payload.newContent, "utf8", (err) => {
+        if (!this.checkPath(agentId, action.path)) break;
+        writeFile(action.path, action.newContent, "utf8", (err) => {
           if (err) {
             this.messageBus.send(
               messageBuilder.generic(agentId, JSON.stringify(err))
             );
           } else {
             this.messageBus.send(
-              messageBuilder.generic(agentId, `Wrote to ${payload.path}.`)
+              messageBuilder.generic(agentId, `Wrote to ${action.path}.`)
             );
           }
         });
