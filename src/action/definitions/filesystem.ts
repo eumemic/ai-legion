@@ -1,4 +1,4 @@
-import { readdir, readFile, statSync, writeFile } from "fs";
+import { readdir, readFile, writeFile, stat } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
 import { defineAction } from "../action-definition";
 import { messageBuilder } from "../../message";
@@ -20,25 +20,22 @@ export default [
     }) => {
       if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-      readdir(path, (err, files) => {
-        if (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        } else {
-          sendMessage(
-            messageBuilder.standard(
-              sourceAgentId,
-              `Here are the contents of ${path}:\n${files
-                .map((file) => {
-                  const stats = statSync(joinPath(path, file));
-                  return `${file} ${
-                    stats.isDirectory() ? "[directory]" : "[file]"
-                  }`;
-                })
-                .join("\n")}`
-            )
-          );
-        }
-      });
+      try {
+        const files = await readdir(path);
+        const filesWithStatsPromises = files.map(async (file) => {
+          const stats = await stat(joinPath(path, file));
+          return `${file} ${stats.isDirectory() ? "[directory]" : "[file]"}`;
+        });
+        const filesWithStats = await Promise.all(filesWithStatsPromises);
+        sendMessage(
+          messageBuilder.standard(
+            sourceAgentId,
+            `Here are the contents of ${path}:\n${filesWithStats.join("\n")}`
+          )
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
     }
   ),
 
@@ -58,18 +55,17 @@ export default [
     }) => {
       if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-      readFile(path, "utf8", (err, data) => {
-        if (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        } else {
-          sendMessage(
-            messageBuilder.standard(
-              sourceAgentId,
-              `Contents of ${path}:\n\n${data}`
-            )
-          );
-        }
-      });
+      try {
+        const data = await readFile(path, "utf8");
+        sendMessage(
+          messageBuilder.standard(
+            sourceAgentId,
+            `Contents of ${path}:\n\n${data}`
+          )
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
     }
   ),
 
@@ -92,15 +88,14 @@ export default [
     }) => {
       if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-      writeFile(path, newContent, "utf8", (err) => {
-        if (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        } else {
-          sendMessage(
-            messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
-          );
-        }
-      });
+      try {
+        await writeFile(path, newContent, "utf8");
+        sendMessage(
+          messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
     }
   ),
 ];
