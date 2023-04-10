@@ -7,9 +7,9 @@
 
 export interface Action {
   /**
-   * The agent who initiated this action
+   * The ID of the agent who initiated this action
    */
-  agentId: string;
+  sourceAgentId: string;
   /**
    * The payload that's specific to a particular action.
    */
