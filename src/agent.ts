@@ -76,7 +76,25 @@ export class Agent {
       messageBuilder.agentResponse(this.id, responseContent)
     );
 
-    const result = parseAction(responseContent);
+    let result = parseAction(responseContent);
+
+    if (result.type === "error") {
+      // Try to find some usable JSON to parse anyway
+      const firstCurly = responseContent.indexOf("{");
+      const lastCurly = responseContent.lastIndexOf("}");
+      if (firstCurly >= 0 && lastCurly > 0) {
+        result = parseAction(responseContent.slice(firstCurly, lastCurly + 1));
+        // if (result.type === "success") {
+        //   this.messageBus.send(
+        //     messageBuilder.generic(
+        //       this.id,
+        //       `I was able to understand your Action even though it contained extraneous text outside of the JSON. In the future please remember to only respond with JSON conforming to the Action Dictionary, and confine any natural language to the 'comment' field.`
+        //     )
+        //   );
+        // }
+      }
+    }
+
     if (result.type === "error") {
       this.messageBus.send(messageBuilder.malformattedResponseError(this.id));
       return;
