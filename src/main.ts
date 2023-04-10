@@ -5,7 +5,6 @@ import { InMemoryMemory } from "./in-memory-memory";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import { heartbeatMessage, primerMessage } from "./message";
 
 dotenv.config();
 

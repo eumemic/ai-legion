@@ -1,12 +1,7 @@
 import { Action } from "./action-types";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import {
-  heartbeatMessage,
-  malformattedResponseMessage,
-  Message,
-  primerMessage,
-} from "./message";
+import { Message, standardMessages } from "./message";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
 import ActionHandler from "./action-handler";
@@ -34,23 +29,20 @@ export class Agent {
       }
     });
 
-    this.messageBus.send(primerMessage(this.id));
+    this.messageBus.send(standardMessages.primer(this.id));
 
     while (true) {
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
       const messages = await this.memory.retrieve();
-      if (last(messages)?.role === "assistant") {
-        this.messageBus.send(heartbeatMessage(this.id));
+      const lastMessage = last(messages);
+      if (lastMessage?.standardMessageType === "agentResponse") {
+        this.messageBus.send(standardMessages.heartbeat(this.id));
       }
     }
   }
 
-  private async handle({ content }: Message): Promise<Action | undefined> {
-    const messages = await this.memory.append({
-      // name: "control",
-      role: "system",
-      content,
-    });
+  private async handle(message: Message): Promise<Action | undefined> {
+    const messages = await this.memory.append(message);
 
     let response: Awaited<ReturnType<typeof generateText>>;
     try {
@@ -65,24 +57,19 @@ export class Agent {
       return;
     }
 
-    const actionJson = response.data.choices[0].message?.content;
-    if (!actionJson) {
-      this.messageBus.send({
-        targetAgentIds: [this.id],
-        content: "No response received",
-      });
+    const responseContent = response.data.choices[0].message?.content;
+    if (!responseContent) {
+      this.messageBus.send(standardMessages.noResponseError(this.id));
       return;
     }
 
-    await this.memory.append({
-      // name: `agent-${this.id}`,
-      role: "assistant",
-      content: actionJson,
-    });
+    await this.memory.append(
+      standardMessages.agentResponse(this.id, responseContent)
+    );
 
-    const result = parseAction(actionJson);
+    const result = parseAction(responseContent);
     if (result.type === "error") {
-      this.messageBus.send(malformattedResponseMessage(this.id));
+      this.messageBus.send(standardMessages.malformattedResponseError(this.id));
       return;
     }
 

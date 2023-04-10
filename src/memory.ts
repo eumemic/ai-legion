@@ -1,8 +1,6 @@
-import { ChatCompletionRequestMessage } from "openai";
+import { Message } from "./message";
 
 export interface Memory {
-  append(
-    message: ChatCompletionRequestMessage
-  ): Promise<ChatCompletionRequestMessage[]>;
-  retrieve(): Promise<ChatCompletionRequestMessage[]>;
+  append(message: Message): Promise<Message[]>;
+  retrieve(): Promise<Message[]>;
 }

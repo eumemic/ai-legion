@@ -1,13 +1,12 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { memoize } from "lodash";
+import { Message } from "./message";
 
-export default async function generateText(
-  messages: ChatCompletionRequestMessage[]
-) {
+export default async function generateText(messages: Message[]) {
   return openai().createChatCompletion({
     model: "gpt-3.5-turbo",
     // model: "gpt-4",
-    messages: messages,
+    messages: messages.map((m) => m.openaiMessage),
   });
 }
 

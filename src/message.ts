@@ -1,18 +1,23 @@
 import actionDictionary from "../schema/action-dictionary.json";
+import { ChatCompletionRequestMessage } from "openai";
 
 export interface Message {
+  standardMessageType?: StandardMessageType;
+  sourceAgentId: string;
   /**
    * If left unspecified, indicates the message should be broadcast to all agents.
    */
   targetAgentIds?: string[];
-  role?: "system" | "user";
-  content: string;
+  openaiMessage: ChatCompletionRequestMessage;
 }
 
-export const primerMessage = singleTargetMessage(
-  (
-    agentId
-  ) => `You are Agent ${agentId}, and I am Control. Pleased to meet you. You are one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out Actions which you send in response to my messages.
+export type StandardMessageType = keyof typeof standardMessages;
+
+export const standardMessages = {
+  primer: singleTargetMessage(
+    (
+      agentId
+    ) => `You are Agent ${agentId}, and I am Control. Pleased to meet you. You are one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out Actions which you send in response to my messages.
 
 I will send you messages in natural language, but you will always respond with an Action, which is a strictly formatted JSON message conforming to the following Action Dictionary (in JSON schema format):
 
@@ -36,21 +41,50 @@ I will check in with you periodically with a sort of "heartbeat" message, giving
 
 In the course of our work I or other agents may assign you tasks, at which point you will work towards accomplishing them using the Actions at your disposal. We are going to build something great together!
 `
-);
+  ),
 
-export const heartbeatMessage = singleTargetMessage(
-  (agentId) =>
-    `Hello Agent ${agentId}, this is Control with your regularly scheduled heartbeat message. Let me know if there's anything you'd like to do by your choice of Action.`
-);
+  heartbeat: singleTargetMessage(
+    (agentId) =>
+      `Hello Agent ${agentId}, this is Control with your regularly scheduled heartbeat message. Let me know if there's anything you'd like to do by your choice of Action.`
+  ),
 
-export const malformattedResponseMessage = singleTargetMessage(
-  (agentId) =>
-    `I'm sorry Agent ${agentId}, I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
-);
+  noResponseError: singleTargetMessage(
+    (agentId) =>
+      `Hello Agent ${agentId}, I did not receive any response, could you try again?`
+  ),
+
+  malformattedResponseError: singleTargetMessage(
+    (agentId) =>
+      `I'm sorry Agent ${agentId}, I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
+  ),
+
+  agentResponse: (sourceAgentId: string, content: string): Message => ({
+    sourceAgentId,
+    targetAgentIds: ["0"],
+    openaiMessage: {
+      role: "assistant",
+      content,
+    },
+  }),
+};
+
+// Add standardMessageType field to all standardMessages
+for (const [standardMessageType, builder] of Object.entries(standardMessages)) {
+  standardMessages[standardMessageType as StandardMessageType] = (
+    ...args: any
+  ) => ({
+    standardMessageType,
+    ...(builder as any)(...args),
+  });
+}
 
 function singleTargetMessage(getContent: (agentId: string) => string) {
   return (agentId: string): Message => ({
+    sourceAgentId: "0",
     targetAgentIds: [agentId],
-    content: getContent(agentId),
+    openaiMessage: {
+      role: "system",
+      content: getContent(agentId),
+    },
   });
 }

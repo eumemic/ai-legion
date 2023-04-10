@@ -1,22 +1,22 @@
-import { ChatCompletionRequestMessage } from "openai";
 import { Memory } from "./memory";
+import { Message } from "./message";
 
 export class InMemoryMemory implements Memory {
   constructor() {}
 
-  private messages: ChatCompletionRequestMessage[] = [];
+  private messages: Message[] = [];
 
-  async append(
-    message: ChatCompletionRequestMessage
-  ): Promise<ChatCompletionRequestMessage[]> {
+  async append(message: Message): Promise<Message[]> {
     console.log(
-      `${message.role.toUpperCase()}:\n\n${message.content.trim()}\n\n========\n`
+      `Agent ${
+        message.sourceAgentId
+      }:\n\n${message.openaiMessage.content.trim()}\n\n========\n`
     );
     this.messages.push(message);
     return this.messages;
   }
 
-  async retrieve(): Promise<ChatCompletionRequestMessage[]> {
+  async retrieve(): Promise<Message[]> {
     return this.messages;
   }
 }
