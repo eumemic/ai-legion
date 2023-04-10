@@ -17,7 +17,7 @@ const taskQueue = new TaskQueue();
 
 export interface Decision {
   actionText: string;
-  usage: CreateCompletionResponseUsage;
+  precedingTokens: number;
 }
 
 export default function makeDecision(
@@ -25,56 +25,54 @@ export default function makeDecision(
   events: Event[]
 ): Promise<Decision | undefined> {
   const name = agentName(agentId);
-  const decisionPromise = taskQueue.run(async () => {
-    console.log(`${name} reflecting on ${events.length} events...`);
-    const t0 = Date.now();
-    try {
-      const response = await openai().createChatCompletion({
-        model,
-        messages: events.map(toOpenAiMessage),
-      });
+  const decisionPromise = taskQueue.run(
+    async (): Promise<Decision | undefined> => {
+      console.log(`${name} reflecting on ${events.length} events...`);
+      const t0 = Date.now();
+      try {
+        const response = await openai().createChatCompletion({
+          model,
+          messages: events.map(toOpenAiMessage),
+        });
 
-      console.log(
-        `${name} arrived at a decision after ${(
-          (Date.now() - t0) /
-          1000
-        ).toFixed(1)}s`
-      );
+        console.log(
+          `${name} arrived at a decision after ${(
+            (Date.now() - t0) /
+            1000
+          ).toFixed(1)}s`
+        );
 
-      if (response.status !== 200) {
-        console.error(`Non-200 status received: ${response.status}`);
-        return;
-      }
+        if (response.status !== 200) {
+          console.error(`Non-200 status received: ${response.status}`);
+          return;
+        }
 
-      const { data } = response;
-      const actionText = data.choices[0].message?.content;
-      if (!actionText) {
-        console.error("no content received");
-        return;
-      }
+        const { data } = response;
+        const actionText = data.choices[0].message?.content;
+        if (!actionText) {
+          console.error("no content received");
+          return;
+        }
 
-      const usage = data.usage;
-      if (usage === undefined) {
-        console.error("no usage reported");
-        return;
-      }
+        const precedingTokens = data.usage!.prompt_tokens;
 
-      return { actionText, usage };
-    } catch (e: any) {
-      const { response }: AxiosError = e;
-      switch (response?.status) {
-        case 400:
-          console.error(`ERROR: ${name}'s context window is full.`);
-          break;
-        case 429:
-          console.error(`ERROR: ${name} was rate limited.`);
-          break;
-        default:
-          console.error(e);
-          break;
+        return { actionText, precedingTokens };
+      } catch (e: any) {
+        const { response }: AxiosError = e;
+        switch (response?.status) {
+          case 400:
+            console.error(`ERROR: ${name}'s context window is full.`);
+            break;
+          case 429:
+            console.error(`ERROR: ${name} was rate limited.`);
+            break;
+          default:
+            console.error(e);
+            break;
+        }
       }
     }
-  });
+  );
 
   // avoid rate limits
   if (model === "gpt-4")
