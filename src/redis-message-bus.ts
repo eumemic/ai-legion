@@ -25,7 +25,7 @@ export class RedisMessageBus implements MessageBus {
     this.subscriber.unsubscribe(this.channel, () => {});
   }
 
-  publish(message: Message): void {
+  send(message: Message): void {
     this.publisher.publish(this.channel, JSON.stringify(message));
   }
 }

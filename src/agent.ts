@@ -1,8 +1,8 @@
 import { ChatCompletionRequestMessage } from "openai";
 import actionDictionary from "../schema/action-dictionary.json";
 import { Action } from "./action-types";
-import { MessageBus, Message } from "./message-bus";
 import { Memory } from "./memory";
+import { Message, MessageBus } from "./message-bus";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
 
@@ -15,7 +15,7 @@ export class Agent {
 
   async receive({ content }: Message): Promise<Action | undefined> {
     const messages = await this.memory.append({
-      name: "admin",
+      name: "control",
       role: "user",
       content,
     });
@@ -29,19 +29,22 @@ export class Agent {
     //     .join("\n")
     // );
 
-    const { data, status } = await generateText([
-      this.initialSystemPrompt,
-      ...messages,
-    ]);
+    let response: Awaited<ReturnType<typeof generateText>>;
+    try {
+      response = await generateText([this.initialSystemPrompt, ...messages]);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
 
-    if (status !== 200) {
+    if (response.status !== 200) {
       console.error(`Non-200 status received: ${status}`);
       return;
     }
 
-    const actionJson = data.choices[0].message?.content;
+    const actionJson = response.data.choices[0].message?.content;
     if (!actionJson) {
-      this.messageBus.publish({
+      this.messageBus.send({
         targetAgentIds: [this.id],
         content: "No response received",
       });
@@ -49,14 +52,14 @@ export class Agent {
     }
 
     await this.memory.append({
-      name: this.id,
+      name: `agent-${this.id}`,
       role: "assistant",
       content: actionJson,
     });
 
     const result = parseAction(actionJson);
     if (result.type === "error") {
-      this.messageBus.publish({
+      this.messageBus.send({
         targetAgentIds: [this.id],
         content:
           "Error parsing and validating action. Make sure you are only sending JSON and that it conforms to the Action Dictionary! Confine all natural language to the 'comment' field",
@@ -70,9 +73,9 @@ export class Agent {
   private initialSystemPrompt: ChatCompletionRequestMessage = {
     role: "system",
     content: `
-    You are Agent (id=${
+    Your agent id is ${
       this.id
-    }), who is responding to messages with Actions to be taken in response. You are not
+    }, who is responding to messages with Actions to be taken in response. You are not
     able to communicate in natural language, only in JSON format that strictly follows a schema.
 
     Every time I send you a message, decide on an Action to take. Actions are defined in the Action

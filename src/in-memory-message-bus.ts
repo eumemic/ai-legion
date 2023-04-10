@@ -16,7 +16,7 @@ export class InMemoryMessageBus implements MessageBus {
     this.emitter.off("message", listener);
   }
 
-  publish(message: Message): void {
+  send(message: Message): void {
     this.emitter.emit("message", message);
   }
 }

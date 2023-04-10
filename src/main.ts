@@ -11,10 +11,7 @@ dotenv.config();
 const numberOfAgents = 1;
 const pollingInterval = 10000;
 
-const agentIds = Array.from(
-  { length: numberOfAgents },
-  (_, i) => `agent-${i + 1}`
-);
+const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
 const memory: Memory = new InMemoryMemory();
@@ -41,7 +38,7 @@ async function main() {
   }
 
   while (true) {
-    messageBus.publish({ content: "heartbeat" });
+    messageBus.send({ content: "heartbeat" });
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
 }
