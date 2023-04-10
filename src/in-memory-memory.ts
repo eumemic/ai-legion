@@ -9,7 +9,9 @@ export class InMemoryMemory implements Memory {
   async append(
     message: ChatCompletionRequestMessage
   ): Promise<ChatCompletionRequestMessage[]> {
-    console.log(JSON.stringify(message, null, 2));
+    console.log(
+      `${message.role.toUpperCase()}:\n\n${message.content.trim()}\n\n========\n`
+    );
     this.messages.push(message);
     return this.messages;
   }

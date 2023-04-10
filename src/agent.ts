@@ -1,20 +1,53 @@
 import { Action } from "./action-types";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import { malformattedResponseMessage, Message } from "./message";
+import {
+  heartbeatMessage,
+  malformattedResponseMessage,
+  Message,
+  primerMessage,
+} from "./message";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
+import ActionHandler from "./action-handler";
+import { last } from "lodash";
+
+const pollingInterval = 1000;
 
 export class Agent {
   constructor(
     public id: string,
+    private memory: Memory,
     private messageBus: MessageBus,
-    private memory: Memory
+    private actionHandler: ActionHandler
   ) {}
 
-  async receive({ content }: Message): Promise<Action | undefined> {
+  // Start this Agent's event loop
+  async start() {
+    this.messageBus.subscribe(async (message) => {
+      if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
+        return;
+
+      const action = await this.handle(message);
+      if (action) {
+        await this.actionHandler.handle(action);
+      }
+    });
+
+    this.messageBus.send(primerMessage(this.id));
+
+    while (true) {
+      await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+      const messages = await this.memory.retrieve();
+      if (last(messages)?.role === "assistant") {
+        this.messageBus.send(heartbeatMessage(this.id));
+      }
+    }
+  }
+
+  private async handle({ content }: Message): Promise<Action | undefined> {
     const messages = await this.memory.append({
-      name: "control",
+      // name: "control",
       role: "system",
       content,
     });
@@ -42,7 +75,7 @@ export class Agent {
     }
 
     await this.memory.append({
-      name: `agent-${this.id}`,
+      // name: `agent-${this.id}`,
       role: "assistant",
       content: actionJson,
     });
