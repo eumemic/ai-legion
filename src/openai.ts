@@ -21,7 +21,7 @@ export default function generateText(agentId: string, messages: Message[]) {
   });
 
   // avoid rate limits
-  result.finally(() => taskQueue.run(() => sleep(openaiDelay)));
+  // result.finally(() => taskQueue.run(() => sleep(openaiDelay)));
 
   return result;
 }
