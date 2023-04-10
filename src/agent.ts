@@ -22,23 +22,24 @@ export class Agent {
 
   // Start this Agent's event loop
   async start() {
+    // Subscribe to messages
     this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
       this.memory.append(message);
     });
 
-    // Start heartbeat
-    this.taskQueue.runPeriodically(async () => {
-      const messages = await this.memory.retrieve();
-      const lastMessage = last(messages);
-      if (lastMessage?.messageType === "agentResponse") {
-        this.messageBus.send(messageBuilder.heartbeat(this.id));
-      }
-    }, heartbeatInterval);
-
     // Act on messages periodically
     this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
+
+    // Start heartbeat
+    // this.taskQueue.runPeriodically(async () => {
+    //   const messages = await this.memory.retrieve();
+    //   const lastMessage = last(messages);
+    //   if (lastMessage?.messageType === "agentResponse") {
+    //     this.messageBus.send(messageBuilder.heartbeat(this.id));
+    //   }
+    // }, heartbeatInterval);
   }
 
   private async takeAction(): Promise<void> {
