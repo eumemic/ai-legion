@@ -34,6 +34,15 @@ export default defineActionModule({
       context: { sourceAgentId, allAgentIds },
       sendMessage,
     }) {
+      if (sourceAgentId === targetAgentId) {
+        return sendMessage(
+          messageBuilder.error(
+            sourceAgentId,
+            "You can't send a message to yourself. Use the `writeNote` action if you want to make notes for yourself."
+          )
+        );
+      }
+
       if (allAgentIds.includes(targetAgentId)) {
         sendMessage(
           messageBuilder.agentToAgent(sourceAgentId, [targetAgentId], message)
