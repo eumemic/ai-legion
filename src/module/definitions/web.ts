@@ -2,7 +2,8 @@ import { google } from "googleapis";
 import puppeteer from "puppeteer";
 import TurndownService from "turndown";
 import { messageBuilder } from "../../message";
-import { GPT_3_5_TURBO, createChatCompletion } from "../../openai";
+import { contextWindowSize, createChatCompletion } from "../../openai";
+import { model } from "../../parameters";
 import {
   AVG_CHARACTERS_PER_TOKEN,
   AVG_WORDS_PER_TOKEN,
@@ -64,7 +65,13 @@ export default defineModule({
         sendMessage,
       }) {
         try {
-          const pageSummary = await getPageSummary(GPT_3_5_TURBO, 2000, url);
+          const maxCompletionTokens = contextWindowSize[model] / 4;
+          console.log({ maxCompletionTokens });
+          const pageSummary = await getPageSummary(
+            model,
+            maxCompletionTokens,
+            url
+          );
 
           sendMessage(
             messageBuilder.ok(
