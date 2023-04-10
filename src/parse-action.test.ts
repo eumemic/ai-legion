@@ -73,6 +73,22 @@ newContent:
 `);
 });
 
+test("invalid multiline with no delimiter", () => {
+  expect(
+    assertInvalid(`
+send-message
+targetAgentId: 0
+message: Hello Control, here's a list of things,
+
+- 9 bottles of ketchup
+- 2 pairs of socks
+- a very big balloon
+  `)
+  ).toEqual(
+    `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`${MULTILINE_DELIMITER}\`)?`
+  );
+});
+
 test("invalid command name", () => {
   expect(assertInvalid("foo")).toEqual(
     "Unknown action `foo`, please consult `help`."

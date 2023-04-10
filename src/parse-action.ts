@@ -35,7 +35,10 @@ export default function parseAction(
         .split("\n")
         .map((line) => {
           const colonIndex = line.indexOf(":");
-          if (colonIndex < 0) throw new Error("line is missing a colon");
+          if (colonIndex < 0)
+            throw new Error(
+              `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`${MULTILINE_DELIMITER}\`)?`
+            );
           const key = line.substring(0, colonIndex).trim();
           let value = line.substring(colonIndex + 1).trim();
           if (!value.startsWith('"') || !value.endsWith('"'))
@@ -85,7 +88,7 @@ export default function parseAction(
   } catch (e: any) {
     return {
       type: "error",
-      message: "Your action could not be parsed.",
+      message: e.message,
     };
   }
 }
