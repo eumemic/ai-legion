@@ -29,6 +29,8 @@ export function createChatCompletion(
       switch (response?.status) {
         case 400:
           throw Error(`Context window is full.`);
+        case 404:
+          throw Error(`Model '${request.model}' is unavailable.`);
         case 429:
           throw Error(`OpenAI rate limited.`);
         default:
