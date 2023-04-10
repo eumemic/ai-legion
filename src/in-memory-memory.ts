@@ -10,7 +10,7 @@ export class InMemoryMemory implements Memory {
   }
 
   async append(message: Message): Promise<Message[]> {
-    if (true || message.messageType === "agentToAgent") printMessage(message);
+    if (message.messageType === "agentToAgent") printMessage(message);
     this.messages.push(message);
     return this.messages;
   }
