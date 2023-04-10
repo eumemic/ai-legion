@@ -2,7 +2,7 @@ import { google } from "googleapis";
 import puppeteer from "puppeteer";
 import TurndownService from "turndown";
 import { messageBuilder } from "../../message";
-import { contextWindowSize, createChatCompletion } from "../../openai";
+import { Model, contextWindowSize, createChatCompletion } from "../../openai";
 import { model } from "../../parameters";
 import {
   AVG_CHARACTERS_PER_TOKEN,
@@ -96,10 +96,12 @@ export async function getSearchResults(searchString: string) {
 }
 
 export async function getPageSummary(
-  model: string,
-  maxCompletionTokens: number,
+  model: Model,
+  maxSummaryTokens: number,
   url: string
 ) {
+  const maxCompletionTokens = Math.round(contextWindowSize[model] * 0.9);
+
   console.log("Initializing...");
 
   const browser = await puppeteer.launch();
@@ -111,7 +113,7 @@ export async function getPageSummary(
       replacement: () => "",
     }
   );
-  console.log("Reading page...");
+  console.log(`Reading page at ${url}...`);
 
   await page.goto(url);
 
@@ -164,18 +166,22 @@ export async function getPageSummary(
     )} tokens per chunk)`
   );
 
-  const maxSummaryTokens = Math.round(maxCompletionTokens / chunks.length);
+  const maxChunkSummaryTokens = Math.round(maxSummaryTokens / chunks.length);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const maxSummaryWords = Math.round(maxSummaryTokens * AVG_WORDS_PER_TOKEN);
+  const maxChunkSummaryWords = Math.round(
+    maxChunkSummaryTokens * AVG_WORDS_PER_TOKEN
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const maxSummaryCharacters = Math.round(
-    maxSummaryTokens * AVG_CHARACTERS_PER_TOKEN
+  const maxChunkSummaryCharacters = Math.round(
+    maxChunkSummaryTokens * AVG_CHARACTERS_PER_TOKEN
   );
 
-  // const summaryLimitText = `${maxSummaryWords} words`;
-  const summaryLimitText = `${maxSummaryCharacters} characters`;
+  // const summaryLimitText = `${maxChunkSummaryWords} words`;
+  const chunkSummaryLimitText = `${maxChunkSummaryCharacters} characters`;
 
-  console.log(`Max summary tokens: ${maxSummaryTokens} (${summaryLimitText})`);
+  console.log(
+    `Max tokens per chunk summary: ${maxChunkSummaryTokens} (${chunkSummaryLimitText})`
+  );
   console.log("Summarizing chunks...");
 
   const summarizedChunks = await Promise.all(
@@ -185,23 +191,21 @@ export async function getPageSummary(
         messages: [
           {
             role: "user",
-            content: `Modify the following markdown excerpt only as much as necessary to bring it under a maximum of ${summaryLimitText}, preserving the most essential information. In particular, try to preserve links (example: \`[my special link](https://foo.bar/baz/)\`). Write this in the same voice as the original text; do not speak in the voice of someone who is describing it to someone else. For instance, don't use phrases like "The article talks about...". Excerpt to summarize follows:\n\n=============\n\n${chunk}`,
+            content: `Modify the following markdown excerpt only as much as necessary to bring it under a maximum of ${chunkSummaryLimitText}, preserving the most essential information. In particular, try to preserve links (example: \`[my special link](https://foo.bar/baz/)\`). Write this in the same voice as the original text; do not speak in the voice of someone who is describing it to someone else. For instance, don't use phrases like "The article talks about...". Excerpt to summarize follows:\n\n=============\n\n${chunk}`,
           },
         ],
       })
     )
   );
 
-  // console.log(
-  //   summarizedChunks
-  //     .map(
-  //       (chunk) =>
-  //         `=== SUMMARIZED CHUNK (${countTokens(chunk)}) ===\n\n${chunk}\n\n`
-  //     )
-  //     .join("")
-  // );
-
-  const summary = summarizedChunks.join("\n");
+  const summary = summarizedChunks
+    .map(
+      (chunk) =>
+        `=== SUMMARIZED CHUNK (${countTokens(
+          chunk
+        )} tokens) ===\n\n${chunk}\n\n`
+    )
+    .join("");
 
   // console.log(`Summary:\n\n${summary}\n`);
 
