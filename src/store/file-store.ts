@@ -5,9 +5,10 @@ import path from "path";
 const STORE_DIR = ".store";
 
 export class FileStore implements Store {
-  constructor(private namespace: string) {}
+  constructor(private namespaces: string[]) {}
 
   async get(key: string) {
+    await this.mkdirs();
     const path = this.pathFor(key);
     const fileExists = await checkExists(path);
     if (!fileExists) return undefined;
@@ -16,11 +17,12 @@ export class FileStore implements Store {
   }
 
   async set(key: string, value: string) {
-    await mkdir(this.dirPath, { recursive: true });
+    await this.mkdirs();
     await writeFile(this.pathFor(key), value, "utf-8");
   }
 
   async delete(key: string) {
+    await this.mkdirs();
     const path = this.pathFor(key);
     const fileExists = await checkExists(path);
     if (!fileExists) return false;
@@ -29,7 +31,12 @@ export class FileStore implements Store {
   }
 
   async list() {
+    await this.mkdirs();
     return readdir(this.dirPath);
+  }
+
+  private async mkdirs() {
+    await mkdir(this.dirPath, { recursive: true });
   }
 
   private pathFor(key: string) {
@@ -37,7 +44,7 @@ export class FileStore implements Store {
   }
 
   private get dirPath() {
-    return path.join(STORE_DIR, this.namespace);
+    return path.join(STORE_DIR, ...this.namespaces);
   }
 }
 

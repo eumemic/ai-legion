@@ -25,7 +25,7 @@ async function main() {
   startConsole(agentIds, messageBus);
 
   for (const id of agentIds.slice(1)) {
-    const store = new FileStore(id);
+    const store = new FileStore([id]);
     // We have to leave room for the agent's next action, which is of unknown size
     const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
     const memory = new Memory(id, store, compressionThreshold);

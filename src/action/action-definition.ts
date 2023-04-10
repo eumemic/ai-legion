@@ -2,10 +2,10 @@ import { mapValues } from "lodash";
 import { Message } from "../message";
 import { ActionDictionary } from "./action-dictionary";
 
-export interface ActionDefinition<P extends string = string>
+export interface ActionDefinition<S = void, P extends string = string>
   extends PartialActionDefinition<P> {
   parameters: Record<P, ParameterDefinition>;
-  handle: ActionHandler<P>;
+  handle: ActionHandler<S, P>;
 }
 
 export interface PartialActionDefinition<P extends string = never> {
@@ -21,20 +21,21 @@ export interface PartialParameterDefinition {
   optional?: boolean;
 }
 
-export type ActionHandler<P extends string = string> = (
-  inputs: ActionHandlerInputs<P>
+export type ActionHandler<S = void, P extends string = string> = (
+  inputs: ActionHandlerInputs<S, P>
 ) => Promise<void>;
 
-export interface ActionHandlerInputs<P extends string = string> {
+export interface ActionHandlerInputs<S = void, P extends string = string> {
   parameters: Record<P, string>;
-  context: ActionContext;
+  context: ActionContext<S>;
   sendMessage: (message: Message) => void;
 }
 
-export interface ActionContext {
+export interface ActionContext<S> {
   sourceAgentId: string;
   allAgentIds: string[];
   actionDictionary: ActionDictionary;
+  state: S;
 }
 
 export function defineAction<P extends string = string>({
@@ -43,9 +44,9 @@ export function defineAction<P extends string = string>({
   parameters = {} as Record<P, PartialParameterDefinition>,
 }: PartialActionDefinition<P>) {
   return {
-    withHandler: (
-      handle: ActionDefinition<P>["handle"]
-    ): ActionDefinition<P> => ({
+    withHandler: <S>(
+      handle: ActionDefinition<S, P>["handle"]
+    ): ActionDefinition<S, P> => ({
       name,
       description,
       parameters: mapValues(parameters, (parameter) => ({
