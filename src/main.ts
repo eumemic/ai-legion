@@ -35,8 +35,7 @@ async function main() {
             payload: {
               type: "no-op",
             },
-            comment:
-              "There is no immediate action that I need to take in response to the heartbeat message.",
+            comment: "Nothing to do at this time.",
           },
           null,
           2
