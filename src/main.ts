@@ -38,7 +38,7 @@ async function main() {
       ),
       messageBuilder.generic(
         id,
-        `Hello Agent 1, this is Control. Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
+        `Hello Agent 1, this is Control. Perfect, that is a correctly formatted response. Sending a no-op is fine, but are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
       )
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);
