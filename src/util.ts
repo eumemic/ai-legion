@@ -1,3 +1,4 @@
+import { encode } from "gpt-3-encoder";
 import { MessageSource } from "./message";
 
 export function sleep(milliseconds: number): Promise<void> {
@@ -25,3 +26,10 @@ export function agentName(agentId: string) {
 }
 
 export const MULTILINE_DELIMITER = `% ${"ff9d7713-0bb0-40d4-823c-5a66de48761b"}`;
+
+export const AVG_WORDS_PER_TOKEN = 0.75;
+export const AVG_CHARACTERS_PER_TOKEN = 4;
+
+export function countTokens(text: string) {
+  return encode(text).length;
+}

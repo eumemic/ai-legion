@@ -1,12 +1,14 @@
-import { encode } from "gpt-3-encoder";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder } from "../message";
 import { ModuleManager } from "../module/module-manager";
 import { Store } from "../store";
-import { agentName, messageSourceName } from "../util";
-
-const AVG_WORDS_PER_TOKEN = 0.75;
+import {
+  AVG_WORDS_PER_TOKEN,
+  agentName,
+  countTokens as countTokensInText,
+  messageSourceName,
+} from "../util";
 
 export class Memory {
   constructor(
@@ -178,5 +180,5 @@ export class Memory {
 }
 
 function countTokens(event: Event) {
-  return encode(toOpenAiMessage(event).content).length;
+  return countTokensInText(toOpenAiMessage(event).content);
 }
