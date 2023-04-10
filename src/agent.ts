@@ -8,7 +8,7 @@ import { parseAction } from "./parsers";
 import TaskQueue from "./task-queue";
 
 const actionInterval = 10 * 1000;
-const heartbeatInterval = 5 * 60 * 1000;
+const heartbeatInterval = 60 * 1000;
 
 export class Agent {
   constructor(
@@ -33,13 +33,13 @@ export class Agent {
     this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
 
     // Start heartbeat
-    // this.taskQueue.runPeriodically(async () => {
-    //   const messages = await this.memory.retrieve();
-    //   const lastMessage = last(messages);
-    //   if (lastMessage?.messageType === "agentResponse") {
-    //     this.messageBus.send(messageBuilder.heartbeat(this.id));
-    //   }
-    // }, heartbeatInterval);
+    this.taskQueue.runPeriodically(async () => {
+      const messages = await this.memory.retrieve();
+      const lastMessage = last(messages);
+      if (lastMessage?.messageType === "agentResponse") {
+        this.messageBus.send(messageBuilder.heartbeat(this.id));
+      }
+    }, heartbeatInterval);
   }
 
   private async takeAction(): Promise<void> {
