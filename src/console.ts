@@ -20,8 +20,21 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
 
   // Listen for 'line' events
   rl.on("line", (input) => {
-    if (input)
-      messageBus.send(messageBuilder.agentToAgent(AGENT_ID, ["1"], input));
+    const colonIndex = input.indexOf(":");
+    let targetAgentIds: string[] | undefined;
+    let content: string;
+    if (colonIndex >= 0) {
+      targetAgentIds = [input.substring(0, colonIndex)];
+      content = input.substring(colonIndex + 1);
+    } else {
+      targetAgentIds = undefined;
+      content = input;
+    }
+
+    if (content)
+      messageBus.send(
+        messageBuilder.agentToAgent(AGENT_ID, targetAgentIds, content)
+      );
 
     rl.prompt();
   });
