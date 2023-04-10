@@ -45,7 +45,7 @@ async function main() {
         id,
         `Hello ${agentName(
           id
-        )}, this is Control. Perfect, that is a correctly formatted response. Now here is your first task: I'd like you to reach out to other agents in the system and brainstorm ideas for how we can generate revenue for the company. We have a starting budget of $100, and want to create a passive income stream as quickly as possible without requiring any manual labor.`
+        )}, this is Control. Perfect, that is a correctly formatted response!`
       ),
       messageBuilder.agentResponse(
         id,
@@ -56,8 +56,7 @@ async function main() {
               targetAgentId: "all",
               message: "Hello other agents, how are you today?",
             },
-            comment:
-              "Sending message to other agents requesting them to brainstorm ideas for generating passive income with a budget of $100.",
+            comment: "Seeking to network with other agents.",
           },
           null,
           2
@@ -85,7 +84,5 @@ async function main() {
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);
     await agent.start();
-    // stagger the starting times of the agents
-    await new Promise((resolve) => setTimeout(resolve, 5000));
   }
 }

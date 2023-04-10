@@ -18,7 +18,7 @@ export default function generateText(agentId: string, messages: Message[]) {
       // console.log(`Agent ${agentId} arrived at a response`);
       return result;
     } finally {
-      await sleep(5000); // avoid rate limits
+      // await sleep(5000); // avoid rate limits
     }
   });
 }
