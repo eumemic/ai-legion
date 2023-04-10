@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Event } from "./event";
+import { Event } from "./event-types";
 import { EventLog } from "./event-log";
 
 export class InMemoryEventLog implements EventLog {

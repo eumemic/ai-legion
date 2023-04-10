@@ -1,11 +1,11 @@
 import Ajv from "ajv";
-import eventSchema from "../schema/event.json";
-import actionSchema from "../schema/action.json";
-import { Action } from "./action";
-import { Event } from "./event";
+import actionDictionary from "../schema/action-dictionary.json";
+import eventDictionary from "../schema/event-dictionary.json";
+import { Action } from "./action-types";
+import { Event } from "./event-types";
 
-export const parseEvent = parserFor<Event>("event", eventSchema);
-export const parseAction = parserFor<Action>("action", actionSchema);
+export const parseEvent = parserFor<Event>("event", eventDictionary);
+export const parseAction = parserFor<Action>("action", actionDictionary);
 
 function parserFor<T>(name: string, schema: object) {
   const validate = new Ajv().compile(schema);
