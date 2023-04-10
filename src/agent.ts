@@ -5,8 +5,9 @@ import { Message, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
+import TaskQueue from "./task-queue";
 
-const actionInterval = 1000;
+const actionInterval = 5000;
 const heartbeatInterval = 60000;
 
 export class Agent {
@@ -17,6 +18,7 @@ export class Agent {
     private actionHandler: ActionHandler
   ) {}
 
+  private taskQueue = new TaskQueue();
   private lastProcessedMessage: Message | undefined;
 
   // Start this Agent's event loop
@@ -24,18 +26,18 @@ export class Agent {
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      await this.memory.append(message);
+      this.taskQueue.run(() => this.memory.append(message));
     });
 
     // Take action periodically
-    let takingAction = false;
+    let waitingToAct = false;
     setInterval(async () => {
-      if (takingAction) return;
-      takingAction = true;
+      if (waitingToAct) return;
+      waitingToAct = true;
       try {
-        await this.takeAction();
+        await this.taskQueue.run(() => this.takeAction());
       } finally {
-        takingAction = false;
+        waitingToAct = false;
       }
     }, actionInterval);
 
