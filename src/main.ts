@@ -4,7 +4,7 @@ import { ActionDictionary } from "./action/action-dictionary";
 import { allActionDefinitions } from "./action/definitions";
 import { Agent } from "./agent";
 import { startConsole } from "./console";
-import { InMemoryMemory } from "./memory/in-memory-memory";
+import { InMemoryMemoryStorage } from "./memory/in-memory-memory-storage";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Memory, messageMemento } from "./memory";
 import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
@@ -26,7 +26,8 @@ async function main() {
   startConsole(agentIds, messageBus);
 
   for (const id of agentIds.slice(1)) {
-    const memory: Memory = new InMemoryMemory(
+    const memory: Memory = new Memory(new InMemoryMemoryStorage());
+    memory.append(
       messageMemento(
         messageBuilder.standard(
           id,

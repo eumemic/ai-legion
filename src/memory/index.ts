@@ -1,5 +1,6 @@
 import { Decision } from "../make-decision";
 import { Message } from "../message";
+export { Memory } from "./memory";
 
 export type Memento = MessageMemento | DecisionMemento;
 
@@ -14,7 +15,7 @@ export interface DecisionMemento {
   decision: Decision;
 }
 
-export interface Memory {
+export interface MemoryStorage {
   append(memento: Memento): Promise<Memento[]>;
   retrieve(): Promise<Memento[]>;
 }

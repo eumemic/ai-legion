@@ -1,13 +1,8 @@
-import { Memento, Memory } from ".";
+import { Memento, MemoryStorage } from ".";
 import { agentName, messageSourceName } from "../util";
 
-export class InMemoryMemory implements Memory {
+export class InMemoryMemoryStorage implements MemoryStorage {
   private mementos: Memento[] = [];
-
-  constructor(...preloadedMementos: Memento[]) {
-    this.mementos.push(...preloadedMementos);
-    // this.mementos.forEach(printMemento);
-  }
 
   async append(memento: Memento): Promise<Memento[]> {
     printMemento(memento);
