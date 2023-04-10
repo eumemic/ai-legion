@@ -7,7 +7,7 @@ const actions = [
   defineAction({
     name: "create-or-update-note",
     description:
-      "Create a new note if it doesn't exist, or update the content of an existing note. Parameters: title (the title of the note), content (text content of the note).",
+      "Create a new note if it doesn't exist, or update the content of an existing note.",
     parameters: {
       title: {
         description: "The title of the note",
@@ -34,8 +34,7 @@ const actions = [
 
   defineAction({
     name: "view-note",
-    description:
-      "Display the content of a note. Parameter: title (the title of the note to view).",
+    description: "Display the content of a note.",
     parameters: {
       title: {
         description: "The title of the note to view",
@@ -82,8 +81,7 @@ const actions = [
 
   defineAction({
     name: "delete-note",
-    description:
-      "Delete a note. Parameter: title (the title of the note to delete).",
+    description: "Delete a note.",
     parameters: {
       title: {
         description: "The title of the note to delete",
