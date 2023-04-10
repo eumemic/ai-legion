@@ -12,6 +12,7 @@ type ParseResult =
 
 export interface Action {
   actionDef: ActionDefinition;
+  thoughts?: string;
   parameters: Record<string, string>;
 }
 
@@ -58,7 +59,7 @@ export default function parseAction(
         .join(",") +
       "}";
 
-    const { name, ...parameters } = JSON.parse(jsonText);
+    const { name, thoughts, ...parameters } = JSON.parse(jsonText);
 
     const actionDef = dict.getDefinition(name);
     if (!actionDef)
@@ -94,7 +95,7 @@ export default function parseAction(
       };
     }
 
-    return { type: "success", action: { actionDef, parameters } };
+    return { type: "success", action: { actionDef, thoughts, parameters } };
   } catch (e: any) {
     return {
       type: "error",

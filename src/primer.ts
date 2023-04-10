@@ -15,6 +15,7 @@ You are ${agentName(
 
 ${CODE_BLOCK_DELIMITER}
 <action name>
+thoughts: <reasoning behind this action>
 <arg 1 name>: <prop value>
 <arg 2 name>: <prop value>
 ...
@@ -24,6 +25,7 @@ Example of a correct response:
 
 ${CODE_BLOCK_DELIMITER}
 write-note
+thoughts: This seems important since it's fundamental to the way I communicate with the system.
 title: Always Remember
 content: Encode every response as an action!
 ${CODE_BLOCK_DELIMITER}
