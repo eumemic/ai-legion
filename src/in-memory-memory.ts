@@ -10,7 +10,7 @@ export class InMemoryMemory implements Memory {
   }
 
   async append(message: Message): Promise<Message[]> {
-    if (message.messageType !== "heartbeat") printMessage(message);
+    if (message.messageType === "agentToAgent") printMessage(message);
     this.messages.push(message);
     return this.messages;
   }
@@ -22,8 +22,8 @@ export class InMemoryMemory implements Memory {
 
 function printMessage(message: Message) {
   console.log(
-    `Agent ${
-      message.sourceAgentId
-    } (${message.openaiMessage.role.toUpperCase()}):\n\n${message.openaiMessage.content.trim()}\n\n========\n`
+    `Agent ${message.sourceAgentId} -> ${message.targetAgentIds
+      ?.map((id) => `Agent ${id}`)
+      .join(",")}:\n\n${message.openaiMessage.content.trim()}\n\n========\n`
   );
 }
