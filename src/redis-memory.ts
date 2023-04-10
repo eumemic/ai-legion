@@ -12,6 +12,7 @@ export class RedisMemory implements Memory {
     const mementos = await this.retrieve();
     mementos.push(memento);
     await this.client.set(this.agentId, JSON.stringify(mementos));
+    return mementos;
   }
 
   async retrieve(): Promise<Memento[]> {

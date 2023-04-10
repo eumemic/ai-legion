@@ -5,8 +5,9 @@ export class InMemoryMemory implements Memory {
 
   private mementos: Memento[] = [];
 
-  async append(memento: Memento): Promise<void> {
+  async append(memento: Memento): Promise<Memento[]> {
     this.mementos.push(memento);
+    return this.mementos;
   }
 
   async retrieve(): Promise<Memento[]> {

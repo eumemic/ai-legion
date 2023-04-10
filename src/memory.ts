@@ -14,6 +14,6 @@ export interface ActionMemento {
 }
 
 export interface Memory {
-  append(event: Memento): Promise<void>;
+  append(event: Memento): Promise<Memento[]>;
   retrieve(): Promise<Memento[]>;
 }

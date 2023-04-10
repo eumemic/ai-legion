@@ -1,4 +1,5 @@
 import { ChatCompletionRequestMessage } from "openai";
+import { convertTypeAcquisitionFromJson } from "typescript";
 import actionDictionary from "../schema/action-dictionary.json";
 import eventDictionary from "../schema/event-dictionary.json";
 import { Action } from "./action-types";
@@ -16,12 +17,18 @@ export class Agent {
   ) {}
 
   async handleEvent(event: Event): Promise<Action | undefined> {
+    const mementos = await this.memory.append({ type: "event", event });
+
     const { data, status } = await generateText([
       initialSystemPrompt,
-      {
-        role: "user",
-        content: JSON.stringify(event, null, 2),
-      },
+      ...mementos.map((m): ChatCompletionRequestMessage => {
+        switch (m.type) {
+          case "event":
+            return { role: "user", content: JSON.stringify(m.event) };
+          case "action":
+            return { role: "assistant", content: JSON.stringify(m.action) };
+        }
+      }),
     ]);
 
     if (status !== 200) {
@@ -35,7 +42,12 @@ export class Agent {
       return;
     }
 
-    return parseAction(actionJson);
+    const action = parseAction(actionJson);
+    if (action) {
+      await this.memory.append({ type: "action", action });
+    }
+
+    return action;
   }
 }
 
