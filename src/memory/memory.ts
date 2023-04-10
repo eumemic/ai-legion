@@ -6,6 +6,8 @@ import { messageBuilder, primerMessage } from "../message";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
 
+const AVG_WORDS_PER_TOKEN = 0.75;
+
 export class Memory {
   constructor(
     private agentId: string,
@@ -52,7 +54,7 @@ export class Memory {
         Math.floor((totalTokenCount - cumulativeTokenCounts[0]) / 2)
       );
 
-    // console.log({ totalTokenCount, thresholdOverrun, truncationThreshold });
+    console.log({ totalTokenCount, thresholdOverrun, truncationThreshold });
 
     if (thresholdOverrun > 0) {
       for (let i = 1; i < events.length; i++) {
@@ -60,15 +62,16 @@ export class Memory {
         if (precedingTokens > truncationThreshold) {
           const summarizedEvents = events.slice(1, i);
 
+          const summaryWordLimit = Math.floor(
+            (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6
+          );
           const { actionText: summary } = await makeDecision(this.agentId, [
             ...events.slice(0, i),
             {
               type: "message",
               message: messageBuilder.standard(
                 this.agentId,
-                `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
-                  this.compressionThreshold / 6
-                )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
+                `Write a bulleted list in ${summaryWordLimit} words or less, summarizing what that has happened to you since (but not including) the introductory message. Include any key information that you learned which you don't want to forget. This information will serve as a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible. Be as specific as possible, but only with IMPORTANT information. If there are details that seem unimportant, or which you could recover outside of your memory (for instance the particular contents of a file which you could read any time), feel free to omit them in your summary.`
               ),
             },
           ]);
@@ -82,7 +85,7 @@ export class Memory {
           const tokenSavings = precedingTokens - summaryTokens;
           if (tokenSavings > 0) {
             console.log(
-              `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens: ${summary}`
+              `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens:\n\n${summary}`
             );
 
             return [events[0], summaryEvent, ...events.slice(i)];
