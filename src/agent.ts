@@ -7,6 +7,7 @@ import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
+import { sleep } from "./util";
 
 // const heartbeatInterval = 60 * 1000;
 
@@ -51,21 +52,25 @@ export class Agent {
   }
 
   private async takeAction(): Promise<void> {
-    let events = await this.memory.retrieve();
+    try {
+      let events = await this.memory.retrieve();
 
-    // Do not act again if the last event was a decision
-    if (last(events)?.type === "decision") return;
+      // Do not act again if the last event was a decision
+      if (last(events)?.type === "decision") return;
 
-    const decision = await makeDecision(this.id, events);
+      const decision = await makeDecision(this.id, events);
 
-    // Reassign events in case summarization occurred
-    events = await this.memory.append({ type: "decision", decision });
+      // Reassign events in case summarization occurred
+      events = await this.memory.append({ type: "decision", decision });
 
-    const result = parseAction(this.actionDictionary, decision.actionText);
-    if (result.type === "error") {
-      this.messageBus.send(messageBuilder.error(this.id, result.message));
-    } else {
-      await this.actionHandler.handle(this.id, result.action);
+      const result = parseAction(this.actionDictionary, decision.actionText);
+      if (result.type === "error") {
+        this.messageBus.send(messageBuilder.error(this.id, result.message));
+      } else {
+        await this.actionHandler.handle(this.id, result.action);
+      }
+    } finally {
+      await sleep(1000);
     }
   }
 }
