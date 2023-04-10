@@ -26,7 +26,7 @@ export default defineModule<Store<Goal[]>>({
           .join("\n")}`
       : "You have no goals currently.";
     return `
-You are responsible for maintaining your list of goals, based higher-level objectives which will be given to you. Whenever you start doing something, first add a goal. Whenever you finish doing something, mark it complete. This list of goals will always be pinned to the top of your context and won't be summarized away. Goals should be medium-term (requiring several actions to complete) and concrete.
+You are responsible for maintaining your list of goals, based on higher-level objectives which will be given to you. Whenever you start doing something, first add a goal. Whenever you finish doing something, mark it complete. This list of goals will always be pinned to the top of your context and won't be summarized away. Goals should be medium-term (requiring several actions to complete) and concrete. Do not invent goals out of nothing, they should encapsulate instructions that have been given to you.
 
 ${currentGloals}
 `.trim();
