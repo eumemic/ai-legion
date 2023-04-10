@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { memoize } from "lodash";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { Memento } from "./memory";
+import { Event } from "./memory";
 import { model } from "./parameters";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
@@ -17,16 +17,16 @@ export interface Decision {
 
 export default function makeDecision(
   agentId: string,
-  mementos: Memento[]
+  events: Event[]
 ): Promise<Decision | undefined> {
   const name = agentName(agentId);
   const decisionPromise = taskQueue.run(async () => {
-    console.log(`${name} reflecting on ${mementos.length} mementos...`);
+    console.log(`${name} reflecting on ${events.length} events...`);
     const t0 = Date.now();
     try {
       const response = await openai().createChatCompletion({
         model,
-        messages: mementos.map(toOpenAiMessage),
+        messages: events.map(toOpenAiMessage),
       });
 
       console.log(
@@ -93,9 +93,9 @@ const openai = memoize(() => {
   return new OpenAIApi(configuration);
 });
 
-function toOpenAiMessage(memento: Memento): ChatCompletionRequestMessage {
-  if (memento.type === "message") {
-    const { source, content } = memento.message;
+function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
+  if (event.type === "message") {
+    const { source, content } = event.message;
     const role = source.type === "system" ? "system" : "user";
     return {
       role,
@@ -104,7 +104,7 @@ function toOpenAiMessage(memento: Memento): ChatCompletionRequestMessage {
   } else {
     return {
       role: "assistant",
-      content: memento.decision.actionText,
+      content: event.decision.actionText,
     };
   }
 }

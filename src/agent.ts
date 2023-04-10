@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
 import makeDecision from "./make-decision";
-import { decisionMemento, Memory, messageMemento } from "./memory";
+import { decisionEvent, Memory, messageEvent } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
@@ -28,7 +28,7 @@ export class Agent {
     this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      this.memory.append(messageMemento(message));
+      this.memory.append(messageEvent(message));
     });
 
     // Act on messages periodically
@@ -50,15 +50,15 @@ export class Agent {
   }
 
   private async takeAction(): Promise<void> {
-    const mementos = await this.memory.retrieve();
+    const events = await this.memory.retrieve();
 
     // Do not act again if the last event was a decision
-    if (last(mementos)?.type === "decision") return;
+    if (last(events)?.type === "decision") return;
 
-    const decision = await makeDecision(this.id, mementos);
+    const decision = await makeDecision(this.id, events);
     if (!decision) return;
 
-    await this.memory.append(decisionMemento(this.id, decision));
+    await this.memory.append(decisionEvent(this.id, decision));
 
     const result = parseAction(this.actionDictionary, decision.actionText);
     if (result.type === "error") {

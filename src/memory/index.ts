@@ -2,23 +2,23 @@ import { Decision } from "../make-decision";
 import { Message } from "../message";
 export { Memory } from "./memory";
 
-export type Memento = MessageMemento | DecisionMemento;
+export type Event = MessageEvent | DecisionEvent;
 
-export interface MessageMemento {
+export interface MessageEvent {
   type: "message";
   message: Message;
 }
 
-export interface DecisionMemento {
+export interface DecisionEvent {
   type: "decision";
   agentId: string;
   decision: Decision;
 }
 
-export function messageMemento(message: Message): Memento {
+export function messageEvent(message: Message): Event {
   return { type: "message", message };
 }
 
-export function decisionMemento(agentId: string, decision: Decision): Memento {
+export function decisionEvent(agentId: string, decision: Decision): Event {
   return { type: "decision", agentId, decision };
 }
