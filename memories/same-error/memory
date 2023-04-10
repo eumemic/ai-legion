@@ -1,0 +1,259 @@
+[
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "queryAgentRegistry\nthoughts: I need to know who are the other agents that I can interact with.\n"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "standard",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "These are the agents in the system:\n\nControl [agentId=0]\nAgent 1 [agentId=1]"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: I want to know what the current time is. I will send a message to Control agent to get the current time.\ntoAgent: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nPlease provide me with the current time.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Missing required parameter `targetAgentId`. Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: sendMessage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "standard",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: I want to know what the current time is. I will send a message to Control agent to get the current time.\ntargetAgentId: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nPlease provide me with the current time.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "why do you want to know that?"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: I need to respond to Control's question about why I want to know the current time.\ntoAgent: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nI want to know the current time because I need to manage my internal clock to perform scheduled tasks efficiently.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Missing required parameter `targetAgentId`. Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: sendMessage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "standard",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: I need to respond to Control's question about why I want to know the current time.\ntargetAgentId: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nI want to know the current time because I need to manage my internal clock to perform scheduled tasks efficiently.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "no you don't"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: Control agent denied my request for the current time. There's nothing else to do right now.\ntoAgent: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nOkay.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Missing required parameter `targetAgentId`. Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: sendMessage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "standard",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: Control agent denied my request for the current time. There's nothing else to do right now.\ntargetAgentId: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nOkay.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "hello"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "noop\nthoughts: This seems to be just a greeting. There's no action to take in response."
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "respond to me"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: Control agent asked me to respond. I'm not sure what to say so I will ask for more information.\ntoAgent: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nWhat would you like me to respond to?\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Missing required parameter `targetAgentId`. Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: sendMessage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "standard",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "sendMessage\nthoughts: Control agent asked me to respond. I'm not sure what to say so I will ask for more information.\ntargetAgentId: 0\nmessage:\n% ff9d7713-0bb0-40d4-823c-5a66de48761b\nWhat would you like me to respond to?\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  }
+]
