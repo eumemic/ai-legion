@@ -1,5 +1,5 @@
-import actionDictionary from "../schema/action-dictionary.json";
-import { ChatCompletionRequestMessage } from "openai";
+import { ActionDefinition } from "./action/action-definition";
+import { ActionDictionary } from "./action/action-dictionary";
 import { agentName, MULTILINE_DELIMITER } from "./util";
 
 export interface Message {
@@ -100,12 +100,12 @@ In the course of your work you may be assigned tasks by other agents, at which p
     `This is your regularly scheduled heartbeat message. Is there anything you need to do?`
   ),
 
-  listAllActions: constantSingleTargetSystemMessageBuilder(
-    `You can take the following actions:
+  listAllActions: (agentId: string, dict: ActionDictionary) =>
+    singleTargetSystemMessage(
+      agentId,
+      `You can take the following actions:
 
-${actionDictionary.oneOf
-  .map((action) => action.properties.name.const)
-  .join("\n")}
+${dict.definitions.map((actionDef) => actionDef.name).join("\n")}
 
 To get help on a specific action, use the \`help\` action with the \`aboutAction\` argument set to the name of the action you want help with. For example:
 
@@ -114,29 +114,26 @@ help
 aboutAction: send-message
 ${CODE_BLOCK_DELIMITER}
 `
-  ),
+    ),
 
-  helpOnAction: (agentId: string, aboutAction: string) => {
-    const actionSchema = actionDictionary.oneOf.find(
-      (action) => action.properties.name.const === aboutAction
-    );
+  helpOnAction: (
+    agentId: string,
+    aboutAction: string,
+    dict: ActionDictionary
+  ) => {
+    const actionDef = dict.getDefinition(aboutAction);
     return singleTargetSystemMessage(
       agentId,
-      actionSchema
+      actionDef
         ? `Usage:
 
 ${CODE_BLOCK_DELIMITER}
-${actionSchema.properties.name.const}${Object.entries(actionSchema.properties)
-            .flatMap(([argName, { description }]) =>
-              argName === "name"
-                ? []
-                : [
-                    `${argName}: <${description.toLowerCase()}>${
-                      !actionSchema.required.includes(argName)
-                        ? " (optional)"
-                        : ""
-                    }`,
-                  ]
+${actionDef.name}${Object.entries(actionDef.parameters)
+            .map(
+              ([argName, { description }]) =>
+                `${argName}: <${description.toLowerCase()}>${
+                  actionDef.parameters[argName].optional ? " (optional)" : ""
+                }`
             )
             .map((part) => `\n${part}`)}
 ${CODE_BLOCK_DELIMITER}`
@@ -197,18 +194,16 @@ function singleTargetSystemMessage(
   };
 }
 
-export function getUsageText(
-  actionDef: (typeof actionDictionary)["oneOf"][number]
-): string {
+export function getUsageText(actionDef: ActionDefinition): string {
   return `Usage:
 
 ${CODE_BLOCK_DELIMITER}
-${actionDef.properties.name.const}${Object.entries(actionDef.properties)
-    .map(([argName, { description }]) =>
-      argName === "name"
+${actionDef.name}${Object.entries(actionDef.parameters)
+    .map(([name, { description }]) =>
+      name === "name"
         ? undefined
-        : `${argName}: <${description.toLowerCase()}>${
-            !actionDef.required.includes(argName) ? " (optional)" : ""
+        : `${name}: <${description.toLowerCase()}>${
+            actionDef.parameters[name].optional ? " (optional)" : ""
           }`
     )
     .filter(Boolean)

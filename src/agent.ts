@@ -6,6 +6,7 @@ import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
+import { ActionDictionary } from "./action/action-dictionary";
 
 const actionInterval = 10 * 1000;
 const heartbeatInterval = 60 * 1000;
@@ -15,6 +16,7 @@ export class Agent {
     public id: string,
     private memory: Memory,
     private messageBus: MessageBus,
+    private actionDictionary: ActionDictionary,
     private actionHandler: ActionHandler
   ) {}
 
@@ -53,11 +55,11 @@ export class Agent {
 
     await this.memory.append(actionMemento(this.id, actionText));
 
-    const result = parseAction(actionText);
+    const result = parseAction(this.actionDictionary, actionText);
     if (result.type === "error") {
       this.messageBus.send(messageBuilder.error(this.id, result.message));
-    } else if (result.value) {
-      await this.actionHandler.handle(this.id, result.value);
+    } else {
+      await this.actionHandler.handle(this.id, result.action);
     }
   }
 }

@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import ActionHandler from "./action-handler";
+import { ActionDictionary } from "./action/action-dictionary";
+import { allActionDefinitions } from "./action/definitions";
 import { Agent } from "./agent";
 import { startConsole } from "./console";
 import { InMemoryMemory } from "./in-memory-memory";
@@ -13,8 +15,9 @@ dotenv.config();
 
 const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
 
+const actionDictionary = new ActionDictionary(allActionDefinitions);
 const messageBus: MessageBus = new InMemoryMessageBus();
-const actionHandler = new ActionHandler(agentIds, messageBus);
+const actionHandler = new ActionHandler(agentIds, messageBus, actionDictionary);
 
 main();
 
@@ -31,9 +34,15 @@ async function main() {
       //   )
       // ),
       actionMemento(id, "help"),
-      messageMemento(messageBuilder.listAllActions(id))
+      messageMemento(messageBuilder.listAllActions(id, actionDictionary))
     );
-    const agent = new Agent(id, memory, messageBus, actionHandler);
+    const agent = new Agent(
+      id,
+      memory,
+      messageBus,
+      actionDictionary,
+      actionHandler
+    );
     await agent.start();
   }
 }

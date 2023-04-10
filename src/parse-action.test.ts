@@ -1,5 +1,8 @@
-import { Action } from "./action-types";
-import parseAction from "./parse-action";
+import { ActionDictionary } from "./action/action-dictionary";
+import { allActionDefinitions } from "./action/definitions";
+import parseAction, { Action } from "./parse-action";
+
+const dict = new ActionDictionary(allActionDefinitions);
 
 test("case 1", () => {
   assertValid(`
@@ -98,17 +101,17 @@ no-op
 });
 
 function assertValid(text: string): Action {
-  const result = parseAction(text);
+  const result = parseAction(dict, text);
   if (result.type === "error") throw Error(`Parse failed: ${result.message}`);
-  return result.value;
+  return result.action;
 }
 
 function assertInvalid(text: string): string {
-  const result = parseAction(text);
+  const result = parseAction(dict, text);
   if (result.type === "success")
     throw Error(
       `Parse succeeded when it should've failed: ${JSON.stringify(
-        result.value,
+        result.action,
         null,
         2
       )}`
