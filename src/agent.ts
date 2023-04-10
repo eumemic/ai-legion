@@ -9,8 +9,6 @@ import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 import { sleep } from "./util";
 
-// const heartbeatInterval = 60 * 1000;
-
 export class Agent {
   constructor(
     public id: string,
@@ -48,7 +46,7 @@ export class Agent {
     //       )
     //     );
     //   }
-    // }, heartbeatInterval);
+    // }, 60 * 1000);
   }
 
   private async takeAction(): Promise<void> {

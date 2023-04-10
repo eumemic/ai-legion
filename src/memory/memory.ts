@@ -34,6 +34,7 @@ export class Memory {
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
+    // events.forEach((event) => this.printEvent(event));
     return [
       { type: "message", message: primer(this.agentId, this.actionDictionary) },
       ...events,

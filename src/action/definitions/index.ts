@@ -5,8 +5,15 @@ import core from "./core";
 import filesystem from "./filesystem";
 import messaging from "./messaging";
 import notes from "./notes";
+import web from "./web";
 
-const allActionModules: ActionModule[] = [core, messaging, filesystem, notes];
+const allActionModules: ActionModule[] = [
+  core,
+  messaging,
+  filesystem,
+  notes,
+  web,
+];
 
 export const allActionDefinitions: ActionDefinition[] =
   allActionModules.flatMap((module) => Object.values(module.actions));
