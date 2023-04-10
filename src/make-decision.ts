@@ -3,20 +3,16 @@ import { Event } from "./memory";
 import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
 import TaskQueue from "./task-queue";
-import { agentName, messageSourceName, sleep } from "./util";
+import { messageSourceName, sleep } from "./util";
 
 const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export default function makeDecision(
-  agentId: string,
-  events: Event[]
-): Promise<string> {
-  const name = agentName(agentId);
+export default function makeDecision(events: Event[]): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
-    console.log(`${name} reflecting on ${events.length} events...`);
-    const t0 = Date.now();
+    // console.log(`Reflecting on ${events.length} events...`);
+    // const t0 = Date.now();
 
     const messages = events.map(toOpenAiMessage);
 
@@ -27,11 +23,11 @@ export default function makeDecision(
       messages,
     });
 
-    console.log(
-      `${name} arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
-        1
-      )}s`
-    );
+    // console.log(
+    //   `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
+    //     1
+    //   )}s`
+    // );
 
     const responseText = data.choices[0].message!.content;
 

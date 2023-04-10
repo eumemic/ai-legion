@@ -56,7 +56,7 @@ export class Agent {
       // Do not act again if the last event was a decision
       if (last(events)?.type === "decision") return;
 
-      const actionText = await makeDecision(this.id, events);
+      const actionText = await makeDecision(events);
 
       // Reassign events in case summarization occurred
       events = await this.memory.append({
