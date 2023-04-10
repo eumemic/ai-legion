@@ -85,7 +85,29 @@ message: Hello Control, here's a list of things,
 - a very big balloon
   `)
   ).toEqual(
-    `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`${MULTILINE_DELIMITER}\`)?`
+    `Your action could not be parsed. Did you forget to format your entire response as an action, or fail to wrap the entirety of a multi-line parameter value with the multi-line delimiter (\`% ff9d7713-0bb0-40d4-823c-5a66de48761b\`)?`
+  );
+});
+
+test("multiline delimiter not starting on its own line", () => {
+  expect(
+    assertValid(`
+send-message
+targetAgentId: 0
+message: % ff9d7713-0bb0-40d4-823c-5a66de48761b
+here is a
+multi
+line
+message
+% ff9d7713-0bb0-40d4-823c-5a66de48761b
+`).parameters.message
+  ).toBe(
+    `
+here is a
+multi
+line
+message
+`.trim()
   );
 });
 
