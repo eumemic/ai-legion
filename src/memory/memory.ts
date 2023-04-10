@@ -1,10 +1,11 @@
+import { encode } from "gpt-3-encoder";
 import { isEmpty } from "lodash";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder, primerMessage } from "../message";
+import { GPT_3_5_TURBO } from "../openai";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
-import { GPT_3_5_TURBO } from "../openai";
 
 export class Memory {
   constructor(
@@ -34,82 +35,56 @@ export class Memory {
    * Compress the event history when it becomes too large in order to free up the context window.
    */
   private async summarize(events: Event[]): Promise<Event[]> {
-    const decisions = events.flatMap((event, index) =>
-      event.type === "decision" ? [[event.decision, index] as const] : []
+    if (!events.length) return [];
+
+    const cumulativeTokenCounts = events.reduce((counts, event) => {
+      const prevSum = counts.length ? counts[counts.length - 1] : 0;
+      counts.push(prevSum + countTokens(event));
+      return counts;
+    }, [] as number[]);
+
+    const totalTokenCount =
+      cumulativeTokenCounts[cumulativeTokenCounts.length - 1];
+    const truncationThreshold = Math.floor(
+      (cumulativeTokenCounts[0] + this.compressionThreshold) / 2
     );
 
-    if (decisions.length > 1) {
-      const [firstDecision, firstDecisionIndex] = decisions[0];
-      const [lastDecision] = decisions[decisions.length - 1];
+    if (totalTokenCount > this.compressionThreshold) {
+      for (let i = 1; i < events.length; i++) {
+        const precedingTokens = cumulativeTokenCounts[i - 1];
+        if (precedingTokens > truncationThreshold) {
+          const summarizedEvents = events.slice(1, i);
 
-      const truncationThreshold =
-        (firstDecision.precedingTokens + this.compressionThreshold) / 2;
+          const { actionText: summary } = await makeDecision(
+            GPT_3_5_TURBO,
+            this.agentId,
+            [
+              ...events.slice(0, i),
+              {
+                type: "message",
+                message: messageBuilder.standard(
+                  this.agentId,
+                  `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
+                    this.compressionThreshold / 6
+                  )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
+                ),
+              },
+            ]
+          );
 
-      if (lastDecision.precedingTokens > this.compressionThreshold) {
-        const firstSummarizedIndex = firstDecisionIndex + 1;
-        for (let i = firstSummarizedIndex; i < events.length; i++) {
-          const event = events[i];
-          if (event.type === "decision") {
-            const { precedingTokens } = event.decision;
-            if (precedingTokens > truncationThreshold) {
-              const summarizedEvents = events.slice(firstSummarizedIndex, i);
+          const summaryEvent: Event = {
+            type: "summary",
+            summary,
+            summarizedEvents,
+          };
+          const summaryTokens = countTokens(summaryEvent);
+          const tokenSavings = precedingTokens - summaryTokens;
+          if (tokenSavings > 0) {
+            console.log(
+              `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens: ${summary}`
+            );
 
-              const { actionText: summary } = await makeDecision(
-                GPT_3_5_TURBO,
-                this.agentId,
-                [
-                  ...events.slice(0, i),
-                  {
-                    type: "message",
-                    message: messageBuilder.standard(
-                      this.agentId,
-                      `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
-                        this.compressionThreshold / 6
-                      )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
-                    ),
-                  },
-                ]
-              );
-
-              const summaryEvent: Event = {
-                type: "summary",
-                summary,
-                summarizedEvents,
-              };
-              const firstEvents = [
-                ...events.slice(0, firstSummarizedIndex),
-                summaryEvent,
-              ];
-
-              const { precedingTokens: summaryTokens } = await makeDecision(
-                GPT_3_5_TURBO,
-                this.agentId,
-                firstEvents
-              );
-              const tokenSavings = precedingTokens - summaryTokens;
-              if (tokenSavings > 0) {
-                console.log(
-                  `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens: ${summary}`
-                );
-
-                const newEvents = [
-                  ...firstEvents,
-                  ...events.slice(i).map((event): Event => {
-                    if (event.type !== "decision") return event;
-                    return {
-                      type: "decision",
-                      decision: {
-                        ...event.decision,
-                        precedingTokens:
-                          event.decision.precedingTokens - tokenSavings,
-                      },
-                    };
-                  }),
-                ];
-
-                return newEvents;
-              }
-            }
+            return [events[0], summaryEvent, ...events.slice(i)];
           }
         }
       }
@@ -138,4 +113,8 @@ export class Memory {
       }\n\n=============\n`
     );
   }
+}
+
+function countTokens(event: Event) {
+  return encode(toOpenAiMessage(event).content).length;
 }

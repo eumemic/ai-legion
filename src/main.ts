@@ -27,8 +27,8 @@ async function main() {
   const store = new FileStore();
 
   for (const id of agentIds.slice(1)) {
-    // We have to leave room for the agent's next action, which is of unknown size
-    const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
+    // We leave room for error due to discrepancies between our local token counting method (gpt-3-encoder) and OpenAI's
+    const compressionThreshold = contextWindowSize[model] - 200;
     const memory = new Memory(id, store, compressionThreshold);
     const agent = new Agent(
       id,

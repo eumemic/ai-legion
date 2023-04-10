@@ -13,7 +13,6 @@ const enumerateEventsInSummaries = false;
 
 export interface Decision {
   actionText: string;
-  precedingTokens: number;
 }
 
 export default function makeDecision(
@@ -38,9 +37,8 @@ export default function makeDecision(
     );
 
     const actionText = data.choices[0].message!.content;
-    const precedingTokens = data.usage!.prompt_tokens;
 
-    return { actionText, precedingTokens };
+    return { actionText };
   });
 
   // avoid rate limits
