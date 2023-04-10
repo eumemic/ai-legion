@@ -20,6 +20,11 @@ export class Memory {
   async append(event: Event): Promise<Event[]> {
     this.printEvent(event);
     let events = await this.retrieve();
+    if (event.type === "message" && event.message.type === "ok") {
+      // After an "ok" message is sent, remove all errors and their antecedents from memory,
+      // since agents tend to repeat mistakes rather than learning from them.
+      events = this.removeErrors(events);
+    }
     events.push(event);
     events = await this.summarize(events);
     await this.store.set(this.key, JSON.stringify(events.slice(1), null, 2));
@@ -33,6 +38,28 @@ export class Memory {
       { type: "message", message: primer(this.agentId, this.actionDictionary) },
       ...events,
     ];
+  }
+
+  private removeErrors(events: Event[]): Event[] {
+    const cleaned: Event[] = [];
+    for (let i = events.length - 1; i >= 0; i--) {
+      const event = events[i];
+      if (event.type === "message" && event.message.type === "error") {
+        const prevEvent = events[i - 1];
+        // console.log("REMOVING", JSON.stringify(prevEvent, null, 2));
+        // console.log("REMOVING", JSON.stringify(event, null, 2));
+        if (prevEvent.type === "decision") {
+          i--; // skip the previous action which generated the error
+        } else {
+          console.error("error event was not preceded by an action");
+        }
+        continue;
+      }
+      cleaned.push(event);
+    }
+    cleaned.reverse();
+    // console.log({ events, cleaned });
+    return cleaned;
   }
 
   /**
