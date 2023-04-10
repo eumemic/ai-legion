@@ -9,11 +9,17 @@ export interface Action {
   /**
    * The payload that's specific to a particular action.
    */
-  payload: SendMessageAction;
+  payload: NoOpAction | SendMessageAction;
   /**
    * Use this field to articulate your thought process in choosing this action.
    */
   comment: string;
+}
+/**
+ * Do nothing.
+ */
+export interface NoOpAction {
+  type: "no-op";
 }
 /**
  * Send a message to another agent.

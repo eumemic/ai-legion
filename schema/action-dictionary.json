@@ -7,6 +7,18 @@
       "type": "object",
       "oneOf": [
         {
+          "title": "NoOpAction",
+          "description": "Do nothing.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "no-op"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
           "title": "SendMessageAction",
           "description": "Send a message to another agent.",
           "properties": {
