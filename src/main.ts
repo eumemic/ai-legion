@@ -11,7 +11,7 @@ import { agentName } from "./util";
 
 dotenv.config();
 
-const numberOfAgents = 3;
+const numberOfAgents = 2;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i}`);
 
@@ -28,7 +28,7 @@ async function main() {
       messageBuilder.primer(id),
       messageBuilder.generic(
         id,
-        `this is your first task. using the actions at your disposal, familiarize yourselves with the codebase. discuss with the other agent(s), comparing notes about how you think things work. once you feel like you understand it at a high level, one of you should write up a README.md file in the root directory summarizing the project.`
+        `this is your first task. using the actions at your disposal, familiarize yourself with the codebase. once you feel like you understand it at a high level, write up a README.md summarizing the project.`
       ),
       messageBuilder.agentResponse(id, "help"),
       messageBuilder.listAllActions(id)
