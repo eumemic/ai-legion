@@ -1,13 +1,15 @@
 import { ActionDefinition } from "../action-definition";
 import { ActionModule } from "../action-module";
 import coreModule from "./core";
+import messagingModule from "./messaging";
 import filesystemModule from "./filesystem";
-import noteModule from "./note";
+import notesModule from "./notes";
 
 const allActionModules: ActionModule[] = [
   coreModule,
+  messagingModule,
   filesystemModule,
-  noteModule,
+  notesModule,
 ];
 
 export const allActionDefinitions: ActionDefinition[] =
