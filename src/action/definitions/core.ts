@@ -28,9 +28,12 @@ export default [
         sendMessage(
           messageBuilder.standard(
             sourceAgentId,
-            `You can take the following actions:
+            `
+You can take the following actions:
 
-${actionDictionary.definitions.map((actionDef) => actionDef.name).join("\n")}
+${actionDictionary.definitions
+  .map((actionDef) => `\`${actionDef.name}\` - ${actionDef.description}`)
+  .join("\n")}
 
 To get help on a specific action, use the \`help\` action with the \`aboutAction\` parameter set to the name of the action you want help with. For example:
 
@@ -38,7 +41,7 @@ ${CODE_BLOCK_DELIMITER}
 help
 aboutAction: send-message
 ${CODE_BLOCK_DELIMITER}
-`
+`.trim()
           )
         );
       } else {
@@ -61,7 +64,7 @@ ${CODE_BLOCK_DELIMITER}
 
   defineAction({
     name: "query-agent-registry",
-    description: "Ask who the other agents are that I can talk to",
+    description: "Ask who the other agents are that you can talk to",
   }).withHandler(
     async ({ context: { sourceAgentId, allAgentIds }, sendMessage }) => {
       sendMessage(
