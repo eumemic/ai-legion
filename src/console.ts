@@ -19,7 +19,6 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
     rl.prompt();
   });
 
-  // Listen for 'line' events
   rl.on("line", (input) => {
     const colonIndex = input.indexOf(":");
     let targetAgentIds: string[];
