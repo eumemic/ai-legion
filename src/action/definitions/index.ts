@@ -14,7 +14,7 @@ const allActionModules: ActionModule[] = [
 ];
 
 export const allActionDefinitions: ActionDefinition[] =
-  allActionModules.flatMap((module) => module.actions);
+  allActionModules.flatMap((module) => Object.values(module.actions));
 
 export const actionDefLookup: Record<string, ActionDefinition> = keyBy(
   allActionDefinitions,
@@ -27,7 +27,7 @@ export function getActionDefinition(name: string): ActionDefinition {
 
 const actionToModule: Record<string, ActionModule> = {};
 for (const module of allActionModules) {
-  for (const actionDef of module.actions) {
+  for (const actionDef of Object.values(module.actions)) {
     actionToModule[actionDef.name] = module;
   }
 }

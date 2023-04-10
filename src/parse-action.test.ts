@@ -1,8 +1,7 @@
 import { ActionDictionary } from "./action/action-dictionary";
-import {
-  allActionDefinitions,
-  getActionDefinition,
-} from "./action/definitions";
+import { allActionDefinitions } from "./action/definitions";
+import core from "./action/definitions/core";
+import messaging from "./action/definitions/messaging";
 import { getUsageText } from "./action/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
@@ -130,16 +129,14 @@ test("invalid raw text", () => {
 test("missing required parameter", () => {
   expect(assertInvalid("send-message\ntargetAgentId: 0")).toBe(
     `Missing required parameter \`message\`. ${getUsageText(
-      getActionDefinition("send-message")
+      messaging.actions["send-message"]
     )}`
   );
 });
 
 test("extra parameter", () => {
   expect(assertInvalid("no-op\nfoo: bar")).toEqual(
-    `Extraneous parameter \`foo\`. ${getUsageText(
-      getActionDefinition("no-op")
-    )}`
+    `Extraneous parameter \`foo\`. ${getUsageText(core.actions["no-op"])}`
   );
 });
 

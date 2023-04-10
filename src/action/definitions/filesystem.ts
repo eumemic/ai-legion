@@ -7,169 +7,155 @@ import {
   rename,
 } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
-import { defineAction } from "../action-definition";
 import { messageBuilder } from "../../message";
 import { defineActionModule } from "../action-module";
 
 export default defineActionModule({
   name: "filesystem",
-  actions: [
-    defineAction({
-      name: "list-directory",
-      description: "Inspect the contents of a particular directory",
-      parameters: {
-        path: {
-          description: "The path of the directory you want to inspect",
-        },
+}).withActions({
+  "list-directory": {
+    description: "Inspect the contents of a particular directory",
+    parameters: {
+      path: {
+        description: "The path of the directory you want to inspect",
       },
-    }).withHandler(
-      async ({
-        parameters: { path },
-        context: { sourceAgentId },
-        sendMessage,
-      }) => {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+    },
+    async handle({
+      parameters: { path },
+      context: { sourceAgentId },
+      sendMessage,
+    }) {
+      if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-        try {
-          const files = await readdir(path);
-          const filesWithStatsPromises = files.map(async (file) => {
-            const stats = await stat(joinPath(path, file));
-            return `${file} ${stats.isDirectory() ? "[directory]" : "[file]"}`;
-          });
-          const filesWithStats = await Promise.all(filesWithStatsPromises);
-          sendMessage(
-            messageBuilder.standard(
-              sourceAgentId,
-              `Here are the contents of ${path}:\n${filesWithStats.join("\n")}`
-            )
-          );
-        } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        }
+      try {
+        const files = await readdir(path);
+        const filesWithStatsPromises = files.map(async (file) => {
+          const stats = await stat(joinPath(path, file));
+          return `${file} ${stats.isDirectory() ? "[directory]" : "[file]"}`;
+        });
+        const filesWithStats = await Promise.all(filesWithStatsPromises);
+        sendMessage(
+          messageBuilder.standard(
+            sourceAgentId,
+            `Here are the contents of ${path}:\n${filesWithStats.join("\n")}`
+          )
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }
-    ),
+    },
+  },
 
-    defineAction({
-      name: "read-file",
-      description: "Read the contents of a particular file",
-      parameters: {
-        path: {
-          description: "The path of the file you want to inspect",
-        },
+  "read-file": {
+    description: "Read the contents of a particular file",
+    parameters: {
+      path: {
+        description: "The path of the file you want to inspect",
       },
-    }).withHandler(
-      async ({
-        parameters: { path },
-        context: { sourceAgentId },
-        sendMessage,
-      }) => {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+    },
+    async handle({
+      parameters: { path },
+      context: { sourceAgentId },
+      sendMessage,
+    }) {
+      if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-        try {
-          const data = await readFile(path, "utf8");
-          sendMessage(
-            messageBuilder.standard(
-              sourceAgentId,
-              `Contents of ${path}:\n\n${data}`
-            )
-          );
-        } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        }
+      try {
+        const data = await readFile(path, "utf8");
+        sendMessage(
+          messageBuilder.standard(
+            sourceAgentId,
+            `Contents of ${path}:\n\n${data}`
+          )
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }
-    ),
+    },
+  },
 
-    defineAction({
-      name: "write-file",
-      description: "Write the contents of a particular file",
-      parameters: {
-        path: {
-          description: "The path of the file you want to write to",
-        },
-        content: {
-          description: "The new content of the file",
-        },
+  "write-file": {
+    description: "Write the contents of a particular file",
+    parameters: {
+      path: {
+        description: "The path of the file you want to write to",
       },
-    }).withHandler(
-      async ({
-        parameters: { path, content },
-        context: { sourceAgentId },
-        sendMessage,
-      }) => {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
-
-        try {
-          await writeFile(path, content, "utf8");
-          sendMessage(
-            messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
-          );
-        } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        }
-      }
-    ),
-
-    defineAction({
-      name: "move-file",
-      description: "Move a file to a new location",
-      parameters: {
-        sourcePath: {
-          description: "The original path of the file",
-        },
-        destinationPath: {
-          description: "The new path for the file",
-        },
+      content: {
+        description: "The new content of the file",
       },
-    }).withHandler(
-      async ({
-        parameters: { sourcePath, destinationPath },
-        context: { sourceAgentId },
-        sendMessage,
-      }) => {
-        if (!checkPath(sourceAgentId, sourcePath, sendMessage)) return;
-        if (!checkPath(sourceAgentId, destinationPath, sendMessage)) return;
+    },
+    async handle({
+      parameters: { path, content },
+      context: { sourceAgentId },
+      sendMessage,
+    }) {
+      if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
-        try {
-          await rename(sourcePath, destinationPath);
-          sendMessage(
-            messageBuilder.standard(
-              sourceAgentId,
-              `Moved ${sourcePath} to ${destinationPath}.`
-            )
-          );
-        } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        }
+      try {
+        await writeFile(path, content, "utf8");
+        sendMessage(
+          messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }
-    ),
+    },
+  },
 
-    defineAction({
-      name: "delete-file",
-      description: "Delete a file",
-      parameters: {
-        path: {
-          description: "The path of the file to delete",
-        },
+  "move-file": {
+    description: "Move a file to a new location",
+    parameters: {
+      sourcePath: {
+        description: "The original path of the file",
       },
-    }).withHandler(
-      async ({
-        parameters: { path },
-        context: { sourceAgentId },
-        sendMessage,
-      }) => {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+      destinationPath: {
+        description: "The new path for the file",
+      },
+    },
+    async handle({
+      parameters: { sourcePath, destinationPath },
+      context: { sourceAgentId },
+      sendMessage,
+    }) {
+      if (!checkPath(sourceAgentId, sourcePath, sendMessage)) return;
+      if (!checkPath(sourceAgentId, destinationPath, sendMessage)) return;
 
-        try {
-          await unlink(path);
-          sendMessage(
-            messageBuilder.standard(sourceAgentId, `Deleted ${path}.`)
-          );
-        } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
-        }
+      try {
+        await rename(sourcePath, destinationPath);
+        sendMessage(
+          messageBuilder.standard(
+            sourceAgentId,
+            `Moved ${sourcePath} to ${destinationPath}.`
+          )
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }
-    ),
-  ],
+    },
+  },
+
+  "delete-file": {
+    description: "Delete a file",
+    parameters: {
+      path: {
+        description: "The path of the file to delete",
+      },
+    },
+    async handle({
+      parameters: { path },
+      context: { sourceAgentId },
+      sendMessage,
+    }) {
+      if (!checkPath(sourceAgentId, path, sendMessage)) return;
+
+      try {
+        await unlink(path);
+        sendMessage(messageBuilder.standard(sourceAgentId, `Deleted ${path}.`));
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
+    },
+  },
 });
 
 function checkPath(

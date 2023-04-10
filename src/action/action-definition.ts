@@ -1,17 +1,16 @@
-import { mapValues } from "lodash";
 import { Message } from "../message";
 import { ActionDictionary } from "./action-dictionary";
 
 export interface ActionDefinition<S = void, P extends string = string>
-  extends PartialActionDefinition<P> {
+  extends PartialActionDefinition<S, P> {
+  name: string;
   parameters: Record<P, ParameterDefinition>;
-  handle: ActionHandler<S, P>;
 }
 
-export interface PartialActionDefinition<P extends string = never> {
-  name: string;
+export interface PartialActionDefinition<S = void, P extends string = never> {
   description: string;
   parameters?: Record<P, PartialParameterDefinition>;
+  handle: ActionHandler<S, P>;
 }
 
 export type ParameterDefinition = Required<PartialParameterDefinition>;
@@ -36,24 +35,4 @@ export interface ActionContext<S> {
   allAgentIds: string[];
   actionDictionary: ActionDictionary;
   state: S;
-}
-
-export function defineAction<P extends string = string>({
-  name,
-  description,
-  parameters = {} as Record<P, PartialParameterDefinition>,
-}: PartialActionDefinition<P>) {
-  return {
-    withHandler: <S>(
-      handle: ActionDefinition<S, P>["handle"]
-    ): ActionDefinition<S, P> => ({
-      name,
-      description,
-      parameters: mapValues(parameters, (parameter) => ({
-        optional: false,
-        ...parameter,
-      })),
-      handle,
-    }),
-  };
 }
