@@ -39,7 +39,7 @@ export default function parseAction(
           if (colonIndex < 0) throw new Error("line is missing a colon");
           const key = line.substring(0, colonIndex).trim();
           const value = line.substring(colonIndex + 1).trim();
-          return `"${key}": "${value}"`;
+          return `"${key}": ${JSON.stringify(value)}`;
         })
         .join(",") +
       "}";

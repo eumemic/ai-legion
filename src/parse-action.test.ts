@@ -100,6 +100,17 @@ no-op
   );
 });
 
+test("quotes in parameter", () => {
+  const action = assertValid(
+    'send-message\ntargetAgentId: 0\nmessage: hello, "control"'
+  );
+  expect(action.actionDef.name).toBe("send-message");
+  expect(action.parameters).toEqual({
+    targetAgentId: "0",
+    message: 'hello, "control"',
+  });
+});
+
 function assertValid(text: string): Action {
   const result = parseAction(dict, text);
   if (result.type === "error") throw Error(`Parse failed: ${result.message}`);
