@@ -3,9 +3,12 @@ import { EventLog } from "./event-log";
 import { InMemoryEventLog } from "./in-memory-event-log";
 import { InMemoryMemory } from "./in-memory-memory";
 import { Memory } from "./memory";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const numberOfAgents = 1;
-const pollingInterval = 10000;
+const pollingInterval = 60000;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
@@ -18,7 +21,14 @@ const agents: Agent[] = agentIds.map((id) => new Agent(id, eventLog, memory));
 async function main() {
   while (true) {
     for (const agent of agents) {
-      await agent.handleEvent({ type: "heartbeat" });
+      const action = await agent.handleEvent({ type: "heartbeat" });
+      console.log(
+        `action received from agent ${agent.id}: ${JSON.stringify(
+          action,
+          null,
+          2
+        )}`
+      );
     }
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
