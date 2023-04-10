@@ -1,5 +1,5 @@
 import { messageBuilder } from "../../message";
-import { defineModule } from "../module";
+import { defineModule } from "../define-module";
 import { getUsageText } from "../util";
 
 export default defineModule({

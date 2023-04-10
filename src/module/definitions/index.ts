@@ -1,6 +1,6 @@
 import { keyBy } from "lodash";
 import { ActionDefinition } from "../action-definition";
-import { Module } from "../module";
+import { Module } from "..";
 import core from "./core";
 import filesystem from "./filesystem";
 import messaging from "./messaging";

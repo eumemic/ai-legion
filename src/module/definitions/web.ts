@@ -1,7 +1,7 @@
 import Mercury from "@postlight/mercury-parser";
 import { google } from "googleapis";
+import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
-import { defineModule } from "../module";
 
 const customsearch = google.customsearch("v1");
 

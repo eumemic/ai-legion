@@ -1,14 +1,14 @@
 import {
-  readdir,
   readFile,
-  writeFile,
+  readdir,
+  rename,
   stat,
   unlink,
-  rename,
+  writeFile,
 } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
+import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
-import { defineModule } from "../module";
 
 export default defineModule({
   name: "filesystem",
