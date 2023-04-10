@@ -19,7 +19,7 @@ export class Agent {
     const mementos = await this.memory.append({ type: "event", event });
 
     const { data, status } = await generateText([
-      initialSystemPrompt,
+      this.initialSystemPrompt,
       ...mementos.map((m): ChatCompletionRequestMessage => {
         switch (m.type) {
           case "event":
@@ -48,12 +48,13 @@ export class Agent {
 
     return action;
   }
-}
 
-const initialSystemPrompt: ChatCompletionRequestMessage = {
-  role: "system",
-  content: `
-    You aren Agent who is responding to Events with Actions to be taken in response. You are not
+  private initialSystemPrompt: ChatCompletionRequestMessage = {
+    role: "system",
+    content: `
+    You are Agent (id=${
+      this.id
+    }), who is responding to Events with Actions to be taken in response. You are not
     able to communicate in natural language, only in JSON format that strictly follows a schema.
 
     Every message I send to you will be an Event, conforming to the following Event Dictionary,
@@ -75,4 +76,5 @@ const initialSystemPrompt: ChatCompletionRequestMessage = {
 
     Any extra commentary about your thought process can go in the 'comment' field of the Action.
   `,
-};
+  };
+}
