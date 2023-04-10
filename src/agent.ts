@@ -56,7 +56,6 @@ export class Agent {
     if (last(events)?.type === "decision") return;
 
     const decision = await makeDecision(this.id, events);
-    if (!decision) return;
 
     await this.memory.append({ type: "decision", decision });
 

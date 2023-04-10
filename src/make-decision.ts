@@ -1,12 +1,7 @@
-import { AxiosError } from "axios";
 import { memoize } from "lodash";
-import {
-  ChatCompletionRequestMessage,
-  Configuration,
-  CreateCompletionResponseUsage,
-  OpenAIApi,
-} from "openai";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Event } from "./memory";
+import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
@@ -23,56 +18,28 @@ export interface Decision {
 export default function makeDecision(
   agentId: string,
   events: Event[]
-): Promise<Decision | undefined> {
+): Promise<Decision> {
   const name = agentName(agentId);
-  const decisionPromise = taskQueue.run(
-    async (): Promise<Decision | undefined> => {
-      console.log(`${name} reflecting on ${events.length} events...`);
-      const t0 = Date.now();
-      try {
-        const response = await openai().createChatCompletion({
-          model,
-          messages: events.map(toOpenAiMessage),
-        });
+  const decisionPromise = taskQueue.run(async (): Promise<Decision> => {
+    console.log(`${name} reflecting on ${events.length} events...`);
+    const t0 = Date.now();
 
-        console.log(
-          `${name} arrived at a decision after ${(
-            (Date.now() - t0) /
-            1000
-          ).toFixed(1)}s`
-        );
+    const data = await createChatCompletion({
+      model,
+      messages: events.map(toOpenAiMessage),
+    });
 
-        if (response.status !== 200) {
-          console.error(`Non-200 status received: ${response.status}`);
-          return;
-        }
+    console.log(
+      `${name} arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
+        1
+      )}s`
+    );
 
-        const { data } = response;
-        const actionText = data.choices[0].message?.content;
-        if (!actionText) {
-          console.error("no content received");
-          return;
-        }
+    const actionText = data.choices[0].message!.content;
+    const precedingTokens = data.usage!.prompt_tokens;
 
-        const precedingTokens = data.usage!.prompt_tokens;
-
-        return { actionText, precedingTokens };
-      } catch (e: any) {
-        const { response }: AxiosError = e;
-        switch (response?.status) {
-          case 400:
-            console.error(`ERROR: ${name}'s context window is full.`);
-            break;
-          case 429:
-            console.error(`ERROR: ${name} was rate limited.`);
-            break;
-          default:
-            console.error(e);
-            break;
-        }
-      }
-    }
-  );
+    return { actionText, precedingTokens };
+  });
 
   // avoid rate limits
   if (model === "gpt-4")
