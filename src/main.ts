@@ -1,10 +1,11 @@
-import { Agent } from "./agent";
-import { MessageBus } from "./message-bus";
-import { InMemoryMessageBus } from "./in-memory-message-bus";
-import { InMemoryMemory } from "./in-memory-memory";
-import { Memory } from "./memory";
 import dotenv from "dotenv";
 import ActionHandler from "./action-handler";
+import { Agent } from "./agent";
+import { InMemoryMemory } from "./in-memory-memory";
+import { InMemoryMessageBus } from "./in-memory-message-bus";
+import { Memory } from "./memory";
+import { MessageBus } from "./message-bus";
+import { primerMessage } from "./messages";
 
 dotenv.config();
 
@@ -28,17 +29,15 @@ async function main() {
       if (message.targetAgentIds && !message.targetAgentIds.includes(agent.id))
         return;
 
-      // console.log(
-      //   `${agent.id} received message: ${JSON.stringify(message, null, 2)}`
-      // );
-
       const action = await agent.receive(message);
       if (action) actionHandler.handle(action);
     });
+
+    messageBus.send({ content: primerMessage(agent.id) });
   }
 
   while (true) {
-    messageBus.send({ content: "heartbeat" });
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+    messageBus.send({ content: "heartbeat" });
   }
 }
