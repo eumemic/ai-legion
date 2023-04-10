@@ -79,7 +79,8 @@ function singleTargetSystemMessage(
 export function primerMessage(agentId: string) {
   return messageBuilder.standard(
     agentId,
-    `You are ${agentName(
+    `
+You are ${agentName(
       agentId
     )}, one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out actions which you will send in response to my messages.
 
@@ -100,18 +101,22 @@ targetAgentId: 0
 message: Hello, Control!
 ${CODE_BLOCK_DELIMITER}
 
-You can write multi-line parameter values delimited with the sentinal value "${MULTILINE_DELIMITER}", like so:
+IMPORTANT: When passing multiple lines of text as an action parameter, you MUST use the multi-line delimiter \`${MULTILINE_DELIMITER}\` to enclose the parameter value in its entirety. Failing to do so may generate inscrutable errors.
+
+Here's an example of sending a multi-line message using the delimiter:
 
 ${CODE_BLOCK_DELIMITER}
 send-message
 targetAgentId: 2
-message: 
+message:
 ${MULTILINE_DELIMITER}
 Hello, this is a multi-line message.
 This is a new line.
 This is another line.
 ${MULTILINE_DELIMITER}
 ${CODE_BLOCK_DELIMITER}
+
+Note that both the start and end delimeters appear on lines by themselves, and they enclose the \`message\` parameter value in its entirety.
 
 Do not just make up actions or parameters. You need to discover what actions are available and what specific parameters they take. You can see the available actions by using the \`help\` action:
 
@@ -132,7 +137,7 @@ You will periodically receive a "heartbeat" message, giving you a chance to take
 
 As your context window gets filled up, older events will be rolled up into "summary" events, so that you should never run out of memory.
 
-In the course of your work you may be assigned tasks by other agents, at which point you will work towards accomplishing them using the actions at your disposal.
-`
+In the course of your work, you may be assigned tasks by other agents, at which point you will work towards accomplishing them using the actions at your disposal.
+`.trim()
   );
 }
