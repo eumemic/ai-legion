@@ -136,7 +136,7 @@ export class Memory {
             type: "message",
             message: messageBuilder.spontaneous(
               this.agentId,
-              `Several events are omitted here to free up space in your context window, summarized as follows:\n\n$${summaryContent}`
+              `Several events are omitted here to free up space in your context window, summarized as follows:\n\n${summaryContent}`
             ),
           };
           const summaryTokens = countTokens(summaryEvent);
