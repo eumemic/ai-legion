@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 import { Event } from "./event";
 import { EventLog } from "./event-log";
 
-export class LocalEventLog implements EventLog {
+export class InMemoryEventLog implements EventLog {
   private emitter: EventEmitter;
 
   constructor() {
