@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     "object-shorthand": "warn",
     "no-useless-rename": "warn",
+    "prefer-destructuring": "warn",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
