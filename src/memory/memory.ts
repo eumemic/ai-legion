@@ -27,42 +27,38 @@ export class Memory {
     events.push(event);
     events = await this.summarize(events);
 
-    const prefixedEvents = await this.getPrefixedEvents();
-
-    await this.store.set(this.key, events.slice(prefixedEvents.length));
+    await this.store.set(this.key, events.slice(1));
 
     return events;
   }
 
   async retrieve(): Promise<Event[]> {
-    const prefixedEvents = await this.getPrefixedEvents();
+    const introduction = await this.getIntroduction();
     const storedEvents = await this.store.get(this.key);
-    const allEvents = [...prefixedEvents, ...(storedEvents || [])];
+    const allEvents = [introduction, ...(storedEvents || [])];
     // allEvents.forEach((event) => this.printEvent(event));
     return allEvents;
   }
 
-  private async getPrefixedEvents(): Promise<Event[]> {
+  private async getIntroduction(): Promise<Event> {
     const nestedEvents = await Promise.all(
-      this.moduleManager.modules.map(async (module): Promise<Event[]> => {
+      this.moduleManager.modules.map(async (module): Promise<string[]> => {
         const { name, pinnedMessage } = module.moduleDef;
         if (!pinnedMessage) return [];
 
         const content = await pinnedMessage(module.context);
         if (!content) return [];
 
-        return [
-          {
-            type: "message",
-            message: messageBuilder.spontaneous(
-              this.agentId,
-              `--- ${name.toUpperCase()} ---\n\n${content}`
-            ),
-          },
-        ];
+        return [`--- ${name.toUpperCase()} ---\n\n${content}`];
       })
     );
-    return nestedEvents.flat();
+    return {
+      type: "message",
+      message: messageBuilder.spontaneous(
+        this.agentId,
+        nestedEvents.flat().join("\n\n")
+      ),
+    };
   }
 
   private removeErrors(events: Event[]): Event[] {
@@ -113,13 +109,11 @@ export class Memory {
       `Token count: ${totalTokenCount}\nRemaining context space: ${-thresholdOverrun}`
     );
 
-    const prefixedEvents = await this.getPrefixedEvents();
-
     if (thresholdOverrun > 0) {
-      for (let i = prefixedEvents.length; i < events.length; i++) {
+      for (let i = 1; i < events.length; i++) {
         const precedingTokens = cumulativeTokenCounts[i - 1];
         if (precedingTokens > truncationThreshold) {
-          // const summarizedEvents = events.slice(prefixedEvents.length, i);
+          // const summarizedEvents = events.slice(1, i);
 
           const summaryWordLimit = Math.floor(
             (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6

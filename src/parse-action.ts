@@ -1,3 +1,4 @@
+import { CODE_BLOCK_DELIMITER } from "./message";
 import { ActionDefinition } from "./module/action-definition";
 import { getUsageText } from "./module/util";
 import { MULTILINE_DELIMITER } from "./util";
@@ -25,8 +26,16 @@ export default function parseAction(
     if (!/^\S+(?=\n|$)/.test(text.split("\n")[0])) {
       return {
         type: "error",
-        message:
-          "Your action could not be parsed. Did you forget to format your entire response as an action?",
+        message: `
+Your action could not be parsed. Remember to always format your entire response as an action, like this:
+
+${CODE_BLOCK_DELIMITER}
+<action name>
+<arg 1 name>: <prop value>
+<arg 2 name>: <prop value>
+...
+${CODE_BLOCK_DELIMITER}
+`.trim(),
       };
     }
 
@@ -64,7 +73,7 @@ export default function parseAction(
     if (!actionDef)
       return {
         type: "error",
-        message: `Unknown action \`${name}\`. Please refer to the list of available actions given in section 2 of the primer.`,
+        message: `Unknown action \`${name}\`. Please refer to the list of available actions given in the introductory message.`,
       };
 
     const missingProps = Object.entries(actionDef.parameters)

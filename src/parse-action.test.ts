@@ -121,13 +121,22 @@ message
 
 test("invalid command name", () => {
   expect(assertInvalid("foo")).toBe(
-    "Unknown action `foo`. Please refer to the list of available actions given in section 2 of the primer."
+    "Unknown action `foo`. Please refer to the list of available actions given in the introductory message."
   );
 });
 
 test("invalid raw text", () => {
-  expect(assertInvalid("Hello Control, how are you doing?")).toBe(
-    "Your action could not be parsed. Did you forget to format your entire response as an action?"
+  expect(assertInvalid("Hello Control, how are you doing?")).toEqual(
+    `
+Your action could not be parsed. Remember to always format your entire response as an action, like this:
+
+\`\`\`
+<action name>
+<arg 1 name>: <prop value>
+<arg 2 name>: <prop value>
+...
+\`\`\`
+`.trim()
   );
 });
 

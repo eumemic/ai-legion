@@ -24,7 +24,7 @@ export default function makeDecision(
 
     const messages = events.map(toOpenAiMessage);
 
-    // messages.forEach((msg) => console.log(msg.content + "\n\n"));
+    // console.log(JSON.stringify(messages, null, 2));
 
     const data = await createChatCompletion({
       model,
