@@ -7,43 +7,43 @@
       "title": "NoOpAction",
       "description": "Do nothing.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "no-op"
         }
       },
-      "required": ["type"],
+      "required": ["name"],
       "additionalProperties": false
     },
     {
       "title": "ViewActionDictionaryAction",
       "description": "View the Action Dictionary which describes how to validly format your responses in JSON.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "view-action-dictionary"
         }
       },
-      "required": ["type"],
+      "required": ["name"],
       "additionalProperties": false
     },
     {
       "title": "QueryAgentRegistryAction",
       "description": "Ask who the other agents are that I can talk to.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "query-agent-registry"
         }
       },
-      "required": ["type"],
+      "required": ["name"],
       "additionalProperties": false
     },
     {
       "title": "SendMessageAction",
       "description": "Send a message to another agent.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "send-message"
         },
@@ -56,14 +56,14 @@
           "description": "The content of the message."
         }
       },
-      "required": ["type", "targetAgentId", "message"],
+      "required": ["name", "targetAgentId", "message"],
       "additionalProperties": false
     },
     {
       "title": "ListDirectory",
       "description": "Inspect the contents of a particular directory.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "list-directory"
         },
@@ -72,14 +72,14 @@
           "description": "The path of the directory you want to inspect."
         }
       },
-      "required": ["type", "path"],
+      "required": ["name", "path"],
       "additionalProperties": false
     },
     {
       "title": "ReadFile",
       "description": "Read the contents of a particular file.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "read-file"
         },
@@ -88,14 +88,14 @@
           "description": "The path of the file you want to inspect."
         }
       },
-      "required": ["type", "path"],
+      "required": ["name", "path"],
       "additionalProperties": false
     },
     {
       "title": "WriteFile",
       "description": "Write the contents of a particular file.",
       "properties": {
-        "type": {
+        "name": {
           "type": "string",
           "const": "write-file"
         },
@@ -108,7 +108,7 @@
           "description": "The new content of the file."
         }
       },
-      "required": ["type", "path", "newContent"],
+      "required": ["name", "path", "newContent"],
       "additionalProperties": false
     }
   ]

@@ -9,7 +9,7 @@ export default class ActionHandler {
   constructor(private agentIds: string[], private messageBus: MessageBus) {}
 
   async handle(agentId: string, action: Action) {
-    switch (action.type) {
+    switch (action.name) {
       // case "no-op":
       //   this.messageBus.send(
       //     messageBuilder.generic(

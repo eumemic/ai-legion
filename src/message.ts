@@ -36,7 +36,7 @@ ${ACTION_DICTIONARY_TEXT}
 Respond to every message I send you with an Action conforming to this schema, but instead of writing it in JSON use the following format:
 
 ${CODE_BLOCK_DELIMITER}
-<action type>
+<action name>
 <arg 1 name>: <prop value>
 <arg 2 name>: <prop value>
 ...

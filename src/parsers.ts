@@ -14,7 +14,7 @@ function parserFor<T>(name: string, schema: object) {
   return (text: string): ParseResult<T> => {
     let result: T;
 
-    text = `type: ${text.trim()}`;
+    text = `name: ${text.trim()}`;
 
     try {
       const jsonText =

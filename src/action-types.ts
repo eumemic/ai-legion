@@ -18,25 +18,25 @@ export type Action =
  * Do nothing.
  */
 export interface NoOpAction {
-  type: "no-op";
+  name: "no-op";
 }
 /**
  * View the Action Dictionary which describes how to validly format your responses in JSON.
  */
 export interface ViewActionDictionaryAction {
-  type: "view-action-dictionary";
+  name: "view-action-dictionary";
 }
 /**
  * Ask who the other agents are that I can talk to.
  */
 export interface QueryAgentRegistryAction {
-  type: "query-agent-registry";
+  name: "query-agent-registry";
 }
 /**
  * Send a message to another agent.
  */
 export interface SendMessageAction {
-  type: "send-message";
+  name: "send-message";
   /**
    * The target agent's ID.
    */
@@ -50,7 +50,7 @@ export interface SendMessageAction {
  * Inspect the contents of a particular directory.
  */
 export interface ListDirectory {
-  type: "list-directory";
+  name: "list-directory";
   /**
    * The path of the directory you want to inspect.
    */
@@ -60,7 +60,7 @@ export interface ListDirectory {
  * Read the contents of a particular file.
  */
 export interface ReadFile {
-  type: "read-file";
+  name: "read-file";
   /**
    * The path of the file you want to inspect.
    */
@@ -70,7 +70,7 @@ export interface ReadFile {
  * Write the contents of a particular file.
  */
 export interface WriteFile {
-  type: "write-file";
+  name: "write-file";
   /**
    * The path of the file you want to write to.
    */
