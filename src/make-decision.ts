@@ -22,9 +22,13 @@ export default function makeDecision(
     console.log(`${name} reflecting on ${events.length} events...`);
     const t0 = Date.now();
 
+    const messages = events.map(toOpenAiMessage);
+
+    // messages.forEach((msg) => console.log(msg.content + "\n\n"));
+
     const data = await createChatCompletion({
       model,
-      messages: events.map(toOpenAiMessage),
+      messages,
     });
 
     console.log(
