@@ -15,11 +15,6 @@ export interface DecisionMemento {
   decision: Decision;
 }
 
-export interface MemoryStorage {
-  append(memento: Memento): Promise<Memento[]>;
-  retrieve(): Promise<Memento[]>;
-}
-
 export function messageMemento(message: Message): Memento {
   return { type: "message", message };
 }
