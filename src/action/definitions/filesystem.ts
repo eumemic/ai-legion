@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile, stat } from "fs/promises";
+import { readdir, readFile, writeFile, stat, unlink, rename } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
 import { defineAction } from "../action-definition";
 import { messageBuilder } from "../../message";
@@ -92,6 +92,64 @@ export default [
         await writeFile(path, newContent, "utf8");
         sendMessage(
           messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
+    }
+  ),
+
+  defineAction({
+    name: "move-file",
+    description: "Move a file to a new location",
+    parameters: {
+      sourcePath: {
+        description: "The original path of the file",
+      },
+      destinationPath: {
+        description: "The new path for the file",
+      },
+    },
+  }).withHandler(
+    async ({
+      parameters: { sourcePath, destinationPath },
+      context: { sourceAgentId },
+      sendMessage,
+    }) => {
+      if (!checkPath(sourceAgentId, sourcePath, sendMessage)) return;
+      if (!checkPath(sourceAgentId, destinationPath, sendMessage)) return;
+
+      try {
+        await rename(sourcePath, destinationPath);
+        sendMessage(
+          messageBuilder.standard(sourceAgentId, `Moved ${sourcePath} to ${destinationPath}.`)
+        );
+      } catch (err) {
+        sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+      }
+    }
+  ),
+
+  defineAction({
+    name: "delete-file",
+    description: "Delete a file",
+    parameters: {
+      path: {
+        description: "The path of the file to delete",
+      },
+    },
+  }).withHandler(
+    async ({
+      parameters: { path },
+      context: { sourceAgentId },
+      sendMessage,
+    }) => {
+      if (!checkPath(sourceAgentId, path, sendMessage)) return;
+
+      try {
+        await unlink(path);
+        sendMessage(
+          messageBuilder.standard(sourceAgentId, `Deleted ${path}.`)
         );
       } catch (err) {
         sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
