@@ -10,9 +10,10 @@ test.skip(
     await getPageSummary(
       GPT_3_5_TURBO,
       // GPT_4,
-      2000,
-      // "https://xenogothic.com/2022/12/23/patchwork-a-reflection/"
-      "https://platform.openai.com/docs/guides/completion/inserting-text"
+      1000,
+      "https://xenogothic.com/2022/12/23/patchwork-a-reflection/"
+      // "https://platform.openai.com/docs/guides/completion/inserting-text"
+      // "https://actions.github.io/authentication/"
     );
   },
   5 * 60 * 1000

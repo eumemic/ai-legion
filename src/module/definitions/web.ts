@@ -101,13 +101,19 @@ export async function getPageSummary(
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  const turndownService = new TurndownService().remove(["style", "script"]);
-
+  const turndownService = new TurndownService().addRule(
+    "remove-extraneous-tags",
+    {
+      filter: ["style", "script", "img"],
+      replacement: () => "",
+    }
+  );
   console.log("Reading page...");
 
   await page.goto(url);
 
   const htmlContent = await page.content();
+  // console.log(htmlContent);
   console.log(`HTML tokens: ${countTokens(htmlContent)}`);
 
   turndownService.remove(["style", "script"]);
@@ -122,15 +128,27 @@ export async function getPageSummary(
   let currentChunkLines: string[] = [];
   let currentChunkTokens = 0;
   for (const line of markdownContent.split("\n")) {
-    currentChunkLines.push(line);
-    currentChunkTokens += countTokens(line);
-    if (currentChunkTokens > maxCompletionTokens) {
+    const lineTokens = countTokens(line);
+    if (currentChunkTokens + lineTokens > maxCompletionTokens) {
       chunks.push(currentChunkLines.join("\n"));
       currentChunkLines = [];
       currentChunkTokens = 0;
     }
+    currentChunkLines.push(line);
+    currentChunkTokens += lineTokens;
   }
-  chunks.push(currentChunkLines.join("\n"));
+
+  let lastChunk = currentChunkLines.join("\n");
+  if (countTokens(lastChunk) > maxCompletionTokens) {
+    const characterLimit = Math.round(
+      maxCompletionTokens * AVG_CHARACTERS_PER_TOKEN
+    );
+    console.log(
+      `Truncating final chunk at ${characterLimit} characters:\n\n${lastChunk}`
+    );
+    lastChunk = lastChunk.substring(0, characterLimit);
+  }
+  chunks.push(lastChunk);
 
   // console.log(
   //   chunks
