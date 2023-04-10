@@ -96,7 +96,7 @@ In the course of our work I or other agents may assign you tasks, at which point
     sourceAgentId,
     targetAgentIds,
     openaiMessage: {
-      role: "assistant",
+      role: sourceAgentId === "0" ? "user" : "assistant",
       content: annotateContent(sourceAgentId, targetAgentIds, content),
     },
   }),
