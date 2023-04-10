@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
-import { Memory } from "./memory";
+import { actionMemento, Memory, messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import generateText from "./openai";
@@ -26,7 +26,7 @@ export class Agent {
     this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      this.memory.append(message);
+      this.memory.append(messageMemento(message));
     });
 
     // Act on messages periodically
@@ -43,14 +43,14 @@ export class Agent {
   }
 
   private async takeAction(): Promise<void> {
-    const messages = await this.memory.retrieve();
+    const mementos = await this.memory.retrieve();
 
-    // Don't respond to our own messages
-    if (last(messages)?.sourceAgentId === this.id) return;
+    // Do not act again if the last message was an action
+    if (last(mementos)?.type === "action") return;
 
     let response: Awaited<ReturnType<typeof generateText>>;
     try {
-      response = await generateText(this.id, messages);
+      response = await generateText(this.id, mementos);
     } catch (e) {
       console.error(e);
       return;
@@ -62,33 +62,26 @@ export class Agent {
       return;
     }
 
-    const responseContent = response.data.choices[0].message?.content;
-    if (!responseContent) {
+    const actionText = response.data.choices[0].message?.content;
+    if (!actionText) {
       this.messageBus.send(messageBuilder.noResponseError(this.id));
       return;
     }
 
-    await this.memory.append(
-      messageBuilder.agentResponse(this.id, responseContent)
-    );
+    await this.memory.append(actionMemento(this.id, actionText));
 
-    let result = parseAction(responseContent);
+    let result = parseAction(actionText);
 
     if (result.type === "error") {
-      // Try to find some usable JSON to parse anyway
-      const firstCurly = responseContent.indexOf("{");
-      const lastCurly = responseContent.lastIndexOf("}");
-      if (firstCurly >= 0 && lastCurly > 0) {
-        result = parseAction(responseContent.slice(firstCurly, lastCurly + 1));
-        // if (result.type === "success") {
-        //   this.messageBus.send(
-        //     messageBuilder.generic(
-        //       this.id,
-        //       `I was able to understand your Action even though it contained extraneous text outside of the JSON. In the future please remember to only respond with JSON conforming to the Action Dictionary, and confine any natural language to the 'comment' field.`
-        //     )
-        //   );
-        // }
-      }
+      result = parseAction(actionText);
+      // if (result.type === "success") {
+      //   this.messageBus.send(
+      //     messageBuilder.generic(
+      //       this.id,
+      //       `I was able to understand your Action even though it contained extraneous text outside of the JSON. In the future please remember to only respond with JSON conforming to the Action Dictionary, and confine any natural language to the 'comment' field.`
+      //     )
+      //   );
+      // }
     }
 
     if (result.type === "error") {

@@ -4,7 +4,7 @@ import { Agent } from "./agent";
 import { startConsole } from "./console";
 import { InMemoryMemory } from "./in-memory-memory";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
-import { Memory } from "./memory";
+import { actionMemento, Memory, messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import { agentName } from "./util";
@@ -25,13 +25,15 @@ async function main() {
 
   for (const id of agentIds.slice(1)) {
     const memory: Memory = new InMemoryMemory(
-      messageBuilder.primer(id),
-      messageBuilder.generic(
-        id,
-        `this is your first task. using the actions at your disposal, familiarize yourself with the codebase. once you feel like you understand it at a high level, write up a README.md summarizing the project.`
-      ),
-      messageBuilder.agentResponse(id, "help"),
-      messageBuilder.listAllActions(id)
+      messageMemento(messageBuilder.primer(id)),
+      // messageMemento(
+      //   messageBuilder.generic(
+      //     id,
+      //     `This is your first task. using the actions at your disposal, familiarize yourself with the codebase. once you feel like you understand it at a high level, write up a README.md summarizing the project.`
+      //   )
+      // ),
+      actionMemento(id, "help"),
+      messageMemento(messageBuilder.listAllActions(id))
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);
     await agent.start();

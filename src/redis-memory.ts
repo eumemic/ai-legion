@@ -1,6 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { Memory } from "./memory";
-import { Message } from "./message";
+import { Memento, Memory } from "./memory";
 
 export class RedisMemory implements Memory {
   private client: RedisClientType;
@@ -9,15 +8,15 @@ export class RedisMemory implements Memory {
     this.client = createClient();
   }
 
-  async append(newMessage: Message) {
-    const messages = await this.retrieve();
-    messages.push(newMessage);
-    await this.client.set(this.agentId, JSON.stringify(messages));
-    return messages;
+  async append(memento: Memento) {
+    const mementos = await this.retrieve();
+    mementos.push(memento);
+    await this.client.set(this.agentId, JSON.stringify(mementos));
+    return mementos;
   }
 
-  async retrieve(): Promise<Message[]> {
-    const messagesJson = await this.client.get(this.agentId);
-    return messagesJson ? JSON.parse(messagesJson) : [];
+  async retrieve(): Promise<Memento[]> {
+    const mementosJson = await this.client.get(this.agentId);
+    return mementosJson ? JSON.parse(mementosJson) : [];
   }
 }

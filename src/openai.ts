@@ -1,8 +1,9 @@
 import { memoize } from "lodash";
-import { Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import { Memento } from "./memory";
 import { Message } from "./message";
 import TaskQueue from "./task-queue";
-import { sleep } from "./util";
+import { agentName, messageSourceName, sleep } from "./util";
 
 const openaiDelay = 10 * 1000;
 
@@ -13,14 +14,22 @@ type ModelName = "gpt-3.5-turbo" | "gpt-4";
 const model: ModelName = "gpt-3.5-turbo";
 // const model: ModelName = "gpt-4";
 
-export default function generateText(agentId: string, messages: Message[]) {
+export default function generateText(agentId: string, mementos: Memento[]) {
   const result = taskQueue.run(async () => {
-    // console.log(`Agent ${agentId} reflecting on ${messages.length} messages`);
+    console.log(
+      `Agent ${agentId} reflecting on ${mementos.length} mementos...`
+    );
+    const t0 = Date.now();
     const result = await openai().createChatCompletion({
       model,
-      messages: messages.map((m) => m.openaiMessage),
+      messages: mementos.map(toOpenAiMessage),
     });
-    // console.log(`Agent ${agentId} arrived at a response`);
+    console.log(
+      `Agent ${agentId} decided on an action after ${(
+        (Date.now() - t0) /
+        1000
+      ).toFixed(1)}s`
+    );
     return result;
   });
 
@@ -41,3 +50,27 @@ const openai = memoize(() => {
   });
   return new OpenAIApi(configuration);
 });
+
+export function toOpenAiMessage(
+  memento: Memento
+): ChatCompletionRequestMessage {
+  if (memento.type === "message") {
+    let { source, content } = memento.message;
+    const role = source.type === "system" ? "system" : "user";
+
+    if (source.type !== "system")
+      content = `--- INCOMING MESSAGE FROM ${agentName(
+        source.id
+      ).toUpperCase()} ---\n\n${content}`;
+
+    return {
+      role,
+      content,
+    };
+  } else {
+    return {
+      role: "assistant",
+      content: memento.actionText,
+    };
+  }
+}

@@ -1,30 +1,40 @@
-import { Memory } from "./memory";
-import { Message } from "./message";
-import { agentName } from "./util";
+import { Memento, Memory } from "./memory";
+import { agentName, messageSourceName } from "./util";
 
 export class InMemoryMemory implements Memory {
-  private messages: Message[] = [];
+  private mementos: Memento[] = [];
 
-  constructor(...preloadedMessages: Message[]) {
-    this.messages.push(...preloadedMessages);
-    // this.messages.forEach(printMessage);
+  constructor(...preloadedMementos: Memento[]) {
+    this.mementos.push(...preloadedMementos);
+    // this.mementos.forEach(printMemento);
   }
 
-  async append(message: Message): Promise<Message[]> {
-    printMessage(message);
-    this.messages.push(message);
-    return this.messages;
+  async append(memento: Memento): Promise<Memento[]> {
+    printMemento(memento);
+    this.mementos.push(memento);
+    return this.mementos;
   }
 
-  async retrieve(): Promise<Message[]> {
-    return this.messages;
+  async retrieve(): Promise<Memento[]> {
+    return this.mementos;
   }
 }
 
-function printMessage(message: Message) {
+function printMemento(memento: Memento) {
+  let sourceName: string;
+  let targetNames: string[];
+  let content: string;
+  if (memento.type === "message") {
+    const { message } = memento;
+    sourceName = messageSourceName(message.source);
+    targetNames = message.targetAgentIds?.map(agentName);
+    content = message.content;
+  } else {
+    sourceName = agentName(memento.agentId);
+    targetNames = ["System"];
+    content = memento.actionText;
+  }
   console.log(
-    `${agentName(message.sourceAgentId)} -> ${
-      message.targetAgentIds?.map(agentName).join(",") || "all agents"
-    }:\n\n${message.openaiMessage.content.trim()}\n\n=============\n`
+    `${sourceName} -> ${targetNames}:\n\n${content}\n\n=============\n`
   );
 }

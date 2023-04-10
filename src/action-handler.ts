@@ -1,7 +1,6 @@
 import { Action } from "./action-types";
-import { Message, messageBuilder } from "./message";
+import { agentSource, Message, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import { agentName } from "./util";
 import { readdir, readFile, writeFile, statSync } from "fs";
 import { resolve as resolvePath, join as joinPath } from "path";
 

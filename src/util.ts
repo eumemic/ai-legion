@@ -1,3 +1,6 @@
+import { ChatCompletionRequestMessage } from "openai";
+import { Message, MessageSource } from "./message";
+
 export function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -12,6 +15,10 @@ export function sleepUntil(condition: () => boolean): Promise<void> {
       }
     }, 1000);
   });
+}
+
+export function messageSourceName(source: MessageSource) {
+  return source.type === "system" ? "System" : agentName(source.id);
 }
 
 export function agentName(agentId: string) {
