@@ -13,18 +13,32 @@ export default class TaskQueue {
     });
   }
 
+  runPeriodically(task: Task, milliseconds: number): void {
+    let pending = false;
+    setInterval(() => {
+      if (pending) {
+        console.log("skipping task");
+        return;
+      }
+      pending = true;
+      try {
+        this.run(task);
+      } finally {
+        pending = false;
+      }
+    }, milliseconds);
+  }
+
   private async runNext() {
-    if (this.isRunning || isEmpty(this.tasks)) return;
+    if (this.isRunning) return;
+
+    const task = this.tasks.shift();
+    if (!task) return;
 
     this.isRunning = true;
 
     try {
-      const tasksCopy = [...this.tasks];
-      this.tasks.length = 0;
-
-      for (const task of tasksCopy) {
-        await task();
-      }
+      await task();
     } finally {
       this.isRunning = false;
     }

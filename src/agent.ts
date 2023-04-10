@@ -29,26 +29,17 @@ export class Agent {
       this.taskQueue.run(() => this.memory.append(message));
     });
 
-    // Take action periodically
-    let waitingToAct = false;
-    setInterval(async () => {
-      if (waitingToAct) return;
-      waitingToAct = true;
-      try {
-        await this.taskQueue.run(() => this.takeAction());
-      } finally {
-        waitingToAct = false;
-      }
-    }, actionInterval);
-
-    // Set up heartbeat
-    setInterval(async () => {
+    // Start heartbeat
+    this.taskQueue.runPeriodically(async () => {
       const messages = await this.memory.retrieve();
       const lastMessage = last(messages);
       if (lastMessage?.messageType === "agentResponse") {
         this.messageBus.send(messageBuilder.heartbeat(this.id));
       }
     }, heartbeatInterval);
+
+    // Take action periodically
+    this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
   }
 
   private async takeAction(): Promise<void> {
