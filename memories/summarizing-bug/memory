@@ -1,0 +1,306 @@
+[
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: addGoal"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\naddGoal\nthoughts: <reasoning behind this action> (optional)\ngoal: <a summary of what you want to achieve (keep this relatively short but information dense)>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: completeGoal"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\ncompleteGoal\nthoughts: <reasoning behind this action> (optional)\ngoalNumber: <the number of the goal you want to mark as complete>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: writeNote"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nwriteNote\nthoughts: <reasoning behind this action> (optional)\ntitle: <the title of the note>\ncontent: <the content of the note>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: viewNote"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nviewNote\nthoughts: <reasoning behind this action> (optional)\ntitle: <the title of the note to view>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: deleteNote"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\ndeleteNote\nthoughts: <reasoning behind this action> (optional)\ntitle: <the title of the note to delete>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "queryAgentRegistry\nthoughts: I need to know who else is around so I can communicate with them if necessary."
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "These are the agents in the system:\n\nControl [agentId=0]\nAgent 1 [agentId=1]"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: sendMessage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsendMessage\nthoughts: <reasoning behind this action> (optional)\ntargetAgentId: <the target agent's id>\nmessage: <the content of the message>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: listDirectory"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nlistDirectory\nthoughts: <reasoning behind this action> (optional)\npath: <the path of the directory you want to inspect>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: readFile"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nreadFile\nthoughts: <reasoning behind this action> (optional)\npath: <the path of the file you want to inspect>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: writeFile"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nwriteFile\nthoughts: <reasoning behind this action> (optional)\npath: <the path of the file you want to write to>\ncontent: <the new content of the file>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: moveFile"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nmoveFile\nthoughts: <reasoning behind this action> (optional)\nsourcePath: <the original path of the file>\ndestinationPath: <the new path for the file>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: deleteFile"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\ndeleteFile\nthoughts: <reasoning behind this action> (optional)\npath: <the path of the file to delete>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: searchWeb"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nsearchWeb\nthoughts: <reasoning behind this action> (optional)\nsearchString: <the string to search for>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "help\naboutAction: readPage"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Usage:\n\n```\nreadPage\nthoughts: <reasoning behind this action> (optional)\nurl: <the url of the web page to read>\n```"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "searchWeb\nthoughts: I need to learn more about OpenAI's GPT-3 model.\nsearchString: OpenAI GPT-3"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Search results:\n\n- Title: \"Transforming work and creativity with AI\"\n  URL: https://openai.com/product\n\n- Title: \"Models - OpenAI API\"\n  URL: https://platform.openai.com/docs/models/gpt-3\n\n- Title: \"GPT-3 powers the next generation of apps\"\n  URL: https://openai.com/blog/gpt-3-apps\n\n- Title: \"OpenAI API\"\n  URL: https://platform.openai.com/account/api-keys\n\n- Title: \"OpenAI\"\n  URL: https://openai.com/\n\n- Title: \"Introduction - OpenAI API\"\n  URL: https://platform.openai.com/docs/introduction\n\n- Title: \"Introducing ChatGPT\"\n  URL: https://openai.com/blog/chatgpt\n\n- Title: \"openai/gpt-3: GPT-3: Language Models are Few-Shot ... - GitHub\"\n  URL: https://github.com/openai/gpt-3\n\n- Title: \"Fine-tuning - OpenAI API\"\n  URL: https://platform.openai.com/docs/guides/fine-tuning\n\n- Title: \"GPT-3 - Wikipedia\"\n  URL: https://en.wikipedia.org/wiki/GPT-3"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "readPage\nthoughts: This page looks like it has a good summary of GPT-3 and its capabilities.\nurl: https://en.wikipedia.org/wiki/GPT-3"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Here is a summarized markdown version of the page:\n\nGPT-3 is a language generation system developed by OpenAI. It has been trained by analyzing a large corpus of texts and can produce human-like text. GPT-3 can be used for natural language processing, question answering, translation, and many other applications. Its language generation abilities have been praised, but some have also criticized it, citing concerns about bias, misuse, or lack of transparency. GPT-3 has been implemented in various languages, including Arabic, Catalan, Czech, Estonian, French, Hebrew, Hindi, Italian, Japanese, Korean, Dutch, Persian, Portuguese, Russian, Swedish, Turkish, and Central Kurdish.\nGenerative Pre-trained Transformer 3 (GPT-3) is an autoregressive language model that produces human-like text using deep learning. It has captured attention within the natural language processing field for its ability to generate high-quality text that can be difficult to distinguish from human writing. GPT-3 has 175 billion parameters, a 2048-token long context, and is trained to predict next tokens based on previous ones. Its predecessor is GPT-2, and Microsoft currently has exclusive use of GPT-3. OpenAI researchers have warned of the potential risks of GPT-3 and called for research to mitigate them. GPT-3 is described as \"one of the most interesting and important AI systems ever produced.\"[\\[6\\]](#cite_note-DailyNous_Weinberg_Chalmer_20200730-6)\nIn May 2020, OpenAI introduced GPT-3, the largest non-sparse language model to date, trained on hundreds of billions of words through generative pre-training of a diverse corpus of text. GPT-3 is capable of coding in CSS, JSX, and Python. Microsoft's Turing NLG, at 17 billion parameters, performed better than any other language model in tasks such as summarization of texts and answering questions. On June 11, 2020, OpenAI released its GPT-3 API, which can complete almost any English language task with a \"text in, text out\" interface, and whose content generated has been eerily coherent. However, because GPT-3's training data contains occasional toxic language, research is needed for risk mitigation.\nGPT-3 can perform zero-shot and few-shot learning, and even one-shot learning. Almira Osmanovic Thunström wrote that GPT-3 wrote an article about itself and submitted it for publication. OpenAI released new versions of GPT-3 and Codex that have edit and insert capabilities. They are referred to as the \"GPT-3.5\" series, and they were used to develop ChatGPT. GPT-3 is used for various applications, such as code completion and generation, translation of conventional language into formal computer code, generating query-specific code for SQL processing, writing copy and other marketing materials, and even screening for early signs of Alzheimer's disease. Reviews of GPT-3 are largely positive, noting its impressive abilities, but some have expressed concern about its limitations and biases. Noam Chomsky and Luciano Floridi have expressed skepticism about its scientific value and potential misuse.\nGPT-3, created by OpenAI, has faced criticism despite the hype surrounding it. Sam Altman, OpenAI's CEO, acknowledged GPT-3's \"serious weakness and sometimes very silly mistakes\", adding that AI is going to change the world, but GPT-3 is just an early glimpse. OpenAI originally founded as a non-profit in 2015, but restructured to be a for-profit company in 2019 when it released a smaller, modified version of GPT-3's precursor, GPT-2, which was previously withheld over concerns of fake news. In 2020, Microsoft invested in OpenAI and obtained exclusive licensing for GPT-3 in its products and services. Criticism of large language models like GPT-3 includes environmental impact, academic integrity concerns, and training data sources. GPT-3's training data includes copyrighted material scraped from various sources. While OpenAI argues that training AI systems like GPT-3 constitutes fair use, they face legal uncertainty and potential compliance costs. The growing use of GPT-3 and other automated writing technologies has raised concerns about academic misconduct, such as plagiarism.\nSeveral articles discuss OpenAI's GPT-3 language model. The largest model released so far, GPT-3 prompts debates on the limits of language models for AI, and raises questions about trusting what it says. OpenAI has given Microsoft exclusive access to GPT-3's underlying code, but OpenAI continues to offer a public-facing API that allows chosen users to send text to GPT-3 or OpenAI's other models and receive its output. Chalmers discusses GPT-3 and general intelligence. Additionally, there are articles on AI's limitations, NLP, \"Attention Is All You Need,\" Turing Natural Language Generation, the death of the college essay, toxicity prompts, and the OpenAI API. The information for each article is cited with links.\nThis is a collection of articles and resources about GPT-3 and its applications. Arram Sabeti's piece on [\"GPT-3: An AI That's Eerily Good at Writing Almost Anything\"](https://arr.am/2020/07/09/gpt-3-an-ai-thats-eerily-good-at-writing-almost-anything/) explores the technology's capabilities. OpenAI's API was previously available by waitlist but is now available for use immediately, as reported by [\"OpenAI's API Now Available with No Waitlist\"](https://openai.com/blog/api-no-waitlist/). [\"Aligning Language Models to Follow Instructions\"](https://openai.com/blog/instruction-following/) details OpenAI's advancements in getting models to follow user-defined commands. Articles by Scientific American on GPT-3 and [\"Can GPT-3 write an academic paper on itself, with minimal human input?\"](https://hal.archives-ouvertes.fr/hal-03701250), explore the technology's potential in academic research. In \"How an AI Became My Code-Writing Genie,\" _Wired_ writer Clive Thompson details his experience with OpenAI Codex. [\"Microsoft announced its first customer product features powered by GPT-3 and @Azure\"](https://blogs.microsoft.com/ai/from-conversation-to-code-microsoft-introduces-its-first-product-features-powered-by-gpt-3/) and [\"Microsoft has built an AI-powered autocomplete for code using GPT-3\"](https://www.theverge.com/2021/5/25/22451144/microsoft-gpt-3-openai-coding-autocomplete-powerapps-power-fx) detail Microsoft's integration of GPT-3 in product development. Other articles cover GPT-3's potential for language and speech processing, such as [\"Can ChatGPT AI chatbot spot early stages of Alzheimer's? - study\"](https://www.jpost.com/health-and-wellness/mind-and-spirit/article-725929) and [\"Predicting dementia from spontaneous speech using large language models\"](https://doi.org/10.1371%2Fjournal.pdig.0000168). Finally, [\"How Do You Know a Human Wrote This?\"](https://www.nytimes.com/2020/07/29/opinion/gpt-3-ai-automation.html?), published in _The New York Times_, explores the implications of GPT-3's capabilities.\nThis list of resources covers everything you need to know about GPT-3, the latest and largest artificial intelligence language model developed by OpenAI. Links include articles from Wired, MIT Technology Review, and the New York Times discussing the potential and limitations of GPT-3, as well as academic papers from Minds and Machines and the ACM Conference on Fairness, Accountability, and Transparency. Some discussions warn of the dangers of plagiarism with AI-generated writing, while others question the reliability of GPT-3's responses to philosophical thought experiments. TechCrunch also provides a cautionary piece on several ways that GPT-3 can go wrong.\nThis page provides a comprehensive overview of OpenAI, a research organization dedicated to advancing artificial intelligence in a safe and beneficial way. The page includes links to OpenAI's language models, such as the GPT family and OpenAI Codex, as well as related products like GitHub Copilot and Microsoft Bing. The page also covers differentiable computing, including topics such as statistical manifolds, tensor calculus, and automatic differentiation. Additionally, the page lists various concepts and applications of machine learning, artificial neural networks, and language models. Finally, the page includes links to hardware such as IPU and TPU, software libraries such as TensorFlow and PyTorch, as well as specific implementations including speech synthesis, speech recognition, and facial recognition.\nThis is a list of key people, organizations, architectures, and concepts related to artificial intelligence. Notable individuals include Yoshua Bengio, Geoffrey Hinton, and Andrew Ng. Organizations such as DeepMind and OpenAI are also included. Prominent architectures include the neural Turing machine and the transformer model. Key concepts span AI alignment, AI capability control, and accelerating change. It's worth noting that there is a growing concern for the existential risk from artificial general intelligence. Links to portals and categories related to programming, technology, artificial neural networks, and machine learning are also provided.\nThis article includes a list of important concepts, organizations, people, and resources related to artificial intelligence and its potential impact on humanity. Key topics include friendly artificial intelligence, instrumental convergence, intelligence explosion, machine ethics, superintelligence, technological singularity, and more. Noteworthy organizations include the Allen Institute for AI, DeepMind, Future of Humanity Institute, Leverhulme Centre for the Future of Intelligence, and OpenAI, among others. Influential people featured in the article include Nick Bostrom, Elon Musk, Stephen Hawking, Max Tegmark, and Stuart J. Russell. Also discussed are risks associated with artificial intelligence, such as suffering risks and global catastrophic risks, ethical considerations, and helpful resources like books and films.\nThis is a list of links related to Wikipedia, including disclaimers, a contact page, a mobile view, developer resources, site statistics, and a cookie statement. The footer also includes links to the Wikimedia Foundation and MediaWiki, the software that powers Wikipedia."
+    }
+  }
+]
