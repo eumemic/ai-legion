@@ -28,7 +28,7 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
       targetAgentIds = [input.substring(0, colonIndex)];
       content = input.substring(colonIndex + 1);
     } else {
-      targetAgentIds = agentIds;
+      targetAgentIds = agentIds.filter((id) => id !== AGENT_ID);
       content = input;
     }
 
