@@ -14,6 +14,7 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   rules: {
     "object-shorthand": "warn",
+    "no-useless-rename": "warn",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
