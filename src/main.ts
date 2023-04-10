@@ -7,6 +7,7 @@ import { Event, Memory } from "./memory";
 import { MessageBus } from "./message-bus";
 import core from "./module/definitions/core";
 import filesystem from "./module/definitions/filesystem";
+import goals from "./module/definitions/goals";
 import messaging from "./module/definitions/messaging";
 import notes from "./module/definitions/notes";
 import web from "./module/definitions/web";
@@ -30,6 +31,7 @@ async function main() {
   for (const id of agentIds.slice(1)) {
     const moduleManager = new ModuleManager(id, agentIds, [
       core,
+      goals,
       notes,
       messaging,
       filesystem,
