@@ -5,8 +5,13 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Event = HeartbeatEvent | MessageEvent;
-
+export interface Event {
+  /**
+   * The ID of the agent for whom this event is intended. If empty, no agents will receive it. If null, all agents will receive it.
+   */
+  targetAgentIds?: string[];
+  payload: HeartbeatEvent | MessageEvent;
+}
 /**
  * A heartbeat event that occurs periodically.
  */
@@ -19,13 +24,9 @@ export interface HeartbeatEvent {
 export interface MessageEvent {
   type: "message";
   /**
-   * The sender agent's ID.
+   * The sending agent's ID.
    */
-  fromId: string;
-  /**
-   * The receiver agent's ID.
-   */
-  toId: string;
+  sourceAgentId?: string;
   /**
    * The content of the message.
    */

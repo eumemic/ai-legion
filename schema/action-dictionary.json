@@ -3,10 +3,6 @@
   "type": "object",
   "title": "Action",
   "properties": {
-    "sourceAgentId": {
-      "type": "string",
-      "description": "The ID of the agent who initiated this action"
-    },
     "payload": {
       "type": "object",
       "oneOf": [
@@ -30,7 +26,7 @@
               "type": "string",
               "const": "send-message"
             },
-            "agentId": {
+            "targetAgentId": {
               "type": "string",
               "description": "The target agent's ID."
             },
@@ -51,5 +47,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["sourceAgentId", "payload", "comment"]
+  "required": ["payload", "comment"]
 }

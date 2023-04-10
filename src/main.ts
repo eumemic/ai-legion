@@ -25,14 +25,20 @@ main();
 async function main() {
   for (const agent of agents) {
     eventBus.subscribe(async (event) => {
-      console.log(`processing event: ${JSON.stringify(event, null, 2)}`);
+      if (event.targetAgentIds && !event.targetAgentIds.includes(agent.id))
+        return;
+
+      console.log(
+        `agent ${agent.id} received event: ${JSON.stringify(event, null, 2)}`
+      );
+
       const action = await agent.handleEvent(event);
       if (action) actionHandler.handle(action);
     });
   }
 
   while (true) {
-    for (const agent of agents) eventBus.publish({ type: "heartbeat" });
+    eventBus.publish({ payload: { type: "heartbeat" } });
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
 }

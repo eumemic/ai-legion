@@ -7,10 +7,6 @@
 
 export interface Action {
   /**
-   * The ID of the agent who initiated this action
-   */
-  sourceAgentId: string;
-  /**
    * The payload that's specific to a particular action.
    */
   payload: NoOpAction | SendMessageAction;
@@ -33,7 +29,7 @@ export interface SendMessageAction {
   /**
    * The target agent's ID.
    */
-  agentId?: string;
+  targetAgentId?: string;
   /**
    * The content of the message.
    */
