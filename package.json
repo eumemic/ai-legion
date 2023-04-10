@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
+    "generate-event-types": "npx --yes json-schema-to-typescript src/event-dictionary.json > src/event.ts",
     "start": "ts-node src/app.ts"
   },
   "keywords": [],
