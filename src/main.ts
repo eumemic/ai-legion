@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import ActionHandler from "./action-handler";
-import { ActionDictionary } from "./action/action-dictionary";
-import { allActionDefinitions } from "./action/definitions";
+import { ActionDictionary } from "./module/action-dictionary";
+import { allActionDefinitions } from "./module/definitions";
 import { Agent } from "./agent";
 import { startConsole } from "./console";
 import { InMemoryMessageBus } from "./in-memory-message-bus";

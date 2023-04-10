@@ -1,19 +1,13 @@
 import { keyBy } from "lodash";
 import { ActionDefinition } from "../action-definition";
-import { ActionModule } from "../action-module";
+import { Module } from "../module";
 import core from "./core";
 import filesystem from "./filesystem";
 import messaging from "./messaging";
 import notes from "./notes";
 import web from "./web";
 
-const allActionModules: ActionModule[] = [
-  core,
-  messaging,
-  filesystem,
-  notes,
-  web,
-];
+const allActionModules: Module[] = [core, messaging, filesystem, notes, web];
 
 export const allActionDefinitions: ActionDefinition[] =
   allActionModules.flatMap((module) => Object.values(module.actions));
@@ -27,7 +21,7 @@ export function getActionDefinition(name: string): ActionDefinition {
   return actionDefLookup[name];
 }
 
-const actionToModule: Record<string, ActionModule> = {};
+const actionToModule: Record<string, Module> = {};
 for (const module of allActionModules) {
   for (const actionDef of Object.values(module.actions)) {
     actionToModule[actionDef.name] = module;

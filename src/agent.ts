@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
-import { ActionDictionary } from "./action/action-dictionary";
+import { ActionDictionary } from "./module/action-dictionary";
 import makeDecision from "./make-decision";
 import { Memory } from "./memory";
 import { messageBuilder } from "./message";

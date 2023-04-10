@@ -1,6 +1,6 @@
-import { ActionDefinition } from "./action/action-definition";
-import { ActionDictionary } from "./action/action-dictionary";
-import { getUsageText } from "./action/util";
+import { ActionDefinition } from "./module/action-definition";
+import { ActionDictionary } from "./module/action-dictionary";
+import { getUsageText } from "./module/util";
 import { MULTILINE_DELIMITER } from "./util";
 
 type ParseResult =

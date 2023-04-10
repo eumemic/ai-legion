@@ -1,8 +1,8 @@
-import { ActionDictionary } from "./action/action-dictionary";
-import { allActionDefinitions } from "./action/definitions";
-import core from "./action/definitions/core";
-import messaging from "./action/definitions/messaging";
-import { getUsageText } from "./action/util";
+import { ActionDictionary } from "./module/action-dictionary";
+import { allActionDefinitions } from "./module/definitions";
+import core from "./module/definitions/core";
+import messaging from "./module/definitions/messaging";
+import { getUsageText } from "./module/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 

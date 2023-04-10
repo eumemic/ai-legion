@@ -5,7 +5,7 @@ import { messageBuilder } from "../message";
 import { primer } from "../primer";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
-import { ActionDictionary } from "../action/action-dictionary";
+import { ActionDictionary } from "../module/action-dictionary";
 
 const AVG_WORDS_PER_TOKEN = 0.75;
 

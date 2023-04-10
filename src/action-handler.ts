@@ -1,5 +1,5 @@
-import { ActionDictionary } from "./action/action-dictionary";
-import { getActionState } from "./action/definitions";
+import { ActionDictionary } from "./module/action-dictionary";
+import { getActionState } from "./module/definitions";
 import { MessageBus } from "./message-bus";
 import { Action } from "./parse-action";
 
