@@ -4,11 +4,13 @@ import { Event } from "./memory";
 import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
 import TaskQueue from "./task-queue";
-import { agentName, sleep } from "./util";
+import { agentName, messageSourceName, sleep } from "./util";
 
 const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
+
+const enumerateEventsInSummaries = false;
 
 export interface Decision {
   actionText: string;
@@ -62,11 +64,21 @@ const openai = memoize(() => {
 export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
   switch (event.type) {
     case "message":
-      const { source, content } = event.message;
+      let { type: messageType, source, content } = event.message;
       const role = source.type === "system" ? "system" : "user";
+      let header: string;
+      switch (messageType) {
+        case "standard":
+        case "agentToAgent":
+          header = `MESSAGE FROM ${messageSourceName(source).toUpperCase()}`;
+          break;
+        case "error":
+          header = "ERROR";
+          break;
+      }
       return {
         role,
-        content,
+        content: `--- ${header} ---\n\n${content}`,
       };
     case "decision":
       return {
@@ -75,26 +87,66 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
       };
     case "summary":
       const { summary, summarizedEvents } = event;
-      return {
-        role: "system",
-        content: `
+      const summarizedContent = `
 ${
   summarizedEvents.length
-} events are omitted here to free up real estate in your context window.
+} events are abridged here to free up real estate in your context window.
 
 SUMMARY: ${summary}
 
-EVENTS:
-${summarizedEvents.map(
-  (event, index) => `${index + 1}) ${truncate(toOpenAiMessage(event).content)}`
-)}
-`.trim(),
+${
+  enumerateEventsInSummaries
+    ? `EVENTS:
+${summarizedEvents
+  .map((event, index) => `${index + 1}) ${summarize(event)}`)
+  .join("\n")}`
+    : ""
+}
+`.trim();
+      // console.log(`summarized content:\n${summarizedContent}`);
+      return {
+        role: "system",
+        content: summarizedContent,
       };
   }
 }
 
+export function summarize(event: Event) {
+  let header: string;
+  let content: string;
+  switch (event.type) {
+    case "message":
+      const { message } = event;
+      switch (message.type) {
+        case "standard":
+        case "agentToAgent":
+          header = `MESSAGE FROM ${messageSourceName(
+            message.source
+          ).toUpperCase()}`;
+          break;
+        case "error":
+          header = "ERROR";
+          break;
+      }
+      content = message.content;
+      break;
+    case "decision":
+      header = "ACTION";
+      content = event.decision.actionText;
+      break;
+    case "summary":
+      header = `SUMMARY (${event.summarizedEvents.length} EVENTS)`;
+      content = event.summary;
+      break;
+  }
+  return `${header}\n\n${truncate(content)}\n`;
+}
+
 function truncate(text: string) {
-  const limit = 100;
-  if (text.length < limit) return text;
-  return JSON.stringify(text.substring(0, limit) + " ...");
+  const limit = 50;
+  const lines = text.split("\n");
+  const firstLine = lines[0];
+  if (firstLine.length > limit) return `${text.substring(0, limit)}...`;
+  if (lines.length > 1) return `${firstLine}\n...`;
+  return text;
 }

@@ -26,7 +26,7 @@ async function main() {
   const store = new FileStore();
 
   for (const id of agentIds.slice(1)) {
-    const memory = new Memory(id, store, 2000);
+    const memory = new Memory(id, store, 1000);
     const agent = new Agent(
       id,
       memory,

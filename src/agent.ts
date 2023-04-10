@@ -50,14 +50,15 @@ export class Agent {
   }
 
   private async takeAction(): Promise<void> {
-    const events = await this.memory.retrieve();
+    let events = await this.memory.retrieve();
 
     // Do not act again if the last event was a decision
     if (last(events)?.type === "decision") return;
 
     const decision = await makeDecision(this.id, events);
 
-    await this.memory.append({ type: "decision", decision });
+    // Reassign events in case summarization occurred
+    events = await this.memory.append({ type: "decision", decision });
 
     const result = parseAction(this.actionDictionary, decision.actionText);
     if (result.type === "error") {

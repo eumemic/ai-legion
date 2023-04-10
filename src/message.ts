@@ -40,8 +40,7 @@ export const CODE_BLOCK_DELIMITER = "```";
 export const messageBuilder = addMessageTypes({
   standard: singleTargetSystemMessage,
 
-  error: (agentId: string, content: string) =>
-    singleTargetSystemMessage(agentId, `--- ERROR ---\n\n${content}`),
+  error: singleTargetSystemMessage,
 
   agentToAgent: (
     sourceAgentId: string,
@@ -50,18 +49,16 @@ export const messageBuilder = addMessageTypes({
   ) => ({
     source: agentSource(sourceAgentId),
     targetAgentIds,
-    content: `--- INCOMING MESSAGE FROM ${agentName(
-      sourceAgentId
-    ).toUpperCase()} ---\n\n${content}`,
+    content,
   }),
 });
 
 function addMessageTypes<
   T extends Record<string, (...args: any) => TypelessMessage>
 >(record: T): { [K in keyof T]: (...args: Parameters<T[K]>) => Message } {
-  for (const [standardMessageType, builder] of Object.entries(record)) {
-    (record as any)[standardMessageType] = (...args: any) => ({
-      messageType: standardMessageType,
+  for (const [type, builder] of Object.entries(record)) {
+    (record as any)[type] = (...args: any) => ({
+      type,
       ...(builder as any)(...args),
     });
   }

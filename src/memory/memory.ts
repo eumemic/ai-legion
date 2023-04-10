@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
-import { primerMessage } from "../message";
+import { messageBuilder, primerMessage } from "../message";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
 
@@ -41,20 +41,33 @@ export class Memory {
       const [firstDecision, firstDecisionIndex] = decisions[0];
       const [lastDecision] = decisions[decisions.length - 1];
 
+      const truncationThreshold =
+        (firstDecision.precedingTokens + this.compressionThreshold) / 2;
+      console.log({ truncationThreshold });
+
       if (lastDecision.precedingTokens > this.compressionThreshold) {
         const firstSummarizedIndex = firstDecisionIndex + 1;
         for (let i = firstSummarizedIndex; i < events.length; i++) {
           const event = events[i];
           if (event.type === "decision") {
             const { precedingTokens } = event.decision;
-            if (
-              precedingTokens - firstDecision.precedingTokens >
-              this.compressionThreshold / 2
-            ) {
+            if (precedingTokens > truncationThreshold) {
               const summarizedEvents = events.slice(firstSummarizedIndex, i);
+
+              const { actionText: summary } = await makeDecision(this.agentId, [
+                ...events.slice(0, i),
+                {
+                  type: "message",
+                  message: messageBuilder.standard(
+                    this.agentId,
+                    "Summarize what that has happened to you since (but not including) the introductory message, in 100 words or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible."
+                  ),
+                },
+              ]);
+
               const summaryEvent: Event = {
                 type: "summary",
-                summary: `${summarizedEvents.length} events were omitted here.`,
+                summary,
                 summarizedEvents,
               };
               const firstEvents = [
@@ -62,29 +75,33 @@ export class Memory {
                 summaryEvent,
               ];
 
-              const decision = await makeDecision(this.agentId, firstEvents);
-              const tokenSavings = precedingTokens - decision.precedingTokens;
-
-              console.log(
-                `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens`
+              const { precedingTokens: summaryTokens } = await makeDecision(
+                this.agentId,
+                firstEvents
               );
+              const tokenSavings = precedingTokens - summaryTokens;
+              if (tokenSavings > 0) {
+                console.log(
+                  `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens`
+                );
 
-              const newEvents = [
-                ...firstEvents,
-                ...events.slice(i).map((event): Event => {
-                  if (event.type !== "decision") return event;
-                  return {
-                    type: "decision",
-                    decision: {
-                      ...event.decision,
-                      precedingTokens:
-                        event.decision.precedingTokens - tokenSavings,
-                    },
-                  };
-                }),
-              ];
+                const newEvents = [
+                  ...firstEvents,
+                  ...events.slice(i).map((event): Event => {
+                    if (event.type !== "decision") return event;
+                    return {
+                      type: "decision",
+                      decision: {
+                        ...event.decision,
+                        precedingTokens:
+                          event.decision.precedingTokens - tokenSavings,
+                      },
+                    };
+                  }),
+                ];
 
-              return newEvents;
+                return newEvents;
+              }
             }
           }
         }
