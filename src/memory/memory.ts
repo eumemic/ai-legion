@@ -43,7 +43,10 @@ export class Memory {
 
   private get prefixedEvents(): Event[] {
     return [
-      { type: "message", message: primer(this.agentId, this.moduleManager) },
+      {
+        type: "message",
+        message: primer(this.agentId, this.moduleManager.actionDictionary),
+      },
     ];
   }
 

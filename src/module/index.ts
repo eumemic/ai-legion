@@ -23,6 +23,6 @@ export interface ModuleStateInputs {
 export interface ModuleContext<S> {
   sourceAgentId: string;
   allAgentIds: string[];
-  getActionDefinition: (name: string) => ActionDefinition | undefined;
+  actionDictionary: Map<string, ActionDefinition>;
   state: S;
 }

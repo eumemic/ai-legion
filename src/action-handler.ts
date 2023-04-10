@@ -14,8 +14,7 @@ export default class ActionHandler {
       context: {
         sourceAgentId: agentId,
         allAgentIds: this.agentIds,
-        getActionDefinition: (name) =>
-          this.moduleManager.getActionDefinition(name),
+        actionDictionary: this.moduleManager.actionDictionary,
         state: this.moduleManager.getState(actionDef.name),
       },
       parameters,

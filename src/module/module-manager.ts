@@ -2,14 +2,17 @@ import { ModuleDefinition } from ".";
 import { ActionDefinition } from "./action-definition";
 
 export class ModuleManager {
-  actionDefinitions: ActionDefinition[];
+  actionDictionary: Map<string, ActionDefinition>;
   private actionToModule: Map<string, ModuleDefinition>;
   private moduleToState: Map<string, any>;
 
   constructor(private agentId: string, moduleDefinitions: ModuleDefinition[]) {
-    this.actionDefinitions = moduleDefinitions.flatMap((module) =>
-      Object.values(module.actions)
-    );
+    this.actionDictionary = moduleDefinitions
+      .flatMap((module) => Object.values(module.actions))
+      .reduce(
+        (map, actionDef) => (map.set(actionDef.name, actionDef), map),
+        new Map()
+      );
 
     this.actionToModule = new Map();
     for (const moduleDef of moduleDefinitions) {
