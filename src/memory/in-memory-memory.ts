@@ -1,5 +1,5 @@
-import { Memento, Memory } from "./memory";
-import { agentName, messageSourceName } from "./util";
+import { Memento, Memory } from ".";
+import { agentName, messageSourceName } from "../util";
 
 export class InMemoryMemory implements Memory {
   private mementos: Memento[] = [];

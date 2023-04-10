@@ -1,5 +1,5 @@
-import { Decision } from "./make-decision";
-import { Message } from "./message";
+import { Decision } from "../make-decision";
+import { Message } from "../message";
 
 export type Memento = MessageMemento | DecisionMemento;
 

@@ -1,5 +1,4 @@
 import readline from "readline";
-import { messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 

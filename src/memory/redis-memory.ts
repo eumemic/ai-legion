@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { Memento, Memory } from "./memory";
+import { Memento, Memory } from ".";
 
 export class RedisMemory implements Memory {
   private client: RedisClientType;
