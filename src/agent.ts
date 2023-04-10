@@ -51,14 +51,14 @@ export class Agent {
     this.lastProcessedMessage = lastMessage;
 
     let response: Awaited<ReturnType<typeof generateText>>;
-    console.log(`Agent ${this.id} BEFORE`);
+    // console.log(`Agent ${this.id} BEFORE`);
     try {
-      response = await generateText(messages);
+      response = await generateText(this.id, messages);
     } catch (e) {
       console.error(e);
       return;
     } finally {
-      console.log(`Agent ${this.id} AFTER`);
+      // console.log(`Agent ${this.id} AFTER`);
     }
 
     if (response.status !== 200) {

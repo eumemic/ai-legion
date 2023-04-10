@@ -6,16 +6,16 @@ import { sleep } from "./util";
 
 const taskQueue = new TaskQueue();
 
-export default function generateText(messages: Message[]) {
+export default function generateText(agentId: string, messages: Message[]) {
   return taskQueue.run(async () => {
-    console.log(`sending ${messages.length} messages`);
+    console.log(`Agent ${agentId} reflecting on ${messages.length} messages`);
     try {
       const result = await openai().createChatCompletion({
         model: "gpt-3.5-turbo",
         // model: "gpt-4",
         messages: messages.map((m) => m.openaiMessage),
       });
-      console.log("received result");
+      console.log(`Agent ${agentId} arrived at a response`);
       return result;
     } finally {
       await sleep(5000); // avoid rate limits
