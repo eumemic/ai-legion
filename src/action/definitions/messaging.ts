@@ -7,7 +7,7 @@ export default defineActionModule({
 }).withActions({
   queryAgentRegistry: {
     description: "Ask who the other agents are that you can talk to",
-    async handle({ context: { sourceAgentId, allAgentIds }, sendMessage }) {
+    async execute({ context: { sourceAgentId, allAgentIds }, sendMessage }) {
       sendMessage(
         messageBuilder.standard(
           sourceAgentId,
@@ -29,7 +29,7 @@ export default defineActionModule({
         description: "The content of the message",
       },
     },
-    async handle({
+    async execute({
       parameters: { targetAgentId, message },
       context: { sourceAgentId, allAgentIds },
       sendMessage,

@@ -10,7 +10,7 @@ export interface ActionDefinition<S = void, P extends string = string>
 export interface PartialActionDefinition<S = void, P extends string = never> {
   description: string;
   parameters?: Record<P, PartialParameterDefinition>;
-  handle: ActionHandler<S, P>;
+  execute: ActionHandler<S, P>;
 }
 
 export type ParameterDefinition = Required<PartialParameterDefinition>;

@@ -20,7 +20,7 @@ export default defineActionModule({
         description: "The path of the directory you want to inspect",
       },
     },
-    async handle({
+    async execute({
       parameters: { path },
       context: { sourceAgentId },
       sendMessage,
@@ -53,7 +53,7 @@ export default defineActionModule({
         description: "The path of the file you want to inspect",
       },
     },
-    async handle({
+    async execute({
       parameters: { path },
       context: { sourceAgentId },
       sendMessage,
@@ -84,7 +84,7 @@ export default defineActionModule({
         description: "The new content of the file",
       },
     },
-    async handle({
+    async execute({
       parameters: { path, content },
       context: { sourceAgentId },
       sendMessage,
@@ -112,7 +112,7 @@ export default defineActionModule({
         description: "The new path for the file",
       },
     },
-    async handle({
+    async execute({
       parameters: { sourcePath, destinationPath },
       context: { sourceAgentId },
       sendMessage,
@@ -141,7 +141,7 @@ export default defineActionModule({
         description: "The path of the file to delete",
       },
     },
-    async handle({
+    async execute({
       parameters: { path },
       context: { sourceAgentId },
       sendMessage,

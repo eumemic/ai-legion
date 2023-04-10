@@ -7,7 +7,7 @@ export default defineActionModule({
 }).withActions({
   noop: {
     description: "Do nothing",
-    async handle() {},
+    async execute() {},
   },
 
   help: {
@@ -17,7 +17,7 @@ export default defineActionModule({
         description: "The name of an action to get help on",
       },
     },
-    async handle({
+    async execute({
       parameters: { aboutAction },
       context: { sourceAgentId, actionDictionary },
       sendMessage,

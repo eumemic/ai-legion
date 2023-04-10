@@ -17,7 +17,7 @@ export default defineActionModule<Store>({
         description: "The content of the note",
       },
     },
-    async handle({
+    async execute({
       parameters: { title, content },
       context: { sourceAgentId, state },
       sendMessage,
@@ -39,7 +39,7 @@ export default defineActionModule<Store>({
         description: "The title of the note to view",
       },
     },
-    async handle({
+    async execute({
       parameters: { title },
       context: { sourceAgentId, state },
       sendMessage,
@@ -62,7 +62,7 @@ export default defineActionModule<Store>({
 
   listNotes: {
     description: "List the titles of all existing notes.",
-    async handle({ context: { sourceAgentId, state }, sendMessage }) {
+    async execute({ context: { sourceAgentId, state }, sendMessage }) {
       const noteTitles = await state.list();
       sendMessage(
         messageBuilder.standard(
@@ -84,7 +84,7 @@ export default defineActionModule<Store>({
         description: "The title of the note to delete",
       },
     },
-    async handle({
+    async execute({
       parameters: { title },
       context: { sourceAgentId, state },
       sendMessage,

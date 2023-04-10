@@ -11,7 +11,7 @@ export default class ActionHandler {
   ) {}
 
   async handle(agentId: string, { actionDef, parameters }: Action) {
-    actionDef.handle({
+    actionDef.execute({
       context: {
         sourceAgentId: agentId,
         allAgentIds: this.agentIds,
