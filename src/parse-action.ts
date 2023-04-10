@@ -1,5 +1,4 @@
 import { ActionDefinition } from "./module/action-definition";
-import { ModuleManager } from "./module/module-manager";
 import { getUsageText } from "./module/util";
 import { MULTILINE_DELIMITER } from "./util";
 
@@ -17,7 +16,7 @@ export interface Action {
 }
 
 export default function parseAction(
-  dict: ModuleManager,
+  actionDictionary: Map<string, ActionDefinition>,
   text: string
 ): ParseResult {
   try {
@@ -61,7 +60,7 @@ export default function parseAction(
 
     const { name, thoughts, ...parameters } = JSON.parse(jsonText);
 
-    const actionDef = dict.getActionDefinition(name);
+    const actionDef = actionDictionary.get(name);
     if (!actionDef)
       return {
         type: "error",

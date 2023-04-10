@@ -45,7 +45,7 @@ export class Memory {
     return [
       {
         type: "message",
-        message: primer(this.agentId, this.moduleManager.actionDictionary),
+        message: primer(this.agentId, this.moduleManager.actions),
       },
     ];
   }

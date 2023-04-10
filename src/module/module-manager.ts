@@ -1,13 +1,18 @@
 import { ModuleDefinition } from ".";
 import { ActionDefinition } from "./action-definition";
+import { ModuleInstance } from "./module-instance";
 
 export class ModuleManager {
-  actionDictionary: Map<string, ActionDefinition>;
-  private actionToModule: Map<string, ModuleDefinition>;
-  private moduleToState: Map<string, any>;
+  modules: ModuleInstance[];
+  actions: Map<string, ActionDefinition>;
+  private actionToModule: Map<string, ModuleInstance>;
 
   constructor(private agentId: string, moduleDefinitions: ModuleDefinition[]) {
-    this.actionDictionary = moduleDefinitions
+    this.modules = moduleDefinitions.map(
+      (moduleDef) => new ModuleInstance(agentId, moduleDef)
+    );
+
+    this.actions = moduleDefinitions
       .flatMap((module) => Object.values(module.actions))
       .reduce(
         (map, actionDef) => (map.set(actionDef.name, actionDef), map),
@@ -15,32 +20,14 @@ export class ModuleManager {
       );
 
     this.actionToModule = new Map();
-    for (const moduleDef of moduleDefinitions) {
-      for (const actionDef of Object.values(moduleDef.actions)) {
-        this.actionToModule.set(actionDef.name, moduleDef);
+    for (const module of this.modules) {
+      for (const actionDef of Object.values(module.moduleDef.actions)) {
+        this.actionToModule.set(actionDef.name, module);
       }
     }
-
-    this.moduleToState = new Map<string, any>();
   }
 
-  getActionDefinition(name: string): ActionDefinition | undefined {
-    return this.actionToModule.get(name)?.actions[name];
-  }
-
-  getState(actionName: string) {
-    const module = this.actionToModule.get(actionName);
-    if (!module) throw Error(`module not found for action: ${actionName}`);
-
-    if (!module.createState) return undefined;
-
-    let state = this.moduleToState.get(module.name);
-    if (state === undefined)
-      this.moduleToState.set(
-        module.name,
-        (state = module.createState({ agentId: this.agentId }))
-      );
-
-    return state;
+  getModuleForAction(name: string): ModuleInstance | undefined {
+    return this.actionToModule.get(name);
   }
 }

@@ -7,7 +7,12 @@ import { getUsageText } from "./module/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 
-const dict = new ModuleManager("1", [core, notes, messaging, filesystem]);
+const moduleManager = new ModuleManager("1", [
+  core,
+  notes,
+  messaging,
+  filesystem,
+]);
 
 test("case 1", () => {
   assertValid(`
@@ -173,13 +178,13 @@ ${MULTILINE_DELIMITER}
 });
 
 function assertValid(text: string): Action {
-  const result = parseAction(dict, text);
+  const result = parseAction(moduleManager.actions, text);
   if (result.type === "error") throw Error(`Parse failed: ${result.message}`);
   return result.action;
 }
 
 function assertInvalid(text: string): string {
-  const result = parseAction(dict, text);
+  const result = parseAction(moduleManager.actions, text);
   if (result.type === "success")
     throw Error(
       `Parse succeeded when it should've failed: ${JSON.stringify(

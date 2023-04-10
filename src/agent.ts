@@ -61,7 +61,10 @@ export class Agent {
       // Reassign events in case summarization occurred
       events = await this.memory.append({ type: "decision", decision });
 
-      const result = parseAction(this.moduleManager, decision.actionText);
+      const result = parseAction(
+        this.moduleManager.actions,
+        decision.actionText
+      );
       if (result.type === "error") {
         this.messageBus.send(messageBuilder.error(this.id, result.message));
       } else {

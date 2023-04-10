@@ -14,8 +14,8 @@ export default class ActionHandler {
       context: {
         sourceAgentId: agentId,
         allAgentIds: this.agentIds,
-        actionDictionary: this.moduleManager.actionDictionary,
-        state: this.moduleManager.getState(actionDef.name),
+        actionDictionary: this.moduleManager.actions,
+        state: this.moduleManager.getModuleForAction(actionDef.name)!.state,
       },
       parameters,
       sendMessage: (message) => this.messageBus.send(message),
