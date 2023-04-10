@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "oneOf": [
+    {
+      "$id": "heartbeat",
+      "title": "Heartbeat",
+      "description": "A heartbeat event that occurs periodically.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "heartbeat"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    {
+      "$id": "message",
+      "title": "Message",
+      "type": "object",
+      "description": "A message event that is sent between agents.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "message"
+        },
+        "fromId": {
+          "type": "string",
+          "description": "The sender agent's ID."
+        },
+        "toId": {
+          "type": "string",
+          "description": "The receiver agent's ID."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        }
+      },
+      "required": ["type", "fromId", "toId", "message"],
+      "additionalProperties": false
+    }
+  ]
+}
