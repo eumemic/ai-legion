@@ -9,11 +9,11 @@ export class InMemoryMessageBus implements MessageBus {
     this.emitter = new EventEmitter();
   }
 
-  subscribe(listener: (message: Message) => Promise<void>): void {
+  subscribe(listener: (message: Message) => void): void {
     this.emitter.on("message", listener);
   }
 
-  unsubscribe(listener: (message: Message) => Promise<void>): void {
+  unsubscribe(listener: (message: Message) => void): void {
     this.emitter.off("message", listener);
   }
 

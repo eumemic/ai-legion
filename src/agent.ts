@@ -7,8 +7,8 @@ import generateText from "./openai";
 import { parseAction } from "./parsers";
 import TaskQueue from "./task-queue";
 
-const actionInterval = 10000;
-const heartbeatInterval = 60000;
+const actionInterval = 10 * 1000;
+const heartbeatInterval = 5 * 60 * 1000;
 
 export class Agent {
   constructor(
@@ -22,8 +22,7 @@ export class Agent {
 
   // Start this Agent's event loop
   async start() {
-    // Listen for messages sent to us
-    this.messageBus.subscribe(async (message) => {
+    this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
       this.memory.append(message);

@@ -12,7 +12,7 @@ export class RedisMessageBus implements MessageBus {
     this.subscriber = createClient();
   }
 
-  subscribe(listener: (message: Message) => Promise<void>): void {
+  subscribe(listener: (message: Message) => void): void {
     this.subscriber.on("message", (channel, message) => {
       if (channel === this.channel) {
         listener(JSON.parse(message));
@@ -21,7 +21,7 @@ export class RedisMessageBus implements MessageBus {
     this.subscriber.subscribe(this.channel, () => {});
   }
 
-  unsubscribe(listener: (message: Message) => Promise<void>): void {
+  unsubscribe(listener: (message: Message) => void): void {
     this.subscriber.removeListener("message", listener);
     this.subscriber.unsubscribe(this.channel, () => {});
   }
