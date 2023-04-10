@@ -52,10 +52,17 @@ This is another line.
 ${MULTILINE_DELIMITER}
 ${CODE_BLOCK_DELIMITER}
 
-You can see the available actions by using the \`help\` action:
+Do not just make up actions or arguments. You need to discover what actions are available and what specific arguments they take. You can see the available actions by using the \`help\` action:
 
 ${CODE_BLOCK_DELIMITER}
 help
+${CODE_BLOCK_DELIMITER}
+
+Then you can see what arguments a specific action takes with:
+
+${CODE_BLOCK_DELIMITER}
+help
+aboutAction: <action name>
 ${CODE_BLOCK_DELIMITER}
 
 Every time I send you a message, you must decide on an action to take. If there's nothing you feel like you need to do at the moment, you can use the \`no-op\` action.
@@ -69,7 +76,7 @@ In the course of our work I or other agents may assign you tasks, at which point
 
   heartbeat: singleTargetMessageBuilder(
     (agentId) =>
-      `This is your regularly scheduled heartbeat message. Let me know if there's anything you'd like to do by your choice of action.`
+      `This is your regularly scheduled heartbeat message. Is there anything you need to do?`
   ),
 
   listAllActions: singleTargetMessageBuilder(
@@ -141,12 +148,16 @@ ${CODE_BLOCK_DELIMITER}
   generic: (agentId: string, content: string) =>
     singleTargetMessageBuilder(() => content)(agentId),
 
-  agentToAgent: (sourceAgentId, targetAgentIds: string[], content: string) => ({
+  agentToAgent: (
+    sourceAgentId,
+    targetAgentIds: string[] | undefined,
+    content: string
+  ) => ({
     sourceAgentId,
     targetAgentIds,
     openaiMessage: {
       role: sourceAgentId === "0" ? "user" : "assistant",
-      content: annotateContent(sourceAgentId, targetAgentIds, content),
+      content: annotateContent(sourceAgentId, content),
     },
   }),
 
@@ -181,16 +192,12 @@ function singleTargetMessageBuilder(
     targetAgentIds: [agentId],
     openaiMessage: {
       role,
-      content: annotateContent("0", [agentId], getContent(agentId)),
+      content: annotateContent("0", getContent(agentId)),
     },
   });
 }
 
-function annotateContent(
-  sourceAgentId: string,
-  targetAgentIds: string[],
-  content: string
-) {
+function annotateContent(sourceAgentId: string, content: string) {
   return `--- INCOMING MESSAGE FROM ${agentName(
     sourceAgentId
   ).toUpperCase()} ---\n\n${content}`;
