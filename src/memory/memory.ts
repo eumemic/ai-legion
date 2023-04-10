@@ -45,11 +45,17 @@ export class Memory {
 
     const totalTokenCount =
       cumulativeTokenCounts[cumulativeTokenCounts.length - 1];
-    const truncationThreshold = Math.floor(
-      (cumulativeTokenCounts[0] + this.compressionThreshold) / 2
-    );
+    const thresholdOverrun = totalTokenCount - this.compressionThreshold;
+    const truncationThreshold =
+      cumulativeTokenCounts[0] +
+      Math.max(
+        thresholdOverrun,
+        Math.floor((totalTokenCount - cumulativeTokenCounts[0]) / 2)
+      );
 
-    if (totalTokenCount > this.compressionThreshold) {
+    // console.log({ totalTokenCount, thresholdOverrun, truncationThreshold });
+
+    if (thresholdOverrun > 0) {
       for (let i = 1; i < events.length; i++) {
         const precedingTokens = cumulativeTokenCounts[i - 1];
         if (precedingTokens > truncationThreshold) {
