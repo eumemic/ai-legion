@@ -38,7 +38,7 @@ async function main() {
       ),
       messageBuilder.generic(
         id,
-        `Hello Agent 1, this is Control. Perfect, that is a correctly formatted response. Sending a no-op is fine, but are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
+        `Hello Agent 1, this is Control. Perfect, that is a correctly formatted response. Now here is your first task: I'd like you to reach out to other agents in the system and brainstorm ideas for how we can generate revenue for the company. We have a starting budget of $100, and want to create a passive income stream as quickly as possible without requiring any manual labor.`
       )
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);

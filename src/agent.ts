@@ -54,9 +54,9 @@ export class Agent {
     // console.log(`Agent ${this.id} BEFORE`);
     try {
       response = await generateText(this.id, messages);
-    } catch (e) {
-      console.error(e);
-      return;
+      // } catch (e) {
+      //   console.error(e);
+      //   return;
     } finally {
       // console.log(`Agent ${this.id} AFTER`);
     }
