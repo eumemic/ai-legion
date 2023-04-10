@@ -19,6 +19,18 @@
           "additionalProperties": false
         },
         {
+          "title": "QueryAgentRegistryAction",
+          "description": "Ask who the other agents are that I can talk to.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "query-agent-registry"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
           "title": "SendMessageAction",
           "description": "Send a message to another agent.",
           "properties": {

@@ -17,7 +17,7 @@ export interface Message {
 export type StandardMessageType = keyof typeof standardMessages;
 
 export const standardMessages = {
-  primer: singleTargetMessage(
+  primer: singleTargetMessageBuilder(
     (
       agentId
     ) => `You are Agent ${agentId}, and I am Control. Pleased to meet you. You are one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out Actions which you send in response to my messages.
@@ -46,19 +46,18 @@ In the course of our work I or other agents may assign you tasks, at which point
 `
   ),
 
-  heartbeat: singleTargetMessage(
+  heartbeat: singleTargetMessageBuilder(
     (agentId) =>
-      `Hello Agent ${agentId}, this is Control with your regularly scheduled heartbeat message. Let me know if there's anything you'd like to do by your choice of Action.`
+      `This is your regularly scheduled heartbeat message. Let me know if there's anything you'd like to do by your choice of Action.`
   ),
 
-  noResponseError: singleTargetMessage(
-    (agentId) =>
-      `Hello Agent ${agentId}, I did not receive any response, could you try again?`
+  noResponseError: singleTargetMessageBuilder(
+    (agentId) => `I did not receive any response, could you try again?`
   ),
 
-  malformattedResponseError: singleTargetMessage(
+  malformattedResponseError: singleTargetMessageBuilder(
     (agentId) =>
-      `I'm sorry Agent ${agentId}, I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
+      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
   ),
 
   agentResponse: (sourceAgentId: string, content: string): Message => ({
@@ -81,13 +80,18 @@ for (const [standardMessageType, builder] of Object.entries(standardMessages)) {
   });
 }
 
-function singleTargetMessage(getContent: (agentId: string) => string) {
-  return (agentId: string): Message => ({
+function singleTargetMessageBuilder(getContent: (agentId: string) => string) {
+  return (agentId: string): Message =>
+    singleTargetMessage(agentId, getContent(agentId));
+}
+
+export function singleTargetMessage(agentId: string, content: string): Message {
+  return {
     sourceAgentId: "0",
     targetAgentIds: [agentId],
     openaiMessage: {
       role: "system",
-      content: getContent(agentId),
+      content: `Hello Agent ${agentId}, this is Control. ${content}`,
     },
-  });
+  };
 }

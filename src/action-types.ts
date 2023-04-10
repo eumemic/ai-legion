@@ -9,7 +9,7 @@ export interface Action {
   /**
    * The payload that's specific to a particular action.
    */
-  payload: NoOpAction | SendMessageAction;
+  payload: NoOpAction | QueryAgentRegistryAction | SendMessageAction;
   /**
    * Use this field to articulate your thought process in choosing this action.
    */
@@ -20,6 +20,12 @@ export interface Action {
  */
 export interface NoOpAction {
   type: "no-op";
+}
+/**
+ * Ask who the other agents are that I can talk to.
+ */
+export interface QueryAgentRegistryAction {
+  type: "query-agent-registry";
 }
 /**
  * Send a message to another agent.

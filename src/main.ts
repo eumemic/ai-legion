@@ -14,7 +14,7 @@ const numberOfAgents = 1;
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
-const actionHandler = new ActionHandler();
+const actionHandler = new ActionHandler(messageBus);
 
 agentIds.forEach(async (id) => {
   const memory: Memory = new InMemoryMemory(

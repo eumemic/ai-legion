@@ -7,7 +7,7 @@ import { parseAction } from "./parsers";
 import ActionHandler from "./action-handler";
 import { last } from "lodash";
 
-const pollingInterval = 10000;
+const pollingInterval = 60000;
 
 export class Agent {
   constructor(
@@ -42,11 +42,14 @@ export class Agent {
     const messages = await this.memory.retrieve();
 
     let response: Awaited<ReturnType<typeof generateText>>;
+    // console.log("BEFORE");
     try {
       response = await generateText(messages);
     } catch (e) {
       console.error(e);
       return;
+    } finally {
+      // console.log("AFTER");
     }
 
     if (response.status !== 200) {
@@ -71,7 +74,7 @@ export class Agent {
     }
 
     if (result.value) {
-      await this.actionHandler.handle(result.value);
+      await this.actionHandler.handle(this.id, result.value);
     }
   }
 }
