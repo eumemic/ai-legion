@@ -1,8 +1,8 @@
 import { createClient, RedisClientType } from "redis";
 import { Event } from "./event-types";
-import { EventLog } from "./event-log";
+import { EventBus } from "./event-bus";
 
-export class RedisEventLog implements EventLog {
+export class RedisEventBus implements EventBus {
   private publisher: RedisClientType;
   private subscriber: RedisClientType;
   private channel = "eventChannel";

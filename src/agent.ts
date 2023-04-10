@@ -2,7 +2,7 @@ import { ChatCompletionRequestMessage } from "openai";
 import actionDictionary from "../schema/action-dictionary.json";
 import eventDictionary from "../schema/event-dictionary.json";
 import { Action } from "./action-types";
-import { EventLog } from "./event-log";
+import { EventBus } from "./event-bus";
 import { Event } from "./event-types";
 import { Memory } from "./memory";
 import generateText from "./openai";
@@ -11,7 +11,7 @@ import { parseAction } from "./parsers";
 export class Agent {
   constructor(
     public id: string,
-    private eventLog: EventLog,
+    private eventBus: EventBus,
     private memory: Memory
   ) {}
 

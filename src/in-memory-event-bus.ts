@@ -1,8 +1,8 @@
 import { EventEmitter } from "events";
 import { Event } from "./event-types";
-import { EventLog } from "./event-log";
+import { EventBus } from "./event-bus";
 
-export class InMemoryEventLog implements EventLog {
+export class InMemoryEventBus implements EventBus {
   private emitter: EventEmitter;
 
   constructor() {
