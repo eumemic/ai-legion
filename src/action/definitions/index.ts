@@ -1,17 +1,12 @@
 import { keyBy } from "lodash";
 import { ActionDefinition } from "../action-definition";
 import { ActionModule } from "../action-module";
-import coreModule from "./core";
-import filesystemModule from "./filesystem";
-import messagingModule from "./messaging";
-import notesModule from "./notes";
+import core from "./core";
+import filesystem from "./filesystem";
+import messaging from "./messaging";
+import notes from "./notes";
 
-const allActionModules: ActionModule[] = [
-  coreModule,
-  messagingModule,
-  filesystemModule,
-  notesModule,
-];
+const allActionModules: ActionModule[] = [core, messaging, filesystem, notes];
 
 export const allActionDefinitions: ActionDefinition[] =
   allActionModules.flatMap((module) => Object.values(module.actions));

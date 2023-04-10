@@ -5,7 +5,7 @@ import { getUsageText } from "../util";
 export default defineActionModule({
   name: "core",
 }).withActions({
-  "no-op": {
+  noop: {
     description: "Do nothing",
     async handle() {},
   },

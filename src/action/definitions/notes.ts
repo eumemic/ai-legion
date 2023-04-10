@@ -7,7 +7,7 @@ export default defineActionModule<Store>({
   name: "note",
   createState: ({ agentId }) => new FileStore([agentId, "notes"]),
 }).withActions({
-  "write-note": {
+  writeNote: {
     description: "Create or update a note which will only be visible to you.",
     parameters: {
       title: {
@@ -32,7 +32,7 @@ export default defineActionModule<Store>({
     },
   },
 
-  "view-note": {
+  viewNote: {
     description: "Display the content of a note.",
     parameters: {
       title: {
@@ -60,7 +60,7 @@ export default defineActionModule<Store>({
     },
   },
 
-  "list-notes": {
+  listNotes: {
     description: "List the titles of all existing notes.",
     async handle({ context: { sourceAgentId, state }, sendMessage }) {
       const noteTitles = await state.list();
@@ -77,7 +77,7 @@ export default defineActionModule<Store>({
     },
   },
 
-  "delete-note": {
+  deleteNote: {
     description: "Delete a note.",
     parameters: {
       title: {

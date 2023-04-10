@@ -13,7 +13,7 @@ import { defineActionModule } from "../action-module";
 export default defineActionModule({
   name: "filesystem",
 }).withActions({
-  "list-directory": {
+  listDirectory: {
     description: "Inspect the contents of a particular directory",
     parameters: {
       path: {
@@ -46,7 +46,7 @@ export default defineActionModule({
     },
   },
 
-  "read-file": {
+  readFile: {
     description: "Read the contents of a particular file",
     parameters: {
       path: {
@@ -74,7 +74,7 @@ export default defineActionModule({
     },
   },
 
-  "write-file": {
+  writeFile: {
     description: "Write the contents of a particular file",
     parameters: {
       path: {
@@ -102,7 +102,7 @@ export default defineActionModule({
     },
   },
 
-  "move-file": {
+  moveFile: {
     description: "Move a file to a new location",
     parameters: {
       sourcePath: {
@@ -134,7 +134,7 @@ export default defineActionModule({
     },
   },
 
-  "delete-file": {
+  deleteFile: {
     description: "Delete a file",
     parameters: {
       path: {

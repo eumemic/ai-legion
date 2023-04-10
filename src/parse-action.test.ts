@@ -10,7 +10,7 @@ const dict = new ActionDictionary(allActionDefinitions);
 
 test("case 1", () => {
   assertValid(`
-send-message
+sendMessage
 targetAgentId: 0
 message:
 % ff9d7713-0bb0-40d4-823c-5a66de48761b
@@ -23,7 +23,7 @@ This is another line.
 
 test("case 2", () => {
   assertValid(`
-send-message
+sendMessage
 targetAgentId: 0
 message:
 % ff9d7713-0bb0-40d4-823c-5a66de48761b
@@ -39,7 +39,7 @@ This is the third line.
 
 test("case 3", () => {
   assertValid(`
-write-file
+writeFile
 path: ./schema/action-dictionary.json
 content:
 % ff9d7713-0bb0-40d4-823c-5a66de48761b
@@ -79,7 +79,7 @@ content:
 test("invalid multiline with no delimiter", () => {
   expect(
     assertInvalid(`
-send-message
+sendMessage
 targetAgentId: 0
 message: Hello Control, here's a list of things,
 
@@ -95,7 +95,7 @@ message: Hello Control, here's a list of things,
 test("multiline delimiter not starting on its own line", () => {
   expect(
     assertValid(`
-send-message
+sendMessage
 targetAgentId: 0
 message: % ff9d7713-0bb0-40d4-823c-5a66de48761b
 here is a
@@ -127,27 +127,27 @@ test("invalid raw text", () => {
 });
 
 test("missing required parameter", () => {
-  expect(assertInvalid("send-message\ntargetAgentId: 0")).toBe(
+  expect(assertInvalid("sendMessage\ntargetAgentId: 0")).toBe(
     `Missing required parameter \`message\`. ${getUsageText(
-      messaging.actions["send-message"]
+      messaging.actions.sendMessage
     )}`
   );
 });
 
 test("extra parameter", () => {
-  expect(assertInvalid("no-op\nfoo: bar")).toEqual(
-    `Extraneous parameter \`foo\`. ${getUsageText(core.actions["no-op"])}`
+  expect(assertInvalid("noop\nfoo: bar")).toEqual(
+    `Extraneous parameter \`foo\`. ${getUsageText(core.actions.noop)}`
   );
 });
 
 describe("quotes", () => {
   test("in-line parameter", () => {
     const action = assertValid(`
-send-message
+sendMessage
 targetAgentId: 0
 message: hello, "control"
 `);
-    expect(action.actionDef.name).toBe("send-message");
+    expect(action.actionDef.name).toBe("sendMessage");
     expect(action.parameters).toEqual({
       targetAgentId: "0",
       message: 'hello, "control"',
@@ -156,14 +156,14 @@ message: hello, "control"
 
   test("multi-line parameter", () => {
     const action = assertValid(`
-send-message
+sendMessage
 targetAgentId: 0
 message:
 ${MULTILINE_DELIMITER}
 hello, "control"
 ${MULTILINE_DELIMITER}
 `);
-    expect(action.actionDef.name).toBe("send-message");
+    expect(action.actionDef.name).toBe("sendMessage");
     expect(action.parameters).toEqual({
       targetAgentId: "0",
       message: 'hello, "control"',

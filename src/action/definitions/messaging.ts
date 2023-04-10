@@ -5,7 +5,7 @@ import { defineActionModule } from "../action-module";
 export default defineActionModule({
   name: "messaging",
 }).withActions({
-  "query-agent-registry": {
+  queryAgentRegistry: {
     description: "Ask who the other agents are that you can talk to",
     async handle({ context: { sourceAgentId, allAgentIds }, sendMessage }) {
       sendMessage(
@@ -19,7 +19,7 @@ export default defineActionModule({
     },
   },
 
-  "send-message": {
+  sendMessage: {
     description: "Send a message to another agent",
     parameters: {
       targetAgentId: {
@@ -44,7 +44,7 @@ export default defineActionModule({
             sourceAgentId,
             `You tried to send your message to an invalid targetAgentId (${JSON.stringify(
               targetAgentId
-            )}). You can use the 'query-agent-registry' action to see a list of available agents and their agent IDs.`
+            )}). You can use the 'queryAgentRegistry' action to see a list of available agents and their agent IDs.`
           )
         );
       }

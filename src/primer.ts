@@ -25,7 +25,7 @@ ${CODE_BLOCK_DELIMITER}
 Example of a correct response:
 
 ${CODE_BLOCK_DELIMITER}
-write-note
+writeNote
 thoughts: This seems important since it's fundamental to the way I communicate with the system.
 title: Always Remember
 content: Encode every response as an action!
@@ -47,7 +47,7 @@ To get help on a specific action, use the \`help\` action with the \`aboutAction
 
 ${CODE_BLOCK_DELIMITER}
 help
-aboutAction: write-note
+aboutAction: writeNote
 ${CODE_BLOCK_DELIMITER}
 
 Only attempt to invoke actions mentioned in the above list, and always get \`help\` on an action before you invoke it, so that you know what parameters it expects and what they mean.
@@ -57,7 +57,7 @@ Only attempt to invoke actions mentioned in the above list, and always get \`hel
 Example:
 
 ${CODE_BLOCK_DELIMITER}
-write-note
+writeNote
 title: Always Remember
 content:
 ${MULTILINE_DELIMITER}
@@ -85,7 +85,7 @@ help
 aboutAction: <action name>
 ${CODE_BLOCK_DELIMITER}
 
-5) Every time you receive a message, you must decide on an action to take. If there's nothing you feel like you need to do at the moment, you can use the \`no-op\` action.
+5) Every time you receive a message, you must decide on an action to take. If there's nothing you feel like you need to do at the moment, you can use the \`noop\` action.
 
 6) You are not serving a mere advisory role. You are not a chat bot. You are an autonomous entity who invokes actions to accomplish goals.
 `.trim()
