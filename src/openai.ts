@@ -8,12 +8,16 @@ const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
+type ModelName = "gpt-3.5-turbo" | "gpt-4";
+
+const model: ModelName = "gpt-3.5-turbo";
+// const model: ModelName = "gpt-4";
+
 export default function generateText(agentId: string, messages: Message[]) {
   const result = taskQueue.run(async () => {
     // console.log(`Agent ${agentId} reflecting on ${messages.length} messages`);
     const result = await openai().createChatCompletion({
-      model: "gpt-3.5-turbo",
-      // model: "gpt-4",
+      model,
       messages: messages.map((m) => m.openaiMessage),
     });
     // console.log(`Agent ${agentId} arrived at a response`);
@@ -21,7 +25,8 @@ export default function generateText(agentId: string, messages: Message[]) {
   });
 
   // avoid rate limits
-  // result.finally(() => taskQueue.run(() => sleep(openaiDelay)));
+  if (model === "gpt-4")
+    result.finally(() => taskQueue.run(() => sleep(openaiDelay)));
 
   return result;
 }
