@@ -70,7 +70,7 @@ export default defineModule({
           sendMessage(
             messageBuilder.ok(
               agentId,
-              `Here is a summarized markdown version of the page:\n\n${pageSummary}`
+              `Here is a summarized markdown version of the page, in a series of summarized chunks:\n\n${pageSummary}`
             )
           );
         } catch (e: any) {
