@@ -21,14 +21,15 @@ export default class ActionHandler {
         break;
       case "send-message":
         const { targetAgentId } = payload;
-        if (targetAgentId === "0")
-          this.messageBus.send(
-            messageBuilder.generic(
-              agentId,
-              `Thanks for your message, I will forward it to my human counterpart and then get back to you with their response.`
-            )
-          );
-        else if (this.agentIds.includes(payload.targetAgentId))
+        // if (targetAgentId === "0")
+        //   this.messageBus.send(
+        //     messageBuilder.generic(
+        //       agentId,
+        //       `Thanks for your message, I will forward it to my human counterpart and then get back to you with their response.`
+        //     )
+        //   );
+        // else
+        if (this.agentIds.includes(payload.targetAgentId))
           this.messageBus.send(
             messageBuilder.agentToAgent(
               agentId,

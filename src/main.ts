@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import ActionHandler from "./action-handler";
 import { Agent } from "./agent";
+import { startConsole } from "./console";
 import { InMemoryMemory } from "./in-memory-memory";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Memory } from "./memory";
@@ -12,7 +13,7 @@ dotenv.config();
 
 const numberOfAgents = 2;
 
-const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
+const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
 const actionHandler = new ActionHandler(agentIds, messageBus);
@@ -20,7 +21,9 @@ const actionHandler = new ActionHandler(agentIds, messageBus);
 main();
 
 async function main() {
-  for (const id of agentIds) {
+  startConsole(agentIds, messageBus);
+
+  for (const id of agentIds.slice(1)) {
     const memory: Memory = new InMemoryMemory(
       messageBuilder.primer(id),
       messageBuilder.agentResponse(

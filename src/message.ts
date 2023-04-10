@@ -72,10 +72,9 @@ In the course of our work I or other agents may assign you tasks, at which point
   listAgents: (agentId: string, agentIds: string[]) =>
     singleTargetMessageBuilder(
       (agentId) =>
-        `Hello ${agentName(agentId)}, these are the agents in the system:\n\n${[
-          "0",
-          ...agentIds,
-        ]
+        `Hello ${agentName(
+          agentId
+        )}, these are the agents in the system:\n\n${agentIds
           .map((id) => `${agentName(id)} [agentId="${id}"]`)
           .join("\n")}`
     )(agentId),
