@@ -9,7 +9,7 @@ export default defineActionModule<Store>({
   createState: ({ agentId }) => new FileStore([agentId, "notes"]),
   actions: [
     defineAction({
-      name: "create-or-update-note",
+      name: "write-note",
       description:
         "Create a new note if it doesn't exist, or update the content of an existing note.",
       parameters: {
@@ -30,7 +30,7 @@ export default defineActionModule<Store>({
         sendMessage(
           messageBuilder.standard(
             sourceAgentId,
-            `Note "${title}" has been created or updated successfully.`
+            `Note "${title}" has been written successfully.`
           )
         );
       }
