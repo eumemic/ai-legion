@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 import { GPT_3_5_TURBO } from "../../openai";
-import { getPageSummary } from "./web";
+import { getPageSummary, getSearchResults } from "./web";
 
 dotenv.config();
 
 test.skip(
-  "reading and chunking a large page",
+  "getPageSummary",
   async () => {
     await getPageSummary(
       GPT_3_5_TURBO,
@@ -15,6 +15,15 @@ test.skip(
       // "https://platform.openai.com/docs/guides/completion/inserting-text"
       // "https://actions.github.io/authentication/"
     );
+  },
+  5 * 60 * 1000
+);
+
+test.skip(
+  "getSearchResults",
+  async () => {
+    const results = await getSearchResults(`"e/acc" explanation and sources`);
+    console.log(results?.map((item) => item.title).join("\n"));
   },
   5 * 60 * 1000
 );

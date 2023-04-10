@@ -11,8 +11,6 @@ import {
 } from "../../util";
 import { defineModule } from "../define-module";
 
-const customsearch = google.customsearch("v1");
-
 export default defineModule({
   name: "web",
 }).with({
@@ -29,13 +27,9 @@ export default defineModule({
         context: { agentId },
         sendMessage,
       }) {
-        const { data } = await customsearch.cse.list({
-          q: searchString,
-          cx: "e6c81ccb847b94ae1",
-          key: process.env.GOOGLE_API_KEY,
-        });
+        const items = await getSearchResults(searchString);
 
-        if (!data.items) {
+        if (!items) {
           return sendMessage(
             messageBuilder.ok(agentId, "Search returned no results.")
           );
@@ -44,7 +38,7 @@ export default defineModule({
         sendMessage(
           messageBuilder.ok(
             agentId,
-            `Search results:\n\n${data.items
+            `Search results:\n\n${items
               .map((item) => `- Title: "${item.title}"\n  URL: ${item.link}`)
               .join("\n\n")}`
           )
@@ -91,6 +85,15 @@ export default defineModule({
     },
   },
 });
+
+export async function getSearchResults(searchString: string) {
+  const { data } = await google.customsearch("v1").cse.list({
+    q: searchString,
+    cx: "e6c81ccb847b94ae1",
+    key: process.env.GOOGLE_API_KEY,
+  });
+  return data.items;
+}
 
 export async function getPageSummary(
   model: string,
