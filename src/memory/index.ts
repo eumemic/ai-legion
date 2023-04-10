@@ -11,7 +11,6 @@ export interface MessageEvent {
 
 export interface DecisionEvent {
   type: "decision";
-  agentId: string;
   decision: Decision;
 }
 
@@ -20,5 +19,5 @@ export function messageEvent(message: Message): Event {
 }
 
 export function decisionEvent(agentId: string, decision: Decision): Event {
-  return { type: "decision", agentId, decision };
+  return { type: "decision", decision };
 }
