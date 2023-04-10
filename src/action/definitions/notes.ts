@@ -10,8 +10,7 @@ export default defineActionModule<Store>({
   actions: [
     defineAction({
       name: "write-note",
-      description:
-        "Create a new note if it doesn't exist, or update the content of an existing note.",
+      description: "Create or update a note which will only be visible to you.",
       parameters: {
         title: {
           description: "The title of the note",
