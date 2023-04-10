@@ -7,12 +7,11 @@ import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { actionMemento, Memory, messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
+import { numberOfAgents } from "./parameters";
 
 dotenv.config();
 
-const numberOfAgents = 2;
-
-const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i}`);
+const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
 const actionHandler = new ActionHandler(agentIds, messageBus);

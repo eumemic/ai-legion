@@ -2,17 +2,13 @@ import { AxiosError } from "axios";
 import { memoize } from "lodash";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Memento } from "./memory";
+import { model } from "./parameters";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
 
 const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
-
-type ModelName = "gpt-3.5-turbo" | "gpt-4";
-
-const model: ModelName = "gpt-3.5-turbo";
-// const model: ModelName = "gpt-4";
 
 export default function makeDecision(agentId: string, mementos: Memento[]) {
   const name = agentName(agentId);
@@ -37,7 +33,9 @@ export default function makeDecision(agentId: string, mementos: Memento[]) {
         return;
       }
 
-      const actionText = response.data.choices[0].message?.content;
+      const { data } = response;
+      console.log({ usage: data.usage?.total_tokens });
+      const actionText = data.choices[0].message?.content;
       if (!actionText) console.error("no content received");
 
       return actionText;
