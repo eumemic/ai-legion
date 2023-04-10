@@ -2,10 +2,9 @@ import { encode } from "gpt-3-encoder";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder } from "../message";
-import { primer } from "../primer";
+import { ModuleManager } from "../module/module-manager";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
-import { ModuleManager } from "../module/module-manager";
 
 const AVG_WORDS_PER_TOKEN = 0.75;
 
@@ -42,12 +41,15 @@ export class Memory {
   }
 
   private get prefixedEvents(): Event[] {
-    return [
-      {
+    return this.moduleManager.modules.flatMap((module) => {
+      const { pinnedMessage } = module.moduleDef;
+      if (!pinnedMessage) return [];
+
+      return {
         type: "message",
-        message: primer(this.agentId, this.moduleManager.actions),
-      },
-    ];
+        message: pinnedMessage(module.context),
+      };
+    });
   }
 
   private removeErrors(events: Event[]): Event[] {

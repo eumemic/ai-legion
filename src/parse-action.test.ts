@@ -7,12 +7,11 @@ import { getUsageText } from "./module/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 
-const moduleManager = new ModuleManager("1", [
-  core,
-  notes,
-  messaging,
-  filesystem,
-]);
+const moduleManager = new ModuleManager(
+  "1",
+  ["1"],
+  [core, notes, messaging, filesystem]
+);
 
 test("case 1", () => {
   assertValid(`

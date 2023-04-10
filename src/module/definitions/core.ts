@@ -1,10 +1,13 @@
 import { messageBuilder } from "../../message";
+import { primer } from "../../primer";
 import { defineModule } from "../define-module";
 import { getUsageText } from "../util";
 
 export default defineModule({
   name: "core",
 }).with({
+  pinnedMessage: ({ sourceAgentId, actionDictionary }) =>
+    primer(sourceAgentId, actionDictionary),
   actions: {
     noop: {
       description: "Do nothing",

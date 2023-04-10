@@ -3,6 +3,7 @@ import { ActionDefinition, PartialActionDefinition } from "./action-definition";
 
 export interface ModuleDefinition<S = any, A extends string = string>
   extends ModuleDefinitionInputs1<S> {
+  pinnedMessage?: (context: ModuleContext<S>) => Message;
   actions: Record<A, ActionDefinition<S>>;
 }
 

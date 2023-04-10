@@ -27,7 +27,7 @@ async function main() {
   startConsole(agentIds, messageBus);
 
   for (const id of agentIds.slice(1)) {
-    const moduleManager = new ModuleManager(id, [
+    const moduleManager = new ModuleManager(id, agentIds, [
       core,
       notes,
       messaging,

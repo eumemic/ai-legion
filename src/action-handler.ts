@@ -11,12 +11,7 @@ export default class ActionHandler {
 
   async handle(agentId: string, { actionDef, parameters }: Action) {
     actionDef.execute({
-      context: {
-        sourceAgentId: agentId,
-        allAgentIds: this.agentIds,
-        actionDictionary: this.moduleManager.actions,
-        state: this.moduleManager.getModuleForAction(actionDef.name)!.state,
-      },
+      context: this.moduleManager.getModuleForAction(actionDef.name)!.context,
       parameters,
       sendMessage: (message) => this.messageBus.send(message),
     });

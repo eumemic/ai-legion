@@ -7,9 +7,13 @@ export class ModuleManager {
   actions: Map<string, ActionDefinition>;
   private actionToModule: Map<string, ModuleInstance>;
 
-  constructor(private agentId: string, moduleDefinitions: ModuleDefinition[]) {
+  constructor(
+    public agentId: string,
+    public allAgentIds: string[],
+    moduleDefinitions: ModuleDefinition[]
+  ) {
     this.modules = moduleDefinitions.map(
-      (moduleDef) => new ModuleInstance(agentId, moduleDef)
+      (moduleDef) => new ModuleInstance(this, moduleDef)
     );
 
     this.actions = moduleDefinitions
