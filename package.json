@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/postlight__mercury-parser": "^2.2.4",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.37.0",
@@ -22,6 +23,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@postlight/mercury-parser": "^2.2.1",
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.3",
