@@ -1,13 +1,12 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
+import { ActionDictionary } from "./action/action-dictionary";
 import makeDecision from "./make-decision";
 import { Memory } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
-import { ActionDictionary } from "./action/action-dictionary";
-import { model } from "./parameters";
 
 const actionInterval = 10 * 1000;
 const heartbeatInterval = 60 * 1000;
@@ -56,7 +55,7 @@ export class Agent {
     // Do not act again if the last event was a decision
     if (last(events)?.type === "decision") return;
 
-    const decision = await makeDecision(model, this.id, events);
+    const decision = await makeDecision(this.id, events);
 
     // Reassign events in case summarization occurred
     events = await this.memory.append({ type: "decision", decision });

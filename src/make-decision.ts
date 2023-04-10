@@ -4,6 +4,7 @@ import { Event } from "./memory";
 import { Model, createChatCompletion } from "./openai";
 import TaskQueue from "./task-queue";
 import { agentName, messageSourceName, sleep } from "./util";
+import { model } from "./parameters";
 
 const openaiDelay = 10 * 1000;
 
@@ -16,7 +17,6 @@ export interface Decision {
 }
 
 export default function makeDecision(
-  model: Model,
   agentId: string,
   events: Event[]
 ): Promise<Decision> {
