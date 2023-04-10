@@ -62,7 +62,7 @@ export class Agent {
     }
 
     if (response.status !== 200) {
-      console.error(`Non-200 status received: ${status}`);
+      console.error(`Non-200 status received: ${response.status}`);
       return;
     }
 
