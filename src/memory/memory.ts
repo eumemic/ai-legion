@@ -26,10 +26,14 @@ export class Memory {
     }
     events.push(event);
     events = await this.summarize(events);
+
+    const prefixedEvents = await this.getPrefixedEvents();
+
     await this.store.set(
       this.key,
-      JSON.stringify(events.slice(this.prefixedEvents.length), null, 2)
+      JSON.stringify(events.slice(prefixedEvents.length), null, 2)
     );
+
     return events;
   }
 
@@ -37,19 +41,24 @@ export class Memory {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
     // events.forEach((event) => this.printEvent(event));
-    return [...this.prefixedEvents, ...events];
+    return [...(await this.getPrefixedEvents()), ...events];
   }
 
-  private get prefixedEvents(): Event[] {
-    return this.moduleManager.modules.flatMap((module) => {
-      const { pinnedMessage } = module.moduleDef;
-      if (!pinnedMessage) return [];
+  private async getPrefixedEvents(): Promise<Event[]> {
+    const nestedEvents = await Promise.all(
+      this.moduleManager.modules.map(async (module): Promise<Event[]> => {
+        const { pinnedMessage } = module.moduleDef;
+        if (!pinnedMessage) return [];
 
-      return {
-        type: "message",
-        message: pinnedMessage(module.context),
-      };
-    });
+        return [
+          {
+            type: "message",
+            message: await pinnedMessage(module.context),
+          },
+        ];
+      })
+    );
+    return nestedEvents.flat();
   }
 
   private removeErrors(events: Event[]): Event[] {
@@ -100,11 +109,13 @@ export class Memory {
       `Token count: ${totalTokenCount}\nRemaining context space: ${-thresholdOverrun}`
     );
 
+    const prefixedEvents = await this.getPrefixedEvents();
+
     if (thresholdOverrun > 0) {
-      for (let i = this.prefixedEvents.length; i < events.length; i++) {
+      for (let i = prefixedEvents.length; i < events.length; i++) {
         const precedingTokens = cumulativeTokenCounts[i - 1];
         if (precedingTokens > truncationThreshold) {
-          // const summarizedEvents = events.slice(this.prefixedEvents.length, i);
+          // const summarizedEvents = events.slice(prefixedEvents.length, i);
 
           const summaryWordLimit = Math.floor(
             (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6

@@ -6,7 +6,7 @@ import { getUsageText } from "../util";
 export default defineModule({
   name: "core",
 }).with({
-  pinnedMessage: ({ sourceAgentId, actionDictionary }) =>
+  pinnedMessage: async ({ sourceAgentId, actionDictionary }) =>
     primer(sourceAgentId, actionDictionary),
   actions: {
     noop: {
