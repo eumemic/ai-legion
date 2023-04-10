@@ -21,7 +21,7 @@ export default defineModule<Store<Goal[]>>({
       ? `This is your current goal list:\n\n${goals
           .map(
             ({ text, complete }, index) =>
-              `${index + 1}) ${text} [${complete ? "COMPLETE" : "PENDING"}]`
+              `${index + 1}) "${text}" [${complete ? "COMPLETE" : "PENDING"}]`
           )
           .join("\n")}`
       : "You have no goals currently.";

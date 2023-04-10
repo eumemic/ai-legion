@@ -11,7 +11,7 @@ export default defineModule<Store>({
     const noteTitles = await state.getKeys();
     const currentNotes = noteTitles.length
       ? `Here are your current notes:\n\n${noteTitles
-          .map((title) => `- ${title}`)
+          .map((title) => `- "${title}"`)
           .join("\n")}`
       : "Your have no notes currently.";
     return `
