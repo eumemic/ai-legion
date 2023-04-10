@@ -1,6 +1,11 @@
 import { AxiosError } from "axios";
 import { memoize } from "lodash";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import {
+  ChatCompletionRequestMessage,
+  Configuration,
+  CreateCompletionResponseUsage,
+  OpenAIApi,
+} from "openai";
 import { Event } from "./memory";
 import { model } from "./parameters";
 import TaskQueue from "./task-queue";
@@ -12,7 +17,7 @@ const taskQueue = new TaskQueue();
 
 export interface Decision {
   actionText: string;
-  usage: number;
+  usage: CreateCompletionResponseUsage;
 }
 
 export default function makeDecision(
@@ -48,17 +53,13 @@ export default function makeDecision(
         return;
       }
 
-      const usage = data.usage?.total_tokens;
+      const usage = data.usage;
       if (usage === undefined) {
-        console.warn("no usage reported");
-      } else {
-        console.log({ usage });
+        console.error("no usage reported");
+        return;
       }
 
-      return {
-        actionText,
-        usage: usage || 0,
-      };
+      return { actionText, usage };
     } catch (e: any) {
       const { response }: AxiosError = e;
       switch (response?.status) {
