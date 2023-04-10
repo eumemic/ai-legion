@@ -62,7 +62,7 @@ targetAgentId: 0
 message: Hello, Control!
 ${CODE_BLOCK_DELIMITER}
 
-You can write multi-line argument values delimited with the sentinal value "${MULTILINE_DELIMITER}", like so:
+You can write multi-line parameter values delimited with the sentinal value "${MULTILINE_DELIMITER}", like so:
 
 ${CODE_BLOCK_DELIMITER}
 send-message
@@ -75,13 +75,13 @@ This is another line.
 ${MULTILINE_DELIMITER}
 ${CODE_BLOCK_DELIMITER}
 
-Do not just make up actions or arguments. You need to discover what actions are available and what specific arguments they take. You can see the available actions by using the \`help\` action:
+Do not just make up actions or parameters. You need to discover what actions are available and what specific parameters they take. You can see the available actions by using the \`help\` action:
 
 ${CODE_BLOCK_DELIMITER}
 help
 ${CODE_BLOCK_DELIMITER}
 
-Then you can see what arguments a specific action takes with:
+Then you can see what parameters a specific action takes with:
 
 ${CODE_BLOCK_DELIMITER}
 help
@@ -107,7 +107,7 @@ In the course of your work you may be assigned tasks by other agents, at which p
 
 ${dict.definitions.map((actionDef) => actionDef.name).join("\n")}
 
-To get help on a specific action, use the \`help\` action with the \`aboutAction\` argument set to the name of the action you want help with. For example:
+To get help on a specific action, use the \`help\` action with the \`aboutAction\` parameter set to the name of the action you want help with. For example:
 
 ${CODE_BLOCK_DELIMITER}
 help
@@ -137,7 +137,7 @@ ${actionDef.name}${Object.entries(actionDef.parameters)
             )
             .map((part) => `\n${part}`)}
 ${CODE_BLOCK_DELIMITER}`
-        : `Unknown action \`${aboutAction}\`. Try using \`help\` with no arguments to see what actions are available.`
+        : `Unknown action \`${aboutAction}\`. Try using \`help\` with no parameters to see what actions are available.`
     );
   },
 

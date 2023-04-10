@@ -57,7 +57,7 @@ newContent:
         },
         "exampleArg": {
           "type": "string",
-          "description": "An example argument for the new action definition."
+          "description": "An example parameter for the new action definition."
         }
       },
       "required": [
@@ -78,9 +78,9 @@ test("invalid command name", () => {
   );
 });
 
-test("missing required argument", () => {
+test("missing required parameter", () => {
   expect(assertInvalid("send-message\ntargetAgentId: 0")).toEqual(
-    `Missing required argument \`message\`. Usage:
+    `Missing required parameter \`message\`. Usage:
 
 \`\`\`
 send-message
@@ -90,9 +90,9 @@ message: <the content of the message>
   );
 });
 
-test("extra argument", () => {
+test("extra parameter", () => {
   expect(assertInvalid("no-op\nfoo: bar")).toEqual(
-    `Extraneous argument \`foo\`. Usage:
+    `Extraneous parameter \`foo\`. Usage:
 
 \`\`\`
 no-op

@@ -62,7 +62,7 @@ export default function parseAction(
     if (missingProps.length) {
       return {
         type: "error",
-        message: `Missing required argument${
+        message: `Missing required parameter${
           missingProps.length > 1 ? "s" : ""
         } ${missingProps.map((p) => `\`${p}\``)}. ${getUsageText(actionDef)}`,
       };
@@ -74,7 +74,7 @@ export default function parseAction(
     if (extraProps.length) {
       return {
         type: "error",
-        message: `Extraneous argument${
+        message: `Extraneous parameter${
           extraProps.length > 1 ? "s" : ""
         } ${extraProps.map((p) => `\`${p}\``)}. ${getUsageText(actionDef)}`,
       };
