@@ -1,5 +1,4 @@
-import { memoize } from "lodash";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage } from "openai";
 import { Event } from "./memory";
 import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
@@ -47,20 +46,10 @@ export default function makeDecision(
 }
 
 // lazy load to avoid accessing OPENAI_API_KEY before env has been loaded
-const openai = memoize(() => {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw Error("OPENAI_API_KEY is not configured!");
-
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  return new OpenAIApi(configuration);
-});
-
 export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
   switch (event.type) {
-    case "message":
-      let { type: messageType, source, content } = event.message;
+    case "message": {
+      const { type: messageType, source, content } = event.message;
       const role = source.type === "system" ? "system" : "user";
       let header: string;
       switch (messageType) {
@@ -76,17 +65,19 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
         role,
         content: `--- ${header} ---\n\n${content}`,
       };
+    }
     case "decision":
       return {
         role: "assistant",
         content: event.decision.actionText,
       };
-    case "summary":
+    case "summary": {
       const { summary } = event;
       const summarizedContent = `Several events are omitted here to free up space in your context window, summarized as follows:\n\n${summary}`;
       return {
         role: "system",
         content: summarizedContent,
       };
+    }
   }
 }

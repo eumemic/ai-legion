@@ -1,5 +1,3 @@
-import { isEmpty } from "lodash";
-
 type Task<T = void> = () => Promise<T>;
 
 export default class TaskQueue {

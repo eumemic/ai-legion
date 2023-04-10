@@ -1,5 +1,4 @@
 import { encode } from "gpt-3-encoder";
-import { isEmpty } from "lodash";
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder, primerMessage } from "../message";
@@ -61,7 +60,7 @@ export class Memory {
       for (let i = 1; i < events.length; i++) {
         const precedingTokens = cumulativeTokenCounts[i - 1];
         if (precedingTokens > truncationThreshold) {
-          const summarizedEvents = events.slice(1, i);
+          // const summarizedEvents = events.slice(1, i);
 
           const summaryWordLimit = Math.floor(
             (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6

@@ -14,8 +14,7 @@ export interface PartialActionDefinition<P extends string = never> {
   parameters?: Record<P, PartialParameterDefinition>;
 }
 
-export interface ParameterDefinition
-  extends Required<PartialParameterDefinition> {}
+export type ParameterDefinition = Required<PartialParameterDefinition>;
 
 export interface PartialParameterDefinition {
   description: string;

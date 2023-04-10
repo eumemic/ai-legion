@@ -9,7 +9,7 @@ import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 
 const actionInterval = 10 * 1000;
-const heartbeatInterval = 60 * 1000;
+// const heartbeatInterval = 60 * 1000;
 
 export class Agent {
   constructor(

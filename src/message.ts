@@ -1,5 +1,3 @@
-import { ActionDefinition } from "./action/action-definition";
-import { ActionDictionary } from "./action/action-dictionary";
 import { agentName, MULTILINE_DELIMITER } from "./util";
 
 export interface Message {

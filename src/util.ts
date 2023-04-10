@@ -1,5 +1,4 @@
-import { ChatCompletionRequestMessage } from "openai";
-import { Message, MessageSource } from "./message";
+import { MessageSource } from "./message";
 
 export function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
