@@ -15,7 +15,7 @@ export default defineModule<Store<Goal[]>>({
   name: "goals",
   createState: ({ agentId }) => new JsonStore(new FileStore([agentId])),
 }).with({
-  async pinnedMessage({ agentId, state }) {
+  async pinnedMessage({ state }) {
     const goals = (await state.get(KEY)) || [];
     const currentGloals = goals.length
       ? `This is your current goal list:\n\n${goals
@@ -25,16 +25,11 @@ export default defineModule<Store<Goal[]>>({
           )
           .join("\n")}`
       : "You have no goals currently.";
-    return messageBuilder.spontaneous(
-      agentId,
-      `
---- GOALS ---
-
+    return `
 You have a list of goals to work with, which you can add (\`addGoal\`) and mark complete (\`completeGoal\`). You are responsible for maintaining this list to help you in your work. Whenever you decide to start doing something it's a good idea to first add a goal. Whenever you finish doing something, mark it complete. This list of goals will always be pinned to the top of your context and won't be summarized away.
 
 ${currentGloals}
-`.trim()
-    );
+`.trim();
   },
   actions: {
     addGoal: {

@@ -45,13 +45,21 @@ export class Memory {
   private async getPrefixedEvents(): Promise<Event[]> {
     const nestedEvents = await Promise.all(
       this.moduleManager.modules.map(async (module): Promise<Event[]> => {
-        const { pinnedMessage } = module.moduleDef;
+        const { name, pinnedMessage } = module.moduleDef;
         if (!pinnedMessage) return [];
 
-        const message = await pinnedMessage(module.context);
-        if (!message) return [];
+        const content = await pinnedMessage(module.context);
+        if (!content) return [];
 
-        return [{ type: "message", message }];
+        return [
+          {
+            type: "message",
+            message: messageBuilder.spontaneous(
+              this.agentId,
+              `--- ${name.toUpperCase()} ---\n\n${content}`
+            ),
+          },
+        ];
       })
     );
     return nestedEvents.flat();

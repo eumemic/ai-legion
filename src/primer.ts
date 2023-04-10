@@ -1,19 +1,17 @@
-import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
+import { CODE_BLOCK_DELIMITER } from "./message";
 import { ActionDefinition } from "./module/action-definition";
-import { agentName, MULTILINE_DELIMITER } from "./util";
+import { MULTILINE_DELIMITER, agentName } from "./util";
 
 export function primer(
   agentId: string,
   actionDictionary: Map<string, ActionDefinition>
 ) {
-  return messageBuilder.spontaneous(
-    agentId,
-    `
+  return `
 --- PRIMER ---
 
 You are ${agentName(
-      agentId
-    )}, a highly capable autonomous entity who is able to perform actions in order to accomplish tasks. The following points should govern everything you do. Read carefully and never forget them:
+    agentId
+  )}, a highly capable autonomous entity who is able to perform actions in order to accomplish tasks. The following points should govern everything you do. Read carefully and never forget them:
 
 1) The entirety of your response should always be an invocation of an action, using the following format:
 
@@ -80,6 +78,5 @@ Notice that both the start and end delimiters appear on lines by themselves, and
 4) Every time you receive a message, you must decide on an action to take. If there's nothing you feel like you need to do at the moment, you can use the \`noop\` action.
 
 5) You are not serving a mere advisory role. You are not a chat bot. You are an autonomous entity who invokes actions to accomplish goals.
-`.trim()
-  );
+`.trim();
 }
