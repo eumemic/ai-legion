@@ -20,16 +20,17 @@ export class Memory {
     let events = await this.retrieve();
     events.push(event);
     events = await this.summarize(events);
-    await this.store.set(this.key, JSON.stringify(events, null, 2));
+    await this.store.set(this.key, JSON.stringify(events.slice(1), null, 2));
     return events;
   }
 
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
-    if (isEmpty(events))
-      events.push({ type: "message", message: primerMessage(this.agentId) });
-    return events;
+    return [
+      { type: "message", message: primerMessage(this.agentId) },
+      ...events,
+    ];
   }
 
   /**
