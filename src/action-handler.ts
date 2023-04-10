@@ -18,11 +18,17 @@ export default class ActionHandler {
       //     )
       //   );
       //   break;
+      case "help":
+        if (!action.aboutAction) {
+          this.messageBus.send(messageBuilder.listAllActions(agentId));
+        } else {
+          this.messageBus.send(
+            messageBuilder.helpOnAction(agentId, action.aboutAction)
+          );
+        }
+        break;
       case "query-agent-registry":
         this.messageBus.send(messageBuilder.listAgents(agentId, this.agentIds));
-        break;
-      case "view-action-dictionary":
-        this.messageBus.send(messageBuilder.showActionDictionary(agentId));
         break;
       case "send-message":
         const { targetAgentId } = action;

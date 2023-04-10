@@ -5,7 +5,7 @@
   "oneOf": [
     {
       "title": "NoOpAction",
-      "description": "Do nothing.",
+      "description": "Do nothing",
       "properties": {
         "name": {
           "type": "string",
@@ -16,12 +16,16 @@
       "additionalProperties": false
     },
     {
-      "title": "ViewActionDictionaryAction",
-      "description": "View the Action Dictionary which describes how to validly format your responses in JSON.",
+      "title": "HelpAction",
+      "description": "Get help on a specific action, or list all available actions",
       "properties": {
         "name": {
           "type": "string",
-          "const": "view-action-dictionary"
+          "const": "help"
+        },
+        "aboutAction": {
+          "type": "string",
+          "description": "The name of an action to get help on"
         }
       },
       "required": ["name"],
@@ -29,7 +33,7 @@
     },
     {
       "title": "QueryAgentRegistryAction",
-      "description": "Ask who the other agents are that I can talk to.",
+      "description": "Ask who the other agents are that I can talk to",
       "properties": {
         "name": {
           "type": "string",
@@ -41,7 +45,7 @@
     },
     {
       "title": "SendMessageAction",
-      "description": "Send a message to another agent.",
+      "description": "Send a message to another agent",
       "properties": {
         "name": {
           "type": "string",
@@ -49,11 +53,11 @@
         },
         "targetAgentId": {
           "type": "string",
-          "description": "The target agent's ID."
+          "description": "The target agent's ID"
         },
         "message": {
           "type": "string",
-          "description": "The content of the message."
+          "description": "The content of the message"
         }
       },
       "required": ["name", "targetAgentId", "message"],
@@ -61,7 +65,7 @@
     },
     {
       "title": "ListDirectory",
-      "description": "Inspect the contents of a particular directory.",
+      "description": "Inspect the contents of a particular directory",
       "properties": {
         "name": {
           "type": "string",
@@ -69,7 +73,7 @@
         },
         "path": {
           "type": "string",
-          "description": "The path of the directory you want to inspect."
+          "description": "The path of the directory you want to inspect"
         }
       },
       "required": ["name", "path"],
@@ -77,7 +81,7 @@
     },
     {
       "title": "ReadFile",
-      "description": "Read the contents of a particular file.",
+      "description": "Read the contents of a particular file",
       "properties": {
         "name": {
           "type": "string",
@@ -85,7 +89,7 @@
         },
         "path": {
           "type": "string",
-          "description": "The path of the file you want to inspect."
+          "description": "The path of the file you want to inspect"
         }
       },
       "required": ["name", "path"],
@@ -93,7 +97,7 @@
     },
     {
       "title": "WriteFile",
-      "description": "Write the contents of a particular file.",
+      "description": "Write the contents of a particular file",
       "properties": {
         "name": {
           "type": "string",
@@ -101,11 +105,11 @@
         },
         "path": {
           "type": "string",
-          "description": "The path of the file you want to write to."
+          "description": "The path of the file you want to write to"
         },
         "newContent": {
           "type": "string",
-          "description": "The new content of the file."
+          "description": "The new content of the file"
         }
       },
       "required": ["name", "path", "newContent"],

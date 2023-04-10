@@ -7,7 +7,7 @@
 
 export type Action =
   | NoOpAction
-  | ViewActionDictionaryAction
+  | HelpAction
   | QueryAgentRegistryAction
   | SendMessageAction
   | ListDirectory
@@ -21,10 +21,14 @@ export interface NoOpAction {
   name: "no-op";
 }
 /**
- * View the Action Dictionary which describes how to validly format your responses in JSON.
+ * Get help on a specific action, or list all available actions.
  */
-export interface ViewActionDictionaryAction {
-  name: "view-action-dictionary";
+export interface HelpAction {
+  name: "help";
+  /**
+   * The name of an action to get help on.
+   */
+  aboutAction?: string;
 }
 /**
  * Ask who the other agents are that I can talk to.

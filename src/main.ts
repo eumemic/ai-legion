@@ -24,7 +24,11 @@ async function main() {
   startConsole(agentIds, messageBus);
 
   for (const id of agentIds.slice(1)) {
-    const memory: Memory = new InMemoryMemory(messageBuilder.primer(id));
+    const memory: Memory = new InMemoryMemory(
+      messageBuilder.primer(id),
+      messageBuilder.agentResponse(id, "help"),
+      messageBuilder.listAllActions(id)
+    );
     const agent = new Agent(id, memory, messageBus, actionHandler);
     await agent.start();
   }
