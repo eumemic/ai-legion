@@ -23,10 +23,8 @@ export class InMemoryMemory implements Memory {
 
 function printMessage(message: Message) {
   console.log(
-    `${agentName(message.sourceAgentId)} -> ${message.targetAgentIds
-      ?.map(agentName)
-      .join(
-        ","
-      )}:\n\n${message.openaiMessage.content.trim()}\n\n=============\n`
+    `${agentName(message.sourceAgentId)} -> ${
+      message.targetAgentIds?.map(agentName).join(",") || "all agents"
+    }:\n\n${message.openaiMessage.content.trim()}\n\n=============\n`
   );
 }
