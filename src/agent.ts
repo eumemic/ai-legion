@@ -1,7 +1,7 @@
 import { Action } from "./action-types";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import { Message, standardMessages } from "./message";
+import { Message, messageBuilder } from "./message";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
 import ActionHandler from "./action-handler";
@@ -32,8 +32,8 @@ export class Agent {
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
       const messages = await this.memory.retrieve();
       const lastMessage = last(messages);
-      if (lastMessage?.standardMessageType === "agentResponse") {
-        this.messageBus.send(standardMessages.heartbeat(this.id));
+      if (lastMessage?.messageType === "agentResponse") {
+        this.messageBus.send(messageBuilder.heartbeat(this.id));
       }
     }
   }
@@ -59,17 +59,17 @@ export class Agent {
 
     const responseContent = response.data.choices[0].message?.content;
     if (!responseContent) {
-      this.messageBus.send(standardMessages.noResponseError(this.id));
+      this.messageBus.send(messageBuilder.noResponseError(this.id));
       return;
     }
 
     await this.memory.append(
-      standardMessages.agentResponse(this.id, responseContent)
+      messageBuilder.agentResponse(this.id, responseContent)
     );
 
     const result = parseAction(responseContent);
     if (result.type === "error") {
-      this.messageBus.send(standardMessages.malformattedResponseError(this.id));
+      this.messageBus.send(messageBuilder.malformattedResponseError(this.id));
       return;
     }
 

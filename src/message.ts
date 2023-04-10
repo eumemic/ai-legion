@@ -5,7 +5,7 @@ import {
 } from "openai";
 
 export interface Message {
-  standardMessageType?: StandardMessageType;
+  messageType: MessageType;
   sourceAgentId: string;
   /**
    * If left unspecified, indicates the message should be broadcast to all agents.
@@ -14,9 +14,9 @@ export interface Message {
   openaiMessage: ChatCompletionRequestMessage;
 }
 
-export type StandardMessageType = keyof typeof standardMessages;
+export type MessageType = keyof typeof messageBuilder;
 
-export const standardMessages = {
+export const messageBuilder = addMessageTypes({
   primer: singleTargetMessageBuilder(
     (
       agentId
@@ -60,7 +60,10 @@ In the course of our work I or other agents may assign you tasks, at which point
       `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
   ),
 
-  agentResponse: (sourceAgentId: string, content: string): Message => ({
+  generic: (agentId: string, content: string) =>
+    singleTargetMessageBuilder(() => content)(agentId),
+
+  agentResponse: (sourceAgentId: string, content: string) => ({
     sourceAgentId,
     targetAgentIds: ["0"],
     openaiMessage: {
@@ -68,30 +71,29 @@ In the course of our work I or other agents may assign you tasks, at which point
       content,
     },
   }),
-};
+});
 
-// Add standardMessageType field to all standardMessages
-for (const [standardMessageType, builder] of Object.entries(standardMessages)) {
-  standardMessages[standardMessageType as StandardMessageType] = (
-    ...args: any
-  ) => ({
-    standardMessageType,
-    ...(builder as any)(...args),
-  });
+function addMessageTypes<
+  T extends Record<string, (...args: any) => Omit<Message, "messageType">>
+>(record: T): { [K in keyof T]: (...args: Parameters<T[K]>) => Message } {
+  for (const [standardMessageType, builder] of Object.entries(record)) {
+    (record as any)[standardMessageType] = (...args: any) => ({
+      messageType: standardMessageType,
+      ...(builder as any)(...args),
+    });
+  }
+  return record as any;
 }
 
 function singleTargetMessageBuilder(getContent: (agentId: string) => string) {
-  return (agentId: string): Message =>
-    singleTargetMessage(agentId, getContent(agentId));
-}
-
-export function singleTargetMessage(agentId: string, content: string): Message {
-  return {
+  return (agentId: string): Omit<Message, "messageType"> => ({
     sourceAgentId: "0",
     targetAgentIds: [agentId],
     openaiMessage: {
       role: "system",
-      content: `Hello Agent ${agentId}, this is Control. ${content}`,
+      content: `Hello Agent ${agentId}, this is Control. ${getContent(
+        agentId
+      )}`,
     },
-  };
+  });
 }
