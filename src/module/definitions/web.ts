@@ -18,7 +18,7 @@ export default defineModule({
       },
       async execute({
         parameters: { searchString },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
         const { data } = await customsearch.cse.list({
@@ -29,13 +29,13 @@ export default defineModule({
 
         if (!data.items) {
           return sendMessage(
-            messageBuilder.ok(sourceAgentId, "Search returned no results.")
+            messageBuilder.ok(agentId, "Search returned no results.")
           );
         }
 
         sendMessage(
           messageBuilder.ok(
-            sourceAgentId,
+            agentId,
             `Search results:\n\n${data.items
               .map((item) => `- Title: "${item.title}"\n  URL: ${item.link}`)
               .join("\n\n")}`
@@ -54,7 +54,7 @@ export default defineModule({
       },
       async execute({
         parameters: { url },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
         try {
@@ -65,7 +65,7 @@ export default defineModule({
 
           sendMessage(
             messageBuilder.ok(
-              sourceAgentId,
+              agentId,
               `Title: ${extractedData.title || "Unknown"}\n\nAuthor: ${
                 extractedData.author || "Unknown"
               }\n\nPublication Date: ${
@@ -76,7 +76,7 @@ export default defineModule({
         } catch (e: any) {
           sendMessage(
             messageBuilder.error(
-              sourceAgentId,
+              agentId,
               `Error extracting content from ${url}: ${e.message}`
             )
           );

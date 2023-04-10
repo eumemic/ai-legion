@@ -7,10 +7,10 @@ export default defineModule<Store>({
   name: "note",
   createState: ({ agentId }) => new FileStore([agentId, "notes"]),
 }).with({
-  async pinnedMessage({ sourceAgentId, state }) {
+  async pinnedMessage({ agentId, state }) {
     const noteTitles = await state.list();
     return messageBuilder.ok(
-      sourceAgentId,
+      agentId,
       noteTitles.length
         ? `Here are your current notes:\n\n${noteTitles
             .map((title) => `- ${title}`)
@@ -31,13 +31,13 @@ export default defineModule<Store>({
       },
       async execute({
         parameters: { title, content },
-        context: { sourceAgentId, state },
+        context: { agentId, state },
         sendMessage,
       }) {
         await state.set(title, content);
         sendMessage(
           messageBuilder.ok(
-            sourceAgentId,
+            agentId,
             `Note "${title}" has been written successfully.`
           )
         );
@@ -53,20 +53,17 @@ export default defineModule<Store>({
       },
       async execute({
         parameters: { title },
-        context: { sourceAgentId, state },
+        context: { agentId, state },
         sendMessage,
       }) {
         const content = await state.get(title);
         if (content) {
           sendMessage(
-            messageBuilder.ok(
-              sourceAgentId,
-              `Content of "${title}":\n\n${content}`
-            )
+            messageBuilder.ok(agentId, `Content of "${title}":\n\n${content}`)
           );
         } else {
           sendMessage(
-            messageBuilder.error(sourceAgentId, `Note "${title}" not found.`)
+            messageBuilder.error(agentId, `Note "${title}" not found.`)
           );
         }
       },
@@ -81,16 +78,14 @@ export default defineModule<Store>({
       },
       async execute({
         parameters: { title },
-        context: { sourceAgentId, state },
+        context: { agentId, state },
         sendMessage,
       }) {
         if (await state.delete(title)) {
-          sendMessage(
-            messageBuilder.ok(sourceAgentId, `Deleted note "${title}".`)
-          );
+          sendMessage(messageBuilder.ok(agentId, `Deleted note "${title}".`));
         } else {
           sendMessage(
-            messageBuilder.error(sourceAgentId, `Note "${title}" not found.`)
+            messageBuilder.error(agentId, `Note "${title}" not found.`)
           );
         }
       },

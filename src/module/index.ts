@@ -22,7 +22,7 @@ export interface ModuleStateInputs {
 }
 
 export interface ModuleContext<S> {
-  sourceAgentId: string;
+  agentId: string;
   allAgentIds: string[];
   actionDictionary: Map<string, ActionDefinition>;
   state: S;

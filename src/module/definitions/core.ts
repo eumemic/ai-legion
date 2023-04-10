@@ -6,8 +6,8 @@ import { getUsageText } from "../util";
 export default defineModule({
   name: "core",
 }).with({
-  pinnedMessage: async ({ sourceAgentId, actionDictionary }) =>
-    primer(sourceAgentId, actionDictionary),
+  pinnedMessage: async ({ agentId, actionDictionary }) =>
+    primer(agentId, actionDictionary),
   actions: {
     noop: {
       description: "Do nothing",
@@ -24,21 +24,19 @@ export default defineModule({
       },
       async execute({
         parameters: { aboutAction },
-        context: { sourceAgentId, actionDictionary },
+        context: { agentId, actionDictionary },
         sendMessage,
       }) {
         const actionDef = actionDictionary.get(aboutAction);
         if (!actionDef) {
           sendMessage(
             messageBuilder.error(
-              sourceAgentId,
+              agentId,
               `Unknown action \`${aboutAction}\`. Please refer to the list of available actions given in section 2 of the primer.`
             )
           );
         } else {
-          sendMessage(
-            messageBuilder.ok(sourceAgentId, getUsageText(actionDef))
-          );
+          sendMessage(messageBuilder.ok(agentId, getUsageText(actionDef)));
         }
       },
     },

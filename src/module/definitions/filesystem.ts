@@ -23,10 +23,10 @@ export default defineModule({
       },
       async execute({
         parameters: { path },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+        if (!checkPath(agentId, path, sendMessage)) return;
 
         try {
           const files = await readdir(path);
@@ -37,12 +37,12 @@ export default defineModule({
           const filesWithStats = await Promise.all(filesWithStatsPromises);
           sendMessage(
             messageBuilder.ok(
-              sourceAgentId,
+              agentId,
               `Here are the contents of ${path}:\n${filesWithStats.join("\n")}`
             )
           );
         } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
       },
     },
@@ -56,18 +56,18 @@ export default defineModule({
       },
       async execute({
         parameters: { path },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+        if (!checkPath(agentId, path, sendMessage)) return;
 
         try {
           const data = await readFile(path, "utf8");
           sendMessage(
-            messageBuilder.ok(sourceAgentId, `Contents of ${path}:\n\n${data}`)
+            messageBuilder.ok(agentId, `Contents of ${path}:\n\n${data}`)
           );
         } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
       },
     },
@@ -84,16 +84,16 @@ export default defineModule({
       },
       async execute({
         parameters: { path, content },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+        if (!checkPath(agentId, path, sendMessage)) return;
 
         try {
           await writeFile(path, content, "utf8");
-          sendMessage(messageBuilder.ok(sourceAgentId, `Wrote to ${path}.`));
+          sendMessage(messageBuilder.ok(agentId, `Wrote to ${path}.`));
         } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
       },
     },
@@ -110,22 +110,22 @@ export default defineModule({
       },
       async execute({
         parameters: { sourcePath, destinationPath },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
-        if (!checkPath(sourceAgentId, sourcePath, sendMessage)) return;
-        if (!checkPath(sourceAgentId, destinationPath, sendMessage)) return;
+        if (!checkPath(agentId, sourcePath, sendMessage)) return;
+        if (!checkPath(agentId, destinationPath, sendMessage)) return;
 
         try {
           await rename(sourcePath, destinationPath);
           sendMessage(
             messageBuilder.ok(
-              sourceAgentId,
+              agentId,
               `Moved ${sourcePath} to ${destinationPath}.`
             )
           );
         } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
       },
     },
@@ -139,16 +139,16 @@ export default defineModule({
       },
       async execute({
         parameters: { path },
-        context: { sourceAgentId },
+        context: { agentId },
         sendMessage,
       }) {
-        if (!checkPath(sourceAgentId, path, sendMessage)) return;
+        if (!checkPath(agentId, path, sendMessage)) return;
 
         try {
           await unlink(path);
-          sendMessage(messageBuilder.ok(sourceAgentId, `Deleted ${path}.`));
+          sendMessage(messageBuilder.ok(agentId, `Deleted ${path}.`));
         } catch (err) {
-          sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
       },
     },
