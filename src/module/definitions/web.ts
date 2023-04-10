@@ -66,7 +66,7 @@ export default defineModule({
       }) {
         try {
           const maxCompletionTokens = contextWindowSize[model] / 4;
-          console.log({ maxCompletionTokens });
+          // console.log({ maxCompletionTokens });
           const pageSummary = await getPageSummary(
             model,
             maxCompletionTokens,
@@ -200,7 +200,7 @@ export async function getPageSummary(
 
   const summary = summarizedChunks.join("\n");
 
-  console.log(`Summary:\n\n${summary}\n`);
+  // console.log(`Summary:\n\n${summary}\n`);
 
   console.log(`Summary tokens: ${countTokens(summary)}`);
 
