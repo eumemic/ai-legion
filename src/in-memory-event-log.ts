@@ -9,11 +9,11 @@ export class InMemoryEventLog implements EventLog {
     this.emitter = new EventEmitter();
   }
 
-  subscribe(listener: (event: Event) => void): void {
+  subscribe(listener: (event: Event) => Promise<void>): void {
     this.emitter.on("event", listener);
   }
 
-  unsubscribe(listener: (event: Event) => void): void {
+  unsubscribe(listener: (event: Event) => Promise<void>): void {
     this.emitter.off("event", listener);
   }
 

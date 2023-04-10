@@ -3,6 +3,10 @@
   "type": "object",
   "title": "Action",
   "properties": {
+    "agentId": {
+      "type": "string",
+      "description": "The agent who initiated this action"
+    },
     "payload": {
       "type": "object",
       "oneOf": [
@@ -47,5 +51,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["payload", "comment"]
+  "required": ["agentId", "payload", "comment"]
 }

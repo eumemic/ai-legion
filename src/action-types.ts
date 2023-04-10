@@ -7,6 +7,10 @@
 
 export interface Action {
   /**
+   * The agent who initiated this action
+   */
+  agentId: string;
+  /**
    * The payload that's specific to a particular action.
    */
   payload: NoOpAction | SendMessageAction;

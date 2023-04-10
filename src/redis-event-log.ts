@@ -12,7 +12,7 @@ export class RedisEventLog implements EventLog {
     this.subscriber = createClient();
   }
 
-  subscribe(listener: (event: Event) => void): void {
+  subscribe(listener: (event: Event) => Promise<void>): void {
     this.subscriber.on("message", (channel, message) => {
       if (channel === this.channel) {
         const event: Event = JSON.parse(message);
@@ -22,7 +22,7 @@ export class RedisEventLog implements EventLog {
     this.subscriber.subscribe(this.channel, () => {});
   }
 
-  unsubscribe(listener: (event: Event) => void): void {
+  unsubscribe(listener: (event: Event) => Promise<void>): void {
     this.subscriber.removeListener("message", listener);
     this.subscriber.unsubscribe(this.channel, () => {});
   }
