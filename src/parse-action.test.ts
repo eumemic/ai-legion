@@ -1,5 +1,9 @@
 import { ActionDictionary } from "./action/action-dictionary";
-import { allActionDefinitions } from "./action/definitions";
+import {
+  allActionDefinitions,
+  getActionDefinition,
+} from "./action/definitions";
+import { getUsageText } from "./action/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 
@@ -113,7 +117,7 @@ message
 
 test("invalid command name", () => {
   expect(assertInvalid("foo")).toBe(
-    "Unknown action `foo`, please consult `help`."
+    "Unknown action `foo`. Please refer to the list of available actions given in section 2 of the primer."
   );
 });
 
@@ -125,23 +129,17 @@ test("invalid raw text", () => {
 
 test("missing required parameter", () => {
   expect(assertInvalid("send-message\ntargetAgentId: 0")).toBe(
-    `Missing required parameter \`message\`. Usage:
-
-\`\`\`
-send-message
-targetAgentId: <the target agent's id>
-message: <the content of the message>
-\`\`\``
+    `Missing required parameter \`message\`. ${getUsageText(
+      getActionDefinition("send-message")
+    )}`
   );
 });
 
 test("extra parameter", () => {
   expect(assertInvalid("no-op\nfoo: bar")).toEqual(
-    `Extraneous parameter \`foo\`. Usage:
-
-\`\`\`
-no-op
-\`\`\``
+    `Extraneous parameter \`foo\`. ${getUsageText(
+      getActionDefinition("no-op")
+    )}`
   );
 });
 

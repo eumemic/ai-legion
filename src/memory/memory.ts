@@ -5,12 +5,14 @@ import { messageBuilder } from "../message";
 import { primer } from "../primer";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
+import { ActionDictionary } from "../action/action-dictionary";
 
 const AVG_WORDS_PER_TOKEN = 0.75;
 
 export class Memory {
   constructor(
     private agentId: string,
+    private actionDictionary: ActionDictionary,
     private store: Store,
     private compressionThreshold: number
   ) {}
@@ -27,7 +29,10 @@ export class Memory {
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
-    return [{ type: "message", message: primer(this.agentId) }, ...events];
+    return [
+      { type: "message", message: primer(this.agentId, this.actionDictionary) },
+      ...events,
+    ];
   }
 
   /**

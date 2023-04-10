@@ -1,8 +1,9 @@
+import { keyBy } from "lodash";
 import { ActionDefinition } from "../action-definition";
 import { ActionModule } from "../action-module";
 import coreModule from "./core";
-import messagingModule from "./messaging";
 import filesystemModule from "./filesystem";
+import messagingModule from "./messaging";
 import notesModule from "./notes";
 
 const allActionModules: ActionModule[] = [
@@ -14,6 +15,15 @@ const allActionModules: ActionModule[] = [
 
 export const allActionDefinitions: ActionDefinition[] =
   allActionModules.flatMap((module) => module.actions);
+
+export const actionDefLookup: Record<string, ActionDefinition> = keyBy(
+  allActionDefinitions,
+  (actionDef) => actionDef.name
+);
+
+export function getActionDefinition(name: string): ActionDefinition {
+  return actionDefLookup[name];
+}
 
 const actionToModule: Record<string, ActionModule> = {};
 for (const module of allActionModules) {

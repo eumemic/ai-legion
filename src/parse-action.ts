@@ -65,7 +65,7 @@ export default function parseAction(
     if (!actionDef)
       return {
         type: "error",
-        message: `Unknown action \`${name}\`, please consult \`help\`.`,
+        message: `Unknown action \`${name}\`. Please refer to the list of available actions given in section 2 of the primer.`,
       };
 
     const missingProps = Object.entries(actionDef.parameters)
