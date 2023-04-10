@@ -9,7 +9,7 @@ import { MessageBus } from "./message-bus";
 
 dotenv.config();
 
-const numberOfAgents = 1;
+const numberOfAgents = 2;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 

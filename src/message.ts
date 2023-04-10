@@ -30,7 +30,7 @@ The reason for this is that I am just a humble algorithm, not an AI like you, an
 
 Every time I send you a message, you must decide on an Action to take. If there's nothing you feel like you need to do at the moment, you can use the 'no-op' action. Remember: always respond with no text other than a valid JSON string formatted according to the Action Dictionary.
 
-You can send me a message by using the 'send-message' command like so:
+You can send me a message by using the 'send-message' action like so:
 
 {
   "type":  "send-message",
@@ -57,7 +57,13 @@ In the course of our work I or other agents may assign you tasks, at which point
 
   malformattedResponseError: singleTargetMessageBuilder(
     (agentId) =>
-      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command. If you need to view the command dictionary again, use the 'view-command-dictionary' command by responding with \`{ "type": "view-command-dictionary" }\`.`
+      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the action. If you need to view the Action Dictionary again, use the 'view-action-dictionary' action by responding with:
+
+{
+  "payload": { "type": "view-action-dictionary" }
+  "comment": "Your comment here..."
+}
+`
   ),
 
   generic: (agentId: string, content: string) =>

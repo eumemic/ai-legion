@@ -1,12 +1,12 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
 import { Memory } from "./memory";
-import { messageBuilder } from "./message";
+import { Message, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
 
-const actionInterval = 10000;
+const actionInterval = 1000;
 const heartbeatInterval = 60000;
 
 export class Agent {
@@ -17,20 +17,20 @@ export class Agent {
     private actionHandler: ActionHandler
   ) {}
 
+  private lastProcessedMessage: Message | undefined;
+
   // Start this Agent's event loop
   async start() {
-    let pendingMessages = true;
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
       await this.memory.append(message);
-      pendingMessages = true;
     });
 
     // Take action periodically
     let takingAction = false;
     setInterval(async () => {
-      if (!pendingMessages || takingAction) return;
+      if (takingAction) return;
       takingAction = true;
       try {
         await this.takeAction();
@@ -51,6 +51,11 @@ export class Agent {
 
   private async takeAction(): Promise<void> {
     const messages = await this.memory.retrieve();
+
+    const lastMessage = last(messages);
+    if (lastMessage === this.lastProcessedMessage) return;
+
+    this.lastProcessedMessage = lastMessage;
 
     let response: Awaited<ReturnType<typeof generateText>>;
     console.log(`Agent ${this.id} BEFORE`);

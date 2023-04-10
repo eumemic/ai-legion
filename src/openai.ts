@@ -1,5 +1,5 @@
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { memoize } from "lodash";
+import { Configuration, OpenAIApi } from "openai";
 import { Message } from "./message";
 import { sleep, sleepUntil } from "./util";
 
@@ -12,12 +12,15 @@ export default async function generateText(messages: Message[]) {
     }
     return false;
   });
+  console.log(`sending ${messages.length} messages`);
   try {
-    return openai().createChatCompletion({
+    const result = await openai().createChatCompletion({
       model: "gpt-3.5-turbo",
       // model: "gpt-4",
       messages: messages.map((m) => m.openaiMessage),
     });
+    console.log("received result");
+    return result;
   } finally {
     await sleep(5000); // avoid rate limits
     isGenerating = false;

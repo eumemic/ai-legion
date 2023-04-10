@@ -19,8 +19,8 @@ export default class ActionHandler {
         this.messageBus.send(
           messageBuilder.generic(
             agentId,
-            `These are the agents in the system, in the format of [name]: [agentId]:\n\n${this.agentIds
-              .map((id) => `Agent ${id}: ${id}`)
+            `These are the agents in the system:\n\n${this.agentIds
+              .map((id) => `Agent ${id} [agentId="${id}"]`)
               .join("\n")}`
           )
         );
@@ -46,7 +46,7 @@ export default class ActionHandler {
           this.messageBus.send(
             messageBuilder.generic(
               agentId,
-              `You tried to send your message to an invalid targetAgentId (${payload.targetAgentId}). You can use the 'query-agent-registry' command to see a list of available agents and their agent IDs.`
+              `You tried to send your message to an invalid targetAgentId (${payload.targetAgentId}). You can use the 'query-agent-registry' action to see a list of available agents and their agent IDs.`
             )
           );
         break;

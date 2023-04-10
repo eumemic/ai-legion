@@ -9,9 +9,9 @@ export class RedisMemory implements Memory {
     this.client = createClient();
   }
 
-  async append(memento: Message) {
+  async append(newMessage: Message) {
     const messages = await this.retrieve();
-    messages.push(memento);
+    messages.push(newMessage);
     await this.client.set(this.agentId, JSON.stringify(messages));
     return messages;
   }
