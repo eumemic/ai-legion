@@ -70,7 +70,7 @@ ${currentGloals}
       }) {
         const idx = parseInt(goalIndex);
         const goals = (await state.get(KEY)) || [];
-        if (isNaN(idx) || idx < 1 || idx > goals.length)
+        if (isNaN(idx) || idx < 0 || idx >= goals.length)
           return sendMessage(
             messageBuilder.error(agentId, `Invalid goal index: ${goalIndex}`)
           );
