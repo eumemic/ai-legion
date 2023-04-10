@@ -18,7 +18,7 @@ export default function makeDecision(events: Event[]): Promise<string> {
 
     // console.log(JSON.stringify(messages, null, 2));
 
-    const data = await createChatCompletion({
+    const responseContent = await createChatCompletion({
       model,
       messages,
     });
@@ -29,9 +29,7 @@ export default function makeDecision(events: Event[]): Promise<string> {
     //   )}s`
     // );
 
-    const responseText = data.choices[0].message!.content;
-
-    return responseText;
+    return responseContent;
   });
 
   // avoid rate limits

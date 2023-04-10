@@ -1,11 +1,6 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { memoize } from "lodash";
-import {
-  Configuration,
-  CreateChatCompletionRequest,
-  CreateChatCompletionResponse,
-  OpenAIApi,
-} from "openai";
+import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";
@@ -24,11 +19,11 @@ export type Model = typeof GPT_3_5_TURBO | typeof GPT_4;
 export function createChatCompletion(
   request: CreateChatCompletionRequest,
   options?: AxiosRequestConfig
-): Promise<CreateChatCompletionResponse> {
-  const task = async (): Promise<CreateChatCompletionResponse> => {
+): Promise<string> {
+  const task = async (): Promise<string> => {
     try {
       const response = await openai().createChatCompletion(request, options);
-      return response.data;
+      return response.data.choices[0].message!.content;
     } catch (e) {
       const { response } = e as AxiosError;
       switch (response?.status) {
