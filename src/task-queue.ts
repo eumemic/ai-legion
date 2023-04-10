@@ -4,7 +4,12 @@ type Task<T = void> = () => Promise<T>;
 
 export default class TaskQueue {
   private tasks: Task[] = [];
-  private isRunning = false;
+  private running: Promise<void> | undefined;
+  private intervals: NodeJS.Timer[] = [];
+
+  get length() {
+    return this.tasks.length;
+  }
 
   run<T>(task: Task<T>): Promise<T> {
     return new Promise((resolve, reject) => {
@@ -15,32 +20,36 @@ export default class TaskQueue {
 
   runPeriodically(task: Task, milliseconds: number): void {
     let pending = false;
-    setInterval(() => {
-      if (pending) {
-        console.log("skipping task");
-        return;
-      }
-      pending = true;
-      try {
-        this.run(task);
-      } finally {
-        pending = false;
-      }
-    }, milliseconds);
+    this.intervals.push(
+      setInterval(() => {
+        if (pending) return;
+        pending = true;
+        this.run(task).finally(() => {
+          pending = false;
+        });
+      }, milliseconds)
+    );
+  }
+
+  async stop() {
+    this.tasks.length = 0;
+    this.intervals.forEach(clearInterval);
+    this.intervals = [];
+    if (this.running) {
+      await this.running;
+    }
   }
 
   private async runNext() {
-    if (this.isRunning) return;
+    if (this.running) return;
 
     const task = this.tasks.shift();
     if (!task) return;
 
-    this.isRunning = true;
-
     try {
-      await task();
+      await (this.running = task());
     } finally {
-      this.isRunning = false;
+      this.running = undefined;
     }
 
     this.runNext();
