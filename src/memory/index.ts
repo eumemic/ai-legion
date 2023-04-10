@@ -17,5 +17,4 @@ export interface DecisionEvent {
 export interface SummaryEvent {
   type: "summary";
   summary: string;
-  summarizedEvents: Event[];
 }

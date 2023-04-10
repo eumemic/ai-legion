@@ -1,16 +1,14 @@
 import { memoize } from "lodash";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Event } from "./memory";
-import { Model, createChatCompletion } from "./openai";
+import { createChatCompletion } from "./openai";
+import { model } from "./parameters";
 import TaskQueue from "./task-queue";
 import { agentName, messageSourceName, sleep } from "./util";
-import { model } from "./parameters";
 
 const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
-
-const enumerateEventsInSummaries = false;
 
 export interface Decision {
   actionText: string;
@@ -84,67 +82,11 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
         content: event.decision.actionText,
       };
     case "summary":
-      const { summary, summarizedEvents } = event;
-      const summarizedContent = `
-${
-  summarizedEvents.length
-} events are abridged here to free up real estate in your context window.
-
-SUMMARY: ${summary}
-
-${
-  enumerateEventsInSummaries
-    ? `EVENTS:
-${summarizedEvents
-  .map((event, index) => `${index + 1}) ${summarize(event)}`)
-  .join("\n")}`
-    : ""
-}
-`.trim();
-      // console.log(`summarized content:\n${summarizedContent}`);
+      const { summary } = event;
+      const summarizedContent = `Several events are omitted here to free up space in your context window, summarized as follows:\n\n${summary}`;
       return {
         role: "system",
         content: summarizedContent,
       };
   }
-}
-
-export function summarize(event: Event) {
-  let header: string;
-  let content: string;
-  switch (event.type) {
-    case "message":
-      const { message } = event;
-      switch (message.type) {
-        case "standard":
-        case "agentToAgent":
-          header = `MESSAGE FROM ${messageSourceName(
-            message.source
-          ).toUpperCase()}`;
-          break;
-        case "error":
-          header = "ERROR";
-          break;
-      }
-      content = message.content;
-      break;
-    case "decision":
-      header = "ACTION";
-      content = event.decision.actionText;
-      break;
-    case "summary":
-      header = `SUMMARY (${event.summarizedEvents.length} EVENTS)`;
-      content = event.summary;
-      break;
-  }
-  return `${header}\n\n${truncate(content)}\n`;
-}
-
-function truncate(text: string) {
-  const limit = 50;
-  const lines = text.split("\n");
-  const firstLine = lines[0];
-  if (firstLine.length > limit) return `${text.substring(0, limit)}...`;
-  if (lines.length > 1) return `${firstLine}\n...`;
-  return text;
 }
