@@ -7,7 +7,7 @@ import generateText from "./openai";
 import { parseAction } from "./parsers";
 import TaskQueue from "./task-queue";
 
-const actionInterval = 5000;
+const actionInterval = 10000;
 const heartbeatInterval = 60000;
 
 export class Agent {
@@ -26,7 +26,7 @@ export class Agent {
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      this.taskQueue.run(() => this.memory.append(message));
+      this.memory.append(message);
     });
 
     // Start heartbeat

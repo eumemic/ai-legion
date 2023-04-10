@@ -43,7 +43,8 @@ You can also send other agents messages by using their ID in the 'targetAgentId'
 I will check in with you periodically with a sort of "heartbeat" message, giving you a chance to take an action. Again, if you don't feel like there's anything to be done just choose the 'no-op' action (but you must choose a valid action according to the Action Dictionary or I won't understand you!) If you want to respond to me, use the 'send-message' action as described above.
 
 In the course of our work I or other agents may assign you tasks, at which point you will work towards accomplishing them using the Actions at your disposal. We are going to build something great together!
-`
+`,
+    "system"
   ),
 
   heartbeat: singleTargetMessageBuilder(
@@ -100,12 +101,15 @@ function addMessageTypes<
   return record as any;
 }
 
-function singleTargetMessageBuilder(getContent: (agentId: string) => string) {
+function singleTargetMessageBuilder(
+  getContent: (agentId: string) => string,
+  role: "system" | "user" = "user"
+) {
   return (agentId: string): Omit<Message, "messageType"> => ({
     sourceAgentId: "0",
     targetAgentIds: [agentId],
     openaiMessage: {
-      role: "user",
+      role,
       content: `Hello Agent ${agentId}, this is Control. ${getContent(
         agentId
       )}`,
