@@ -21,6 +21,9 @@ export default class ActionHandler {
       case "query-agent-registry":
         this.messageBus.send(messageBuilder.listAgents(agentId, this.agentIds));
         break;
+      case "view-action-dictionary":
+        this.messageBus.send(messageBuilder.showActionDictionary(agentId));
+        break;
       case "send-message":
         const { targetAgentId } = payload;
         // if (targetAgentId === "0")

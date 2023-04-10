@@ -79,6 +79,16 @@ In the course of our work I or other agents may assign you tasks, at which point
           .join("\n")}`
     )(agentId),
 
+  showActionDictionary: (agentId: string) =>
+    singleTargetMessageBuilder(
+      (agentId) =>
+        `Here is the current Action Dictionary:\n\n${JSON.stringify(
+          actionDictionary,
+          null,
+          2
+        )}`
+    )(agentId),
+
   generic: (agentId: string, content: string) =>
     singleTargetMessageBuilder(() => content)(agentId),
 
