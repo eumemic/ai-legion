@@ -33,16 +33,12 @@ export function createChatCompletion(
       const { response } = e as AxiosError;
       switch (response?.status) {
         case 400:
-          console.error(`ERROR: context window is full.`);
-          break;
+          throw Error(`Context window is full.`);
         case 429:
-          console.error(`ERROR: rate limited.`);
-          break;
+          throw Error(`OpenAI rate limited.`);
         default:
-          console.error(e);
-          break;
+          throw e;
       }
-      throw e;
     }
   };
 

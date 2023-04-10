@@ -1,13 +1,13 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
-import { ModuleManager } from "./module/module-manager";
 import makeDecision from "./make-decision";
 import { Memory } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
+import { ModuleManager } from "./module/module-manager";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
-import { sleep } from "./util";
+import { agentName, sleep } from "./util";
 
 export class Agent {
   constructor(
@@ -70,6 +70,13 @@ export class Agent {
       } else {
         await this.actionHandler.handle(this.id, result.action);
       }
+    } catch (e) {
+      console.error(
+        `${agentName(
+          this.id
+        )} encountered the following problem while attempting to take action:`
+      );
+      console.error(e);
     } finally {
       await sleep(1000);
     }
