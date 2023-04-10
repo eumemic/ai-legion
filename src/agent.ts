@@ -1,10 +1,10 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
 import { Memory } from "./memory";
-import { Message, messageBuilder } from "./message";
+import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import generateText from "./openai";
-import { parseAction } from "./parsers";
+import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 
 const actionInterval = 10 * 1000;

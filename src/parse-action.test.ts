@@ -1,4 +1,4 @@
-import { parseAction } from "./parsers";
+import parseAction from "./parse-action";
 
 test("case 1", () => {
   checkParsing(`
