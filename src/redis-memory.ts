@@ -1,5 +1,6 @@
+import { ChatCompletionRequestMessage } from "openai";
 import { RedisClientType, createClient } from "redis";
-import { Memento, Memory } from "./memory";
+import { Memory } from "./memory";
 
 export class RedisMemory implements Memory {
   private client: RedisClientType;
@@ -8,15 +9,15 @@ export class RedisMemory implements Memory {
     this.client = createClient();
   }
 
-  async append(memento: Memento) {
-    const mementos = await this.retrieve();
-    mementos.push(memento);
-    await this.client.set(this.agentId, JSON.stringify(mementos));
-    return mementos;
+  async append(memento: ChatCompletionRequestMessage) {
+    const messages = await this.retrieve();
+    messages.push(memento);
+    await this.client.set(this.agentId, JSON.stringify(messages));
+    return messages;
   }
 
-  async retrieve(): Promise<Memento[]> {
-    const memoryJSON = await this.client.get(this.agentId);
-    return memoryJSON ? JSON.parse(memoryJSON) : [];
+  async retrieve(): Promise<ChatCompletionRequestMessage[]> {
+    const messagesJson = await this.client.get(this.agentId);
+    return messagesJson ? JSON.parse(messagesJson) : [];
   }
 }

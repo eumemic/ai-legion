@@ -1,16 +1,20 @@
-import { Memento, Memory } from "./memory";
+import { ChatCompletionRequestMessage } from "openai";
+import { Memory } from "./memory";
 
 export class InMemoryMemory implements Memory {
   constructor() {}
 
-  private mementos: Memento[] = [];
+  private messages: ChatCompletionRequestMessage[] = [];
 
-  async append(memento: Memento): Promise<Memento[]> {
-    this.mementos.push(memento);
-    return this.mementos;
+  async append(
+    message: ChatCompletionRequestMessage
+  ): Promise<ChatCompletionRequestMessage[]> {
+    console.log(JSON.stringify(message, null, 2));
+    this.messages.push(message);
+    return this.messages;
   }
 
-  async retrieve(): Promise<Memento[]> {
-    return this.mementos;
+  async retrieve(): Promise<ChatCompletionRequestMessage[]> {
+    return this.messages;
   }
 }

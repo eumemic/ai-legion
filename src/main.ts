@@ -31,9 +31,9 @@ async function main() {
       if (event.targetAgentIds && !event.targetAgentIds.includes(agent.id))
         return;
 
-      console.log(
-        `${agent.id} received event: ${JSON.stringify(event, null, 2)}`
-      );
+      // console.log(
+      //   `${agent.id} received event: ${JSON.stringify(event, null, 2)}`
+      // );
 
       const action = await agent.handleEvent(event);
       if (action) actionHandler.handle(action);

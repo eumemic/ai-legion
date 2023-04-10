@@ -16,19 +16,10 @@ export class Agent {
   ) {}
 
   async handleEvent(event: Event): Promise<Action | undefined> {
-    const mementos = await this.memory.append({ type: "event", event });
-
-    const messages = mementos.map((m): ChatCompletionRequestMessage => {
-      switch (m.type) {
-        case "event":
-          return {
-            name: "admin",
-            role: "user",
-            content: JSON.stringify(m.event),
-          };
-        case "action":
-          return { name: this.id, role: "assistant", content: m.action };
-      }
+    const messages = await this.memory.append({
+      name: "admin",
+      role: "user",
+      content: JSON.stringify(event),
     });
 
     // console.log(
@@ -59,7 +50,11 @@ export class Agent {
       return;
     }
 
-    await this.memory.append({ type: "action", action: actionJson });
+    await this.memory.append({
+      name: this.id,
+      role: "assistant",
+      content: actionJson,
+    });
 
     const result = parseAction(actionJson);
     if (result.type === "error") {
