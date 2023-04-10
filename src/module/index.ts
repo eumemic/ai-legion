@@ -3,7 +3,7 @@ import { ActionDefinition, PartialActionDefinition } from "./action-definition";
 
 export interface ModuleDefinition<S = any, A extends string = string>
   extends ModuleDefinitionInputs1<S> {
-  pinnedMessage?: (context: ModuleContext<S>) => Promise<Message>;
+  pinnedMessage?: (context: ModuleContext<S>) => Promise<Message | undefined>;
   actions: Record<A, ActionDefinition<S>>;
 }
 
@@ -13,7 +13,7 @@ export interface ModuleDefinitionInputs1<S> {
 }
 
 export interface ModuleDefinitionInputs2<S, A extends string> {
-  pinnedMessage?: (context: ModuleContext<S>) => Promise<Message>;
+  pinnedMessage?: (context: ModuleContext<S>) => Promise<Message | undefined>;
   actions: Record<A, PartialActionDefinition<S, string>>;
 }
 

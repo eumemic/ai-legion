@@ -7,6 +7,17 @@ export default defineModule<Store>({
   name: "note",
   createState: ({ agentId }) => new FileStore([agentId, "notes"]),
 }).with({
+  async pinnedMessage({ sourceAgentId, state }) {
+    const noteTitles = await state.list();
+    return messageBuilder.ok(
+      sourceAgentId,
+      noteTitles.length
+        ? `Here are your current notes:\n\n${noteTitles
+            .map((title) => `- ${title}`)
+            .join("\n")}`
+        : "Your have no notes currently."
+    );
+  },
   actions: {
     writeNote: {
       description: "Create or update a note which will only be visible to you.",
@@ -58,23 +69,6 @@ export default defineModule<Store>({
             messageBuilder.error(sourceAgentId, `Note "${title}" not found.`)
           );
         }
-      },
-    },
-
-    listNotes: {
-      description: "List the titles of all existing notes.",
-      async execute({ context: { sourceAgentId, state }, sendMessage }) {
-        const noteTitles = await state.list();
-        sendMessage(
-          messageBuilder.ok(
-            sourceAgentId,
-            noteTitles.length
-              ? `List of note titles:\n\n${noteTitles
-                  .map((title) => `- ${title}`)
-                  .join("\n")}`
-              : "Your have no notes currently."
-          )
-        );
       },
     },
 

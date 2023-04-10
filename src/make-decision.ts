@@ -55,16 +55,20 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
       switch (messageType) {
         case "spontaneous":
         case "ok":
+          header = "";
+          break;
         case "agentToAgent":
-          header = `MESSAGE FROM ${messageSourceName(source).toUpperCase()}`;
+          header = `--- MESSAGE FROM ${messageSourceName(
+            source
+          ).toUpperCase()} ---\n\n`;
           break;
         case "error":
-          header = "ERROR";
+          header = "--- ERROR ---\n\n";
           break;
       }
       return {
         role,
-        content: `--- ${header} ---\n\n${content}`,
+        content: `${header}${content}`,
       };
     }
     case "decision":

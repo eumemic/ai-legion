@@ -40,8 +40,10 @@ export class Memory {
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
-    // events.forEach((event) => this.printEvent(event));
-    return [...(await this.getPrefixedEvents()), ...events];
+    const prefixedEvents = await this.getPrefixedEvents();
+    const allEvents = [...prefixedEvents, ...events];
+    // allEvents.forEach((event) => this.printEvent(event));
+    return allEvents;
   }
 
   private async getPrefixedEvents(): Promise<Event[]> {
@@ -50,12 +52,10 @@ export class Memory {
         const { pinnedMessage } = module.moduleDef;
         if (!pinnedMessage) return [];
 
-        return [
-          {
-            type: "message",
-            message: await pinnedMessage(module.context),
-          },
-        ];
+        const message = await pinnedMessage(module.context);
+        if (!message) return [];
+
+        return [{ type: "message", message }];
       })
     );
     return nestedEvents.flat();
