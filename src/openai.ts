@@ -9,6 +9,16 @@ import {
 import TaskQueue from "./task-queue";
 import { sleep } from "./util";
 
+export const GPT_3_5_TURBO = "gpt-3.5-turbo";
+export const GPT_4 = "gpt-4";
+
+export const contextWindowSize = {
+  [GPT_3_5_TURBO]: 4000,
+  [GPT_4]: 8000,
+};
+
+export type Model = typeof GPT_3_5_TURBO | typeof GPT_4;
+
 const GPT4_DELAY = 10 * 1000;
 
 const taskQueue = new TaskQueue();
@@ -26,10 +36,10 @@ export function createChatCompletion(
         const { response } = e as AxiosError;
         switch (response?.status) {
           case 400:
-            console.error(`ERROR: ${name}'s context window is full.`);
+            console.error(`ERROR: context window is full.`);
             break;
           case 429:
-            console.error(`ERROR: ${name} was rate limited.`);
+            console.error(`ERROR: rate limited.`);
             break;
           default:
             console.error(e);

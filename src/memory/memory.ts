@@ -4,6 +4,7 @@ import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder, primerMessage } from "../message";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
+import { GPT_3_5_TURBO } from "../openai";
 
 export class Memory {
   constructor(
@@ -53,18 +54,22 @@ export class Memory {
             if (precedingTokens > truncationThreshold) {
               const summarizedEvents = events.slice(firstSummarizedIndex, i);
 
-              const { actionText: summary } = await makeDecision(this.agentId, [
-                ...events.slice(0, i),
-                {
-                  type: "message",
-                  message: messageBuilder.standard(
-                    this.agentId,
-                    `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
-                      this.compressionThreshold / 6
-                    )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
-                  ),
-                },
-              ]);
+              const { actionText: summary } = await makeDecision(
+                GPT_3_5_TURBO,
+                this.agentId,
+                [
+                  ...events.slice(0, i),
+                  {
+                    type: "message",
+                    message: messageBuilder.standard(
+                      this.agentId,
+                      `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
+                        this.compressionThreshold / 6
+                      )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
+                    ),
+                  },
+                ]
+              );
 
               const summaryEvent: Event = {
                 type: "summary",
@@ -77,6 +82,7 @@ export class Memory {
               ];
 
               const { precedingTokens: summaryTokens } = await makeDecision(
+                GPT_3_5_TURBO,
                 this.agentId,
                 firstEvents
               );

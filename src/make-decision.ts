@@ -1,8 +1,7 @@
 import { memoize } from "lodash";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Event } from "./memory";
-import { createChatCompletion } from "./openai";
-import { model } from "./parameters";
+import { Model, createChatCompletion } from "./openai";
 import TaskQueue from "./task-queue";
 import { agentName, messageSourceName, sleep } from "./util";
 
@@ -18,6 +17,7 @@ export interface Decision {
 }
 
 export default function makeDecision(
+  model: Model,
   agentId: string,
   events: Event[]
 ): Promise<Decision> {

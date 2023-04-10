@@ -7,8 +7,9 @@ import { startConsole } from "./console";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
-import { numberOfAgents } from "./parameters";
+import { model, numberOfAgents } from "./parameters";
 import { FileStore } from "./store/file-store";
+import { contextWindowSize } from "./openai";
 
 dotenv.config();
 
@@ -26,7 +27,9 @@ async function main() {
   const store = new FileStore();
 
   for (const id of agentIds.slice(1)) {
-    const memory = new Memory(id, store, 1000);
+    // We have to leave room for the agent's next action, which is of unknown size
+    const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
+    const memory = new Memory(id, store, compressionThreshold);
     const agent = new Agent(
       id,
       memory,
