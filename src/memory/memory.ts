@@ -11,17 +11,24 @@ export class Memory {
     printMemento(memento);
     const mementos = await this.retrieve();
     mementos.push(memento);
-    await this.store.set(this.agentId, JSON.stringify(mementos, null, 2));
+    await this.store.set(
+      keyFor(this.agentId),
+      JSON.stringify(mementos, null, 2)
+    );
     return mementos;
   }
 
   async retrieve(): Promise<Memento[]> {
-    const mementosText = await this.store.get(this.agentId);
+    const mementosText = await this.store.get(keyFor(this.agentId));
     const mementos: Memento[] = JSON.parse(mementosText || "[]");
     if (isEmpty(mementos))
       mementos.push(messageMemento(primerMessage(this.agentId)));
     return mementos;
   }
+}
+
+function keyFor(agentId: string) {
+  return `agent-${agentId}`;
 }
 
 function printMemento(memento: Memento) {

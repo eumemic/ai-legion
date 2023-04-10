@@ -5,12 +5,10 @@ import { allActionDefinitions } from "./action/definitions";
 import { Agent } from "./agent";
 import { startConsole } from "./console";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
-import { Memory, messageMemento } from "./memory";
-import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
+import { Memory } from "./memory";
 import { MessageBus } from "./message-bus";
 import { numberOfAgents } from "./parameters";
-import { agentName, MULTILINE_DELIMITER } from "./util";
-import { InMemoryStore } from "./store/in-memory-store";
+import { FileStore } from "./store/file-store";
 
 dotenv.config();
 
@@ -25,7 +23,7 @@ main();
 async function main() {
   startConsole(agentIds, messageBus);
 
-  const store = new InMemoryStore();
+  const store = new FileStore();
 
   for (const id of agentIds.slice(1)) {
     const memory = new Memory(id, store);
