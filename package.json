@@ -4,7 +4,7 @@
   "description": "My name is Legion, for we are many",
   "main": "src/main.ts",
   "scripts": {
-    "build": "npm run compile",
+    "build": "npm run compile && npm run lint",
     "compile": "tsc",
     "lint": "./node_modules/.bin/eslint src",
     "start": "ts-node src/main.ts",
