@@ -10,4 +10,12 @@ export class InMemoryStore implements Store {
   async set(key: string, value: string) {
     this.map.set(key, value);
   }
+
+  async delete(key: string) {
+    return this.map.delete(key);
+  }
+
+  async list() {
+    return [...this.map.keys()];
+  }
 }

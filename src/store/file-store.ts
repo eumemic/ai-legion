@@ -1,12 +1,14 @@
 import { Store } from ".";
-import { readFile, writeFile, mkdir, stat } from "fs/promises";
+import { readFile, writeFile, mkdir, stat, unlink, readdir } from "fs/promises";
 import path from "path";
 
 const STORE_DIR = ".store";
 
 export class FileStore implements Store {
+  constructor(private namespace: string) {}
+
   async get(key: string) {
-    const path = pathFor(key);
+    const path = this.pathFor(key);
     const fileExists = await checkExists(path);
     if (!fileExists) return undefined;
     const buffer = await readFile(path, "utf-8");
@@ -14,14 +16,29 @@ export class FileStore implements Store {
   }
 
   async set(key: string, value: string) {
-    const dirExists = await checkExists(STORE_DIR);
-    if (!dirExists) await mkdir(STORE_DIR);
-    await writeFile(pathFor(key), value, "utf-8");
+    await mkdir(this.dirPath, { recursive: true });
+    await writeFile(this.pathFor(key), value, "utf-8");
   }
-}
 
-function pathFor(key: string) {
-  return path.join(STORE_DIR, key);
+  async delete(key: string) {
+    const path = this.pathFor(key);
+    const fileExists = await checkExists(path);
+    if (!fileExists) return false;
+    await unlink(path);
+    return true;
+  }
+
+  async list() {
+    return readdir(this.dirPath);
+  }
+
+  private pathFor(key: string) {
+    return path.join(this.dirPath, key);
+  }
+
+  private get dirPath() {
+    return path.join(STORE_DIR, this.namespace);
+  }
 }
 
 async function checkExists(path: string) {

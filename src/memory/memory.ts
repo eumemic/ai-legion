@@ -96,7 +96,7 @@ export class Memory {
   }
 
   private get key() {
-    return `agent-${this.agentId}`;
+    return "memory";
   }
 
   private printEvent(event: Event) {
