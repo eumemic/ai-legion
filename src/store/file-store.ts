@@ -4,7 +4,7 @@ import path from "path";
 
 const STORE_DIR = ".store";
 
-export class FileStore implements Store<string> {
+export default class FileStore implements Store<string> {
   constructor(private namespaces: string[]) {}
 
   async get(key: string) {

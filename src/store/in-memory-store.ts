@@ -1,6 +1,6 @@
 import { Store } from ".";
 
-export class InMemoryStore implements Store<string> {
+export default class InMemoryStore implements Store<string> {
   private map = new Map<string, string>();
 
   async get(key: string) {

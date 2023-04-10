@@ -12,7 +12,7 @@ export class Memory {
   constructor(
     private agentId: string,
     private moduleManager: ModuleManager,
-    private store: Store,
+    private store: Store<Event[]>,
     private compressionThreshold: number
   ) {}
 
@@ -29,19 +29,15 @@ export class Memory {
 
     const prefixedEvents = await this.getPrefixedEvents();
 
-    await this.store.set(
-      this.key,
-      JSON.stringify(events.slice(prefixedEvents.length), null, 2)
-    );
+    await this.store.set(this.key, events.slice(prefixedEvents.length));
 
     return events;
   }
 
   async retrieve(): Promise<Event[]> {
-    const eventsText = await this.store.get(this.key);
-    const events: Event[] = JSON.parse(eventsText || "[]");
     const prefixedEvents = await this.getPrefixedEvents();
-    const allEvents = [...prefixedEvents, ...events];
+    const storedEvents = await this.store.get(this.key);
+    const allEvents = [...prefixedEvents, ...(storedEvents || [])];
     // allEvents.forEach((event) => this.printEvent(event));
     return allEvents;
   }
