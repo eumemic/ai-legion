@@ -1,6 +1,6 @@
 import { Agent } from "./agent";
-import { EventBus } from "./event-bus";
-import { InMemoryEventBus } from "./in-memory-event-bus";
+import { MessageBus } from "./message-bus";
+import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { InMemoryMemory } from "./in-memory-memory";
 import { Memory } from "./memory";
 import dotenv from "dotenv";
@@ -9,39 +9,39 @@ import ActionHandler from "./action-handler";
 dotenv.config();
 
 const numberOfAgents = 1;
-const pollingInterval = 60000;
+const pollingInterval = 10000;
 
 const agentIds = Array.from(
   { length: numberOfAgents },
   (_, i) => `agent-${i + 1}`
 );
 
-const eventBus: EventBus = new InMemoryEventBus();
+const messageBus: MessageBus = new InMemoryMessageBus();
 const memory: Memory = new InMemoryMemory();
 const actionHandler = new ActionHandler();
 
-const agents: Agent[] = agentIds.map((id) => new Agent(id, eventBus, memory));
+const agents: Agent[] = agentIds.map((id) => new Agent(id, messageBus, memory));
 
 main();
 
-// Set up the event loop to trigger heartbeats and handle other events
+// Set up the event loop to forward messages to agents and handle their resulting actions
 async function main() {
   for (const agent of agents) {
-    eventBus.subscribe(async (event) => {
-      if (event.targetAgentIds && !event.targetAgentIds.includes(agent.id))
+    messageBus.subscribe(async (message) => {
+      if (message.targetAgentIds && !message.targetAgentIds.includes(agent.id))
         return;
 
       // console.log(
-      //   `${agent.id} received event: ${JSON.stringify(event, null, 2)}`
+      //   `${agent.id} received message: ${JSON.stringify(message, null, 2)}`
       // );
 
-      const action = await agent.handleEvent(event);
+      const action = await agent.receive(message);
       if (action) actionHandler.handle(action);
     });
   }
 
   while (true) {
-    eventBus.publish({ payload: { type: "heartbeat" } });
+    messageBus.publish({ content: "heartbeat" });
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
 }

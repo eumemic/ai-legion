@@ -1,34 +1,31 @@
 import { createClient, RedisClientType } from "redis";
-import { Event } from "./event-types";
-import { EventBus } from "./event-bus";
+import { MessageBus, Message } from "./message-bus";
 
-export class RedisEventBus implements EventBus {
+export class RedisMessageBus implements MessageBus {
   private publisher: RedisClientType;
   private subscriber: RedisClientType;
-  private channel = "eventChannel";
+  private channel = "messages";
 
   constructor() {
     this.publisher = createClient();
     this.subscriber = createClient();
   }
 
-  subscribe(listener: (event: Event) => Promise<void>): void {
+  subscribe(listener: (message: Message) => Promise<void>): void {
     this.subscriber.on("message", (channel, message) => {
       if (channel === this.channel) {
-        const event: Event = JSON.parse(message);
-        listener(event);
+        listener(JSON.parse(message));
       }
     });
     this.subscriber.subscribe(this.channel, () => {});
   }
 
-  unsubscribe(listener: (event: Event) => Promise<void>): void {
+  unsubscribe(listener: (message: Message) => Promise<void>): void {
     this.subscriber.removeListener("message", listener);
     this.subscriber.unsubscribe(this.channel, () => {});
   }
 
-  publish(event: Event): void {
-    const message = JSON.stringify(event);
-    this.publisher.publish(this.channel, message);
+  publish(message: Message): void {
+    this.publisher.publish(this.channel, JSON.stringify(message));
   }
 }

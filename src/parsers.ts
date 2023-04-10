@@ -1,11 +1,7 @@
 import Ajv from "ajv";
 import actionDictionary from "../schema/action-dictionary.json";
-import eventDictionary from "../schema/event-dictionary.json";
 import { Action } from "./action-types";
-import { EventBus } from "./event-bus";
-import { Event } from "./event-types";
 
-export const parseEvent = parserFor<Event>("event", eventDictionary);
 export const parseAction = parserFor<Action>("action", actionDictionary);
 
 type ParseResult<T> =
