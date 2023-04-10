@@ -1,13 +1,13 @@
-import { Action } from "./action-types";
+import { last } from "lodash";
+import ActionHandler from "./action-handler";
 import { Memory } from "./memory";
+import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import { Message, messageBuilder } from "./message";
 import generateText from "./openai";
 import { parseAction } from "./parsers";
-import ActionHandler from "./action-handler";
-import { last } from "lodash";
 
-const pollingInterval = 10000;
+const actionInterval = 10000;
+const heartbeatInterval = 60000;
 
 export class Agent {
   constructor(
@@ -19,37 +19,48 @@ export class Agent {
 
   // Start this Agent's event loop
   async start() {
+    let pendingMessages = true;
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
       await this.memory.append(message);
-      await this.takeAction();
+      pendingMessages = true;
     });
 
-    await this.takeAction();
+    // Take action periodically
+    let takingAction = false;
+    setInterval(async () => {
+      if (!pendingMessages || takingAction) return;
+      takingAction = true;
+      try {
+        await this.takeAction();
+      } finally {
+        takingAction = false;
+      }
+    }, actionInterval);
 
-    while (true) {
-      await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+    // Set up heartbeat
+    setInterval(async () => {
       const messages = await this.memory.retrieve();
       const lastMessage = last(messages);
       if (lastMessage?.messageType === "agentResponse") {
         this.messageBus.send(messageBuilder.heartbeat(this.id));
       }
-    }
+    }, heartbeatInterval);
   }
 
   private async takeAction(): Promise<void> {
     const messages = await this.memory.retrieve();
 
     let response: Awaited<ReturnType<typeof generateText>>;
-    // console.log("BEFORE");
+    console.log(`Agent ${this.id} BEFORE`);
     try {
       response = await generateText(messages);
     } catch (e) {
       console.error(e);
       return;
     } finally {
-      // console.log("AFTER");
+      console.log(`Agent ${this.id} AFTER`);
     }
 
     if (response.status !== 200) {

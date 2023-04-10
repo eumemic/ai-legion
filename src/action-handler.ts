@@ -27,24 +27,28 @@ export default class ActionHandler {
         break;
       case "send-message":
         const { targetAgentId } = payload;
-        let message: Message;
         if (targetAgentId === "0")
-          message = messageBuilder.generic(
-            agentId,
-            `Thanks for your message, I will forward it to my human counterpart and then get back to you with their response.`
+          this.messageBus.send(
+            messageBuilder.generic(
+              agentId,
+              `Thanks for your message, I will forward it to my human counterpart and then get back to you with their response.`
+            )
           );
         else if (this.agentIds.includes(payload.targetAgentId))
-          message = messageBuilder.agentToAgent(
-            agentId,
-            [targetAgentId],
-            payload.message
+          this.messageBus.send(
+            messageBuilder.agentToAgent(
+              agentId,
+              [targetAgentId],
+              payload.message
+            )
           );
         else
-          message = messageBuilder.generic(
-            agentId,
-            `You tried to send your message to an invalid targetAgentId (${payload.targetAgentId}). You can use the 'query-agent-registry' command to see a list of available agents and their agent IDs.`
+          this.messageBus.send(
+            messageBuilder.generic(
+              agentId,
+              `You tried to send your message to an invalid targetAgentId (${payload.targetAgentId}). You can use the 'query-agent-registry' command to see a list of available agents and their agent IDs.`
+            )
           );
-        this.messageBus.send(message);
         break;
     }
   }

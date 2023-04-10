@@ -16,15 +16,21 @@ const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 const messageBus: MessageBus = new InMemoryMessageBus();
 const actionHandler = new ActionHandler(agentIds, messageBus);
 
-agentIds.forEach(async (id) => {
-  const memory: Memory = new InMemoryMemory(
-    messageBuilder.primer(id),
-    messageBuilder.agentResponse(
-      id,
-      "Hello Control, it is nice to meet you as well. I understand the Action Dictionary and will respond with Actions in the specified format. Please let me know if there is anything specific you would like me to do at this time."
-    ),
-    messageBuilder.malformattedResponseError(id)
-  );
-  const agent = new Agent(id, memory, messageBus, actionHandler);
-  await agent.start();
-});
+main();
+
+async function main() {
+  for (const id of agentIds) {
+    const memory: Memory = new InMemoryMemory(
+      messageBuilder.primer(id)
+      // messageBuilder.agentResponse(
+      //   id,
+      //   "Hello Control, it is nice to meet you as well. I understand the Action Dictionary and will respond with Actions in the specified format. Please let me know if there is anything specific you would like me to do at this time."
+      // ),
+      // messageBuilder.malformattedResponseError(id)
+    );
+    const agent = new Agent(id, memory, messageBus, actionHandler);
+    await agent.start();
+    // stagger the starting times of the agents
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+}
