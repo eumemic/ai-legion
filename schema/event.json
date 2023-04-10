@@ -4,7 +4,6 @@
   "title": "Event",
   "oneOf": [
     {
-      "$id": "heartbeat",
       "title": "HeartbeatEvent",
       "description": "A heartbeat event that occurs periodically.",
       "properties": {
@@ -17,7 +16,6 @@
       "additionalProperties": false
     },
     {
-      "$id": "message",
       "title": "MessageEvent",
       "type": "object",
       "description": "A message event that is sent between agents.",

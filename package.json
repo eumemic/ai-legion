@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "generate-event-types": "npx --yes json-schema-to-typescript src/event-dictionary.json > src/event.ts",
+    "generate": "npm run generate-event-types && npm run generate-action-types",
+    "generate-event-types": "npx --yes json-schema-to-typescript schema/event.json > src/event.ts",
+    "generate-action-types": "npx --yes json-schema-to-typescript schema/action.json > src/action.ts",
     "start": "ts-node src/app.ts"
   },
   "keywords": [],

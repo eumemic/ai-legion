@@ -1,13 +1,9 @@
-import Ajv from "ajv";
 import { Event, MessageEvent } from "./event";
 import { EventLog } from "./event-log";
 import { Memory } from "./memory";
 
-import eventSchema from "./event-dictionary.json";
-
-const ajv = new Ajv();
-
-const validateEvent = ajv.compile(eventSchema);
+import eventSchema from "../schema/event.json";
+import { validateEvent } from "./schema-validators";
 
 export class Agent {
   constructor(

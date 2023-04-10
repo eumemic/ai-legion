@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Action",
+  "oneOf": [
+    {
+      "title": "SendMessageAction",
+      "description": "Send a message to another agent.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "send-message"
+        },
+        "agentId": {
+          "type": "string",
+          "description": "The target agent's ID."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    }
+  ]
+}
