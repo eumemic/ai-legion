@@ -32,7 +32,7 @@ function printMemento(memento: Memento) {
   } else {
     sourceName = agentName(memento.agentId);
     targetNames = ["System"];
-    content = memento.actionText;
+    content = memento.decision.actionText;
   }
   console.log(
     `${sourceName} -> ${targetNames.join(

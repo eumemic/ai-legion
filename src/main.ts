@@ -6,7 +6,7 @@ import { Agent } from "./agent";
 import { startConsole } from "./console";
 import { InMemoryMemory } from "./in-memory-memory";
 import { InMemoryMessageBus } from "./in-memory-message-bus";
-import { actionMemento, Memory, messageMemento } from "./memory";
+import { Memory, messageMemento } from "./memory";
 import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import { numberOfAgents } from "./parameters";

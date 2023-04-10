@@ -10,9 +10,17 @@ const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export default function makeDecision(agentId: string, mementos: Memento[]) {
+export interface Decision {
+  actionText: string;
+  usage: number;
+}
+
+export default function makeDecision(
+  agentId: string,
+  mementos: Memento[]
+): Promise<Decision | undefined> {
   const name = agentName(agentId);
-  const result = taskQueue.run(async () => {
+  const decisionPromise = taskQueue.run(async () => {
     console.log(`${name} reflecting on ${mementos.length} mementos...`);
     const t0 = Date.now();
     try {
@@ -34,11 +42,23 @@ export default function makeDecision(agentId: string, mementos: Memento[]) {
       }
 
       const { data } = response;
-      console.log({ usage: data.usage?.total_tokens });
       const actionText = data.choices[0].message?.content;
-      if (!actionText) console.error("no content received");
+      if (!actionText) {
+        console.error("no content received");
+        return;
+      }
 
-      return actionText;
+      const usage = data.usage?.total_tokens;
+      if (usage === undefined) {
+        console.warn("no usage reported");
+      } else {
+        console.log({ usage });
+      }
+
+      return {
+        actionText,
+        usage: usage || 0,
+      };
     } catch (e: any) {
       const { response }: AxiosError = e;
       switch (response?.status) {
@@ -57,9 +77,9 @@ export default function makeDecision(agentId: string, mementos: Memento[]) {
 
   // avoid rate limits
   if (model === "gpt-4")
-    result.finally(() => taskQueue.run(() => sleep(openaiDelay)));
+    decisionPromise.finally(() => taskQueue.run(() => sleep(openaiDelay)));
 
-  return result;
+  return decisionPromise;
 }
 
 // lazy load to avoid accessing OPENAI_API_KEY before env has been loaded
@@ -84,7 +104,7 @@ function toOpenAiMessage(memento: Memento): ChatCompletionRequestMessage {
   } else {
     return {
       role: "assistant",
-      content: memento.actionText,
+      content: memento.decision.actionText,
     };
   }
 }

@@ -1,16 +1,17 @@
+import { Decision } from "./make-decision";
 import { Message } from "./message";
 
-export type Memento = MessageMemento | ActionMemento;
+export type Memento = MessageMemento | DecisionMemento;
 
 export interface MessageMemento {
   type: "message";
   message: Message;
 }
 
-export interface ActionMemento {
+export interface DecisionMemento {
   type: "action";
   agentId: string;
-  actionText: string;
+  decision: Decision;
 }
 
 export interface Memory {
@@ -22,6 +23,6 @@ export function messageMemento(message: Message): Memento {
   return { type: "message", message };
 }
 
-export function actionMemento(agentId: string, actionText: string): Memento {
-  return { type: "action", agentId, actionText };
+export function decisionMemento(agentId: string, decision: Decision): Memento {
+  return { type: "action", agentId, decision };
 }

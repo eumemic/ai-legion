@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
 import makeDecision from "./make-decision";
-import { actionMemento, Memory, messageMemento } from "./memory";
+import { decisionMemento, Memory, messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
@@ -55,12 +55,12 @@ export class Agent {
     // Do not act again if the last message was an action
     if (last(mementos)?.type === "action") return;
 
-    const actionText = await makeDecision(this.id, mementos);
-    if (!actionText) return;
+    const decision = await makeDecision(this.id, mementos);
+    if (!decision) return;
 
-    await this.memory.append(actionMemento(this.id, actionText));
+    await this.memory.append(decisionMemento(this.id, decision));
 
-    const result = parseAction(this.actionDictionary, actionText);
+    const result = parseAction(this.actionDictionary, decision.actionText);
     if (result.type === "error") {
       this.messageBus.send(messageBuilder.error(this.id, result.message));
     } else {
