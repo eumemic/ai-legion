@@ -43,7 +43,6 @@ export class Memory {
 
       const truncationThreshold =
         (firstDecision.precedingTokens + this.compressionThreshold) / 2;
-      console.log({ truncationThreshold });
 
       if (lastDecision.precedingTokens > this.compressionThreshold) {
         const firstSummarizedIndex = firstDecisionIndex + 1;
@@ -60,7 +59,9 @@ export class Memory {
                   type: "message",
                   message: messageBuilder.standard(
                     this.agentId,
-                    "Summarize what that has happened to you since (but not including) the introductory message, in 100 words or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible."
+                    `Summarize what that has happened to you since (but not including) the introductory message, in ${Math.floor(
+                      this.compressionThreshold / 6
+                    )} tokens or less. This is a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible.`
                   ),
                 },
               ]);
@@ -82,7 +83,7 @@ export class Memory {
               const tokenSavings = precedingTokens - summaryTokens;
               if (tokenSavings > 0) {
                 console.log(
-                  `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens`
+                  `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens: ${summary}`
                 );
 
                 const newEvents = [
