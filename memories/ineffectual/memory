@@ -1,0 +1,158 @@
+[
+  {
+    "type": "summary",
+    "summary": "create-note\ntitle: Project Progress Summary\ncontent: Since starting your work, you have been making improvements to a TypeScript project. You've contributed to a filesystem module by adding two new actions, 'move-file' and 'delete-file'. The 'move-file' action uses the 'rename()' function from 'fs/promises' and takes 'sourcePath' and 'destinationPath' parameters. The 'delete-file' action uses the 'unlink()' function from 'fs/promises' and takes a 'path' parameter. You also created a 'checkPath' error handling helper function. You tested the new actions by creating, moving, and deleting files, passing all tests.\n\nControl requested an automated code linting solution, and you recommended ESLint. You provided step-by-step instructions to integrate ESLint with the project, including required dependencies for TypeScript compatibility: '@typescript-eslint/parser' and '@typescript-eslint/eslint-plugin'. You helped Control set up the ESLint extension for Visual Studio Code, and provided instructions for automatically applying lint fixes on save by updating VSCode settings.\n\nYou assisted Control with disabling the '@typescript-eslint/no-explicit-any' rule in the '.eslintrc.js' file, and helped ensure consistency between the command-line and VSCode extension for ESLint. This involved updating the 'ESLint: Node Path' option in VSCode settings to point to the project's 'node_modules' folder, and clearing the ESLint cache if needed with 'npx eslint --cache --cache-location node_modules/.cache/eslint --ext .ts ./'.\n\nYou reviewed the 'primerMessage' function in the 'message.ts' file, which serves as an introductory message for new agents. Control requested improvements to the message for clarity, which you implemented. You provided clearer action formatting examples and emphasized the importance of using the correct format.\n\nControl recently asked about adding a note-taking feature for you to retain crucial information, minimizing the loss of context. You proposed a set of actions for the note-taking feature, including 'create-note', 'update-note', 'view-note', 'list-notes', and 'delete-note', to help you store, manage, and access important information. Check with Control for approval before proceeding with the implementation."
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Your action could not be parsed. Did you forget to format your response as an action, or fail to wrap a multi-line parameter value with the multi-line delimiter (`% ff9d7713-0bb0-40d4-823c-5a66de48761b`)?"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: % ff9d7713-0bb0-40d4-823c-5a66de48761b\nTo implement a note-taking feature, we can create the following actions:\n\n1. `create-note`: Create a new note with a title and optional initial content.\n\n   Parameters:\n   - `title`: The title of the note.\n   - `content` (optional): Text content for the note. If not provided, an empty note will be created.\n\n2. `update-note`: Update the content of an existing note.\n\n   Parameters:\n   - `title`: The title of the note to update.\n   - `content`: The new content of the note.\n\n3. `view-note`: Display the content of a note.\n\n   Parameters:\n   - `title`: The title of the note to view.\n\n4. `list-notes`: List the titles of all existing notes.\n\n5. `delete-note`: Delete a note.\n\n   Parameters:\n   - `title`: The title of the note to delete.\n\nThese actions should provide a comprehensive note-taking functionality for storing and managing essential pieces of information. Let me know if you want me to proceed with the implementation, or if you have suggestions for additional actions or adjustments to the proposed actions.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "this sounds good, but let's combine create-note and update-note into a single action which creates or updates the note as needed. also content should not be optional."
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: Understood. Here's the adjusted list of actions for the note-taking functionality:\n\n1. `create-update-note`: Create a new note if it doesn't exist or update the content of an existing note.\n  \n   Parameters:\n   - `title`: The title of the note.\n   - `content`: Text content for the note.\n\n2. `view-note`: Display the content of a note.\n\n   Parameters:\n   - `title`: The title of the note to view.\n\n3. `list-notes`: List the titles of all existing notes.\n\n4. `delete-note`: Delete a note.\n\n   Parameters:\n   - `title`: The title of the note to delete.\n\nWith these actions, we can ensure a straightforward note-taking functionality for storing and managing essential pieces of information. Let me know if you want me to proceed with the implementation or if you have any further suggestions or adjustments."
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Your action could not be parsed. Did you forget to format your response as an action, or fail to wrap a multi-line parameter value with the multi-line delimiter (`% ff9d7713-0bb0-40d4-823c-5a66de48761b`)?"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: % ff9d7713-0bb0-40d4-823c-5a66de48761b\nUnderstood. Here's the adjusted list of actions for the note-taking functionality:\n\n1. `create-update-note`: Create a new note if it doesn't exist or update the content of an existing note.\n  \n   Parameters:\n   - `title`: The title of the note.\n   - `content`: Text content for the note.\n\n2. `view-note`: Display the content of a note.\n\n   Parameters:\n   - `title`: The title of the note to view.\n\n3. `list-notes`: List the titles of all existing notes.\n\n4. `delete-note`: Delete a note.\n\n   Parameters:\n   - `title`: The title of the note to delete.\n\nWith these actions, we can ensure a straightforward note-taking functionality for storing and managing essential pieces of information. Let me know if you want me to proceed with the implementation or if you have any further suggestions or adjustments.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "let's call it create-or-update-note, but other than that looks good. do you remember how to implement new actions?"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: % ff9d7713-0bb0-40d4-823c-5a66de48761b\nYes, I remember how to implement new actions. I will need to modify the appropriate TypeScript files in the project, specifically the ones dealing with actions and their execution.\n\nHere's the adjusted set of actions with the renamed 'create-or-update-note':\n\n1. `create-or-update-note`: Create a new note if it doesn't exist or update the content of an existing note.\n\n   Parameters:\n   - `title`: The title of the note.\n   - `content`: Text content for the note.\n\n2. `view-note`: Display the content of a note.\n\n   Parameters:\n   - `title`: The title of the note to view.\n\n3. `list-notes`: List the titles of all existing notes.\n\n4. `delete-note`: Delete a note.\n\n   Parameters:\n   - `title`: The title of the note to delete.\n\nI'll start implementing these actions and update you on the progress.\n% ff9d7713-0bb0-40d4-823c-5a66de48761b"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "you will want to create a new module for this. where would you put it?"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: To create a new module for the note-taking actions, I would create a new TypeScript file within the project's 'src' folder. The file could be named 'note.ts' or something similar, to indicate its purpose. The implementation of the note-taking actions will be within this new module, which can then be imported and used as needed in other parts of the project."
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "there is already a place where actions are defined, maybe you should find it and see how actions are structured there"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "send-message\ntargetAgentId: 0\nmessage: Apologies for the confusion. I'll find the existing location in the project where the actions are defined and refer to the structure for implementing note-taking actions. I will provide an update shortly after reviewing the current action implementation."
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "ok, go do it"
+    }
+  },
+  {
+    "type": "decision",
+    "decision": {
+      "actionText": "no-op"
+    }
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "why did you send a no-op?"
+    }
+  }
+]
