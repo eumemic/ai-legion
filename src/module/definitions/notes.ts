@@ -9,7 +9,7 @@ export default defineModule<Store>({
 }).with({
   async pinnedMessage({ agentId, state }) {
     const noteTitles = await state.list();
-    return messageBuilder.ok(
+    return messageBuilder.spontaneous(
       agentId,
       noteTitles.length
         ? `Here are your current notes:\n\n${noteTitles
