@@ -14,23 +14,37 @@ type ModelName = "gpt-3.5-turbo" | "gpt-4";
 const model: ModelName = "gpt-3.5-turbo";
 // const model: ModelName = "gpt-4";
 
-export default function generateText(agentId: string, mementos: Memento[]) {
+export default function makeDecision(agentId: string, mementos: Memento[]) {
   const result = taskQueue.run(async () => {
     console.log(
       `Agent ${agentId} reflecting on ${mementos.length} mementos...`
     );
     const t0 = Date.now();
-    const result = await openai().createChatCompletion({
-      model,
-      messages: mementos.map(toOpenAiMessage),
-    });
-    console.log(
-      `Agent ${agentId} decided on an action after ${(
-        (Date.now() - t0) /
-        1000
-      ).toFixed(1)}s`
-    );
-    return result;
+    try {
+      const response = await openai().createChatCompletion({
+        model,
+        messages: mementos.map(toOpenAiMessage),
+      });
+
+      console.log(
+        `Agent ${agentId} arrived at a decision after ${(
+          (Date.now() - t0) /
+          1000
+        ).toFixed(1)}s`
+      );
+
+      if (response.status !== 200) {
+        console.error(`Non-200 status received: ${response.status}`);
+        return;
+      }
+
+      const actionText = response.data.choices[0].message?.content;
+      if (!actionText) console.error("no content received");
+
+      return actionText;
+    } catch (e) {
+      console.error(e);
+    }
   });
 
   // avoid rate limits

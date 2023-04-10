@@ -1,9 +1,9 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
+import makeDecision from "./make-decision";
 import { actionMemento, Memory, messageMemento } from "./memory";
-import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
+import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import generateText from "./openai";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 
@@ -48,35 +48,12 @@ export class Agent {
     // Do not act again if the last message was an action
     if (last(mementos)?.type === "action") return;
 
-    let response: Awaited<ReturnType<typeof generateText>>;
-    try {
-      response = await generateText(this.id, mementos);
-    } catch (e) {
-      console.error(e);
-      return;
-    } finally {
-    }
-
-    if (response.status !== 200) {
-      console.error(`Non-200 status received: ${response.status}`);
-      return;
-    }
-
-    const actionText = response.data.choices[0].message?.content;
-    if (!actionText) {
-      this.messageBus.send(
-        messageBuilder.error(
-          this.id,
-          `No response received, could you try again?`
-        )
-      );
-      return;
-    }
+    const actionText = await makeDecision(this.id, mementos);
+    if (!actionText) return;
 
     await this.memory.append(actionMemento(this.id, actionText));
 
-    let result = parseAction(actionText);
-
+    const result = parseAction(actionText);
     if (result.type === "error") {
       this.messageBus.send(messageBuilder.error(this.id, result.message));
     } else if (result.value) {
