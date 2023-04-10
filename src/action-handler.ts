@@ -7,19 +7,19 @@ export default class ActionHandler {
 
   async handle(agentId: string, { payload }: Action) {
     switch (payload.type) {
-      case "no-op":
-        this.messageBus.send(
-          messageBuilder.generic(
-            agentId,
-            `Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
-          )
-        );
-        break;
+      // case "no-op":
+      //   this.messageBus.send(
+      //     messageBuilder.generic(
+      //       agentId,
+      //       `Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
+      //     )
+      //   );
+      //   break;
       case "query-agent-registry":
         this.messageBus.send(
           messageBuilder.generic(
             agentId,
-            `These are the agents in the system:\n\n${this.agentIds
+            `These are the agents in the system:\n\nControl [agentId="0"]\n${this.agentIds
               .map((id) => `Agent ${id} [agentId="${id}"]`)
               .join("\n")}`
           )

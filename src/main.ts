@@ -26,7 +26,20 @@ async function main() {
         id,
         "Hello Control, it is nice to meet you as well. I understand the Action Dictionary and will respond with Actions in the specified format. Please let me know if there is anything specific you would like me to do at this time."
       ),
-      messageBuilder.malformattedResponseError(id)
+      messageBuilder.malformattedResponseError(id),
+      messageBuilder.agentResponse(
+        id,
+        `{
+  "payload": {
+    "type": "no-op"
+  },
+  "comment": "There is no immediate action that I need to take in response to the heartbeat message." 
+}`
+      ),
+      messageBuilder.generic(
+        id,
+        `Hello Agent 1, this is Control. Are you sure there isn't anything you'd like to do? Maybe you should reach out and network with one of the other agents.`
+      )
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);
     await agent.start();
