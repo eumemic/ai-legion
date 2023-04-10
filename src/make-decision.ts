@@ -20,7 +20,7 @@ export default function makeDecision(
 ): Promise<Decision> {
   const name = agentName(agentId);
   const decisionPromise = taskQueue.run(async (): Promise<Decision> => {
-    // console.log(`${name} reflecting on ${events.length} events...`);
+    console.log(`${name} reflecting on ${events.length} events...`);
     const t0 = Date.now();
 
     const data = await createChatCompletion({
@@ -28,11 +28,11 @@ export default function makeDecision(
       messages: events.map(toOpenAiMessage),
     });
 
-    // console.log(
-    //   `${name} arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
-    //     1
-    //   )}s`
-    // );
+    console.log(
+      `${name} arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
+        1
+      )}s`
+    );
 
     const actionText = data.choices[0].message!.content;
 
