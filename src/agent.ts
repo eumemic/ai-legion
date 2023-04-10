@@ -7,7 +7,7 @@ import { parseAction } from "./parsers";
 import ActionHandler from "./action-handler";
 import { last } from "lodash";
 
-const pollingInterval = 60000;
+const pollingInterval = 10000;
 
 export class Agent {
   constructor(

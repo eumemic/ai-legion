@@ -63,6 +63,15 @@ In the course of our work I or other agents may assign you tasks, at which point
   generic: (agentId: string, content: string) =>
     singleTargetMessageBuilder(() => content)(agentId),
 
+  agentToAgent: (sourceAgentId, targetAgentIds: string[], content: string) => ({
+    sourceAgentId,
+    targetAgentIds,
+    openaiMessage: {
+      role: "assistant",
+      content,
+    },
+  }),
+
   agentResponse: (sourceAgentId: string, content: string) => ({
     sourceAgentId,
     targetAgentIds: ["0"],
@@ -90,7 +99,7 @@ function singleTargetMessageBuilder(getContent: (agentId: string) => string) {
     sourceAgentId: "0",
     targetAgentIds: [agentId],
     openaiMessage: {
-      role: "system",
+      role: "user",
       content: `Hello Agent ${agentId}, this is Control. ${getContent(
         agentId
       )}`,

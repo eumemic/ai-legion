@@ -35,9 +35,9 @@ export interface SendMessageAction {
   /**
    * The target agent's ID.
    */
-  targetAgentId?: string;
+  targetAgentId: string;
   /**
    * The content of the message.
    */
-  message?: string;
+  message: string;
 }

@@ -47,7 +47,7 @@
               "description": "The content of the message."
             }
           },
-          "required": ["type"],
+          "required": ["type", "targetAgentId", "message"],
           "additionalProperties": false
         }
       ],

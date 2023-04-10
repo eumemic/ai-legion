@@ -9,12 +9,12 @@ import { MessageBus } from "./message-bus";
 
 dotenv.config();
 
-const numberOfAgents = 1;
+const numberOfAgents = 2;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
-const actionHandler = new ActionHandler(messageBus);
+const actionHandler = new ActionHandler(agentIds, messageBus);
 
 agentIds.forEach(async (id) => {
   const memory: Memory = new InMemoryMemory(
