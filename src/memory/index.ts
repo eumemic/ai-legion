@@ -1,4 +1,3 @@
-import { Decision } from "../make-decision";
 import { Message } from "../message";
 export { Memory } from "./memory";
 
@@ -11,5 +10,5 @@ export interface MessageEvent {
 
 export interface DecisionEvent {
   type: "decision";
-  decision: Decision;
+  actionText: string;
 }

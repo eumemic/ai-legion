@@ -9,16 +9,12 @@ const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export interface Decision {
-  actionText: string;
-}
-
 export default function makeDecision(
   agentId: string,
   events: Event[]
-): Promise<Decision> {
+): Promise<string> {
   const name = agentName(agentId);
-  const decisionPromise = taskQueue.run(async (): Promise<Decision> => {
+  const decisionPromise = taskQueue.run(async (): Promise<string> => {
     console.log(`${name} reflecting on ${events.length} events...`);
     const t0 = Date.now();
 
@@ -37,9 +33,9 @@ export default function makeDecision(
       )}s`
     );
 
-    const actionText = data.choices[0].message!.content;
+    const responseText = data.choices[0].message!.content;
 
-    return { actionText };
+    return responseText;
   });
 
   // avoid rate limits
@@ -78,7 +74,7 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
     case "decision":
       return {
         role: "assistant",
-        content: event.decision.actionText,
+        content: event.actionText,
       };
   }
 }

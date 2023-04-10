@@ -143,7 +143,7 @@ export class Memory {
       //     .reduce((sum, next) => sum + next, 0)} tokens)`
       // );
 
-      const { actionText: summaryContent } = await makeDecision(this.agentId, [
+      const summaryContent = await makeDecision(this.agentId, [
         ...eventsToSummarize,
         {
           type: "message",
