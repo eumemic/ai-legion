@@ -17,10 +17,12 @@ export class Agent {
     console.log(
       `Agent ${this.agentId} received ${
         isValid ? "valid" : "invalid"
-      } event: ${JSON.stringify(event)}`
+      } event: ${JSON.stringify(event, null, 2)}`
     );
     if (!isValid) {
-      console.log(`Validation errors: ${validateEvent.errors}`);
+      console.log(
+        `Validation errors: ${JSON.stringify(validateEvent.errors, null, 2)}`
+      );
     }
   }
 }
