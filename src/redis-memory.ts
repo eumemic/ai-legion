@@ -1,37 +1,21 @@
 import { RedisClientType, createClient } from "redis";
-import { Memory } from "./memory";
-import { Event } from "./event";
-import { Action } from "./action";
+import { Memento, Memory } from "./memory";
 
 export class RedisMemory implements Memory {
   private client: RedisClientType;
 
-  constructor() {
+  constructor(private agentId: string) {
     this.client = createClient();
   }
 
-  async saveEvent(event: Event): Promise<void> {
-    const agentId = event.type === "message" ? event.toId : undefined;
-    if (agentId) {
-      await this.saveToAgentMemory(agentId, event);
-    }
+  async append(memento: Memento) {
+    const mementos = await this.retrieve();
+    mementos.push(memento);
+    await this.client.set(this.agentId, JSON.stringify(mementos));
   }
 
-  async saveAction(agentId: string, action: Action): Promise<void> {
-    await this.saveToAgentMemory(agentId, action);
-  }
-
-  async getMemory(agentId: string): Promise<Array<Event | Action>> {
-    const memoryJSON = await this.client.get(agentId);
+  async retrieve(): Promise<Memento[]> {
+    const memoryJSON = await this.client.get(this.agentId);
     return memoryJSON ? JSON.parse(memoryJSON) : [];
-  }
-
-  private async saveToAgentMemory(
-    agentId: string,
-    data: Event | Action
-  ): Promise<void> {
-    const currentMemory = await this.getMemory(agentId);
-    currentMemory.push(data);
-    await this.client.set(agentId, JSON.stringify(currentMemory));
   }
 }
