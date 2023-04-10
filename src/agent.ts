@@ -19,10 +19,10 @@ export class Agent {
   ) {}
 
   private taskQueue = new TaskQueue();
-  private lastProcessedMessage: Message | undefined;
 
   // Start this Agent's event loop
   async start() {
+    // Listen for messages sent to us
     this.messageBus.subscribe(async (message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
@@ -38,27 +38,23 @@ export class Agent {
       }
     }, heartbeatInterval);
 
-    // Take action periodically
+    // Act on messages periodically
     this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
   }
 
   private async takeAction(): Promise<void> {
     const messages = await this.memory.retrieve();
 
-    const lastMessage = last(messages);
-    if (lastMessage === this.lastProcessedMessage) return;
-
-    this.lastProcessedMessage = lastMessage;
+    // Don't respond to our own messages
+    if (last(messages)?.sourceAgentId === this.id) return;
 
     let response: Awaited<ReturnType<typeof generateText>>;
-    // console.log(`Agent ${this.id} BEFORE`);
     try {
       response = await generateText(this.id, messages);
-      // } catch (e) {
-      //   console.error(e);
-      //   return;
+    } catch (e) {
+      console.error(e);
+      return;
     } finally {
-      // console.log(`Agent ${this.id} AFTER`);
     }
 
     if (response.status !== 200) {
@@ -73,10 +69,7 @@ export class Agent {
     }
 
     await this.memory.append(
-      (this.lastProcessedMessage = messageBuilder.agentResponse(
-        this.id,
-        responseContent
-      ))
+      messageBuilder.agentResponse(this.id, responseContent)
     );
 
     let result = parseAction(responseContent);
