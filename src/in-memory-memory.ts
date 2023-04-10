@@ -35,6 +35,8 @@ function printMemento(memento: Memento) {
     content = memento.actionText;
   }
   console.log(
-    `${sourceName} -> ${targetNames}:\n\n${content}\n\n=============\n`
+    `${sourceName} -> ${targetNames.join(
+      ", "
+    )}:\n\n${content}\n\n=============\n`
   );
 }
