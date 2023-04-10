@@ -1,6 +1,7 @@
 import { ActionDictionary } from "./action/action-dictionary";
 import { allActionDefinitions } from "./action/definitions";
 import parseAction, { Action } from "./parse-action";
+import { MULTILINE_DELIMITER } from "./util";
 
 const dict = new ActionDictionary(allActionDefinitions);
 
@@ -100,14 +101,34 @@ no-op
   );
 });
 
-test("quotes in parameter", () => {
-  const action = assertValid(
-    'send-message\ntargetAgentId: 0\nmessage: hello, "control"'
-  );
-  expect(action.actionDef.name).toBe("send-message");
-  expect(action.parameters).toEqual({
-    targetAgentId: "0",
-    message: 'hello, "control"',
+describe("quotes", () => {
+  test("in-line parameter", () => {
+    const action = assertValid(`
+send-message
+targetAgentId: 0
+message: hello, "control"
+`);
+    expect(action.actionDef.name).toBe("send-message");
+    expect(action.parameters).toEqual({
+      targetAgentId: "0",
+      message: 'hello, "control"',
+    });
+  });
+
+  test("multi-line parameter", () => {
+    const action = assertValid(`
+send-message
+targetAgentId: 0
+message:
+${MULTILINE_DELIMITER}
+hello, "control"
+${MULTILINE_DELIMITER}
+`);
+    expect(action.actionDef.name).toBe("send-message");
+    expect(action.parameters).toEqual({
+      targetAgentId: "0",
+      message: 'hello, "control"',
+    });
   });
 });
 
