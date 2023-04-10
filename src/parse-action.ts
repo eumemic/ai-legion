@@ -48,10 +48,11 @@ ${CODE_BLOCK_DELIMITER}
         .map((part) => part.trim())
         .map((part, i) => {
           if (i % 2 === 0) return part;
-          return JSON.stringify(part);
+          return JSON.stringify(part) + "\n";
         })
         .join("")
         .split("\n")
+        .filter(Boolean)
         .map((line) => {
           const colonIndex = line.indexOf(":");
           if (colonIndex < 0)

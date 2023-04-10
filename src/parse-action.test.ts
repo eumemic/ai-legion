@@ -119,6 +119,30 @@ message
   );
 });
 
+test("parameter after multiline parameter", () => {
+  const { parameters, thoughts } = assertValid(`
+sendMessage
+targetAgentId: 0
+message:
+% ff9d7713-0bb0-40d4-823c-5a66de48761b
+multi
+line
+parameter
+% ff9d7713-0bb0-40d4-823c-5a66de48761b
+thoughts: Trying a multi-line parameter followed by another parameter.
+`);
+  expect(parameters.message).toBe(
+    `
+multi
+line
+parameter
+`.trim()
+  );
+  expect(thoughts).toBe(
+    "Trying a multi-line parameter followed by another parameter."
+  );
+});
+
 test("invalid command name", () => {
   expect(assertInvalid("foo")).toBe(
     "Unknown action `foo`. Please refer to the list of available actions given in the introductory message."
@@ -184,6 +208,8 @@ ${MULTILINE_DELIMITER}
     });
   });
 });
+
+// =============================================================================
 
 function assertValid(text: string): Action {
   const result = parseAction(moduleManager.actions, text);
