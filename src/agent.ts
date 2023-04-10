@@ -16,7 +16,7 @@ export class Agent {
     private memory: Memory
   ) {}
 
-  handleEvent(event: Event): void {
+  async handleEvent(event: Event) {
     const isValid = validateEvent(event);
     console.log(
       `Agent ${this.agentId} received ${

@@ -16,9 +16,9 @@ const agents: Agent[] = agentIds.map((id) => new Agent(id, eventLog, memory));
 async function main() {
   while (true) {
     for (const agent of agents) {
-      agent.handleEvent({ type: "heartbeat" });
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await agent.handleEvent({ type: "heartbeat" });
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 }
 
