@@ -38,19 +38,17 @@ export default function parseAction(text: string): ParseResult<Action> {
       "}";
 
     result = JSON.parse(jsonText);
-  } catch (e) {
+  } catch (e: any) {
     return {
       type: "error",
-      message: `Error parsing ${text}: ${e}`,
+      message: "Your action could not be parsed.",
     };
   }
 
   if (!validate(result)) {
     return {
       type: "error",
-      message: `Unrecognized action: ${text}\n\nValidation errors: ${JSON.stringify(
-        validate.errors
-      )}`,
+      message: "Not a valid action, please consult `help`.",
     };
   }
 

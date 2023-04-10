@@ -78,33 +78,8 @@ export class Agent {
     let result = parseAction(actionText);
 
     if (result.type === "error") {
-      result = parseAction(actionText);
-      // if (result.type === "success") {
-      //   this.messageBus.send(
-      //     messageBuilder.generic(
-      //       this.id,
-      //       `I was able to understand your Action even though it contained extraneous text outside of the JSON. In the future please remember to only respond with JSON conforming to the Action Dictionary, and confine any natural language to the 'comment' field.`
-      //     )
-      //   );
-      // }
-    }
-
-    if (result.type === "error") {
-      this.messageBus.send(
-        messageBuilder.error(
-          this.id,
-          `Your last message wasn't formatted correctly. If you need help, respond with simply:
-
-  ${CODE_BLOCK_DELIMITER}
-  help
-  ${CODE_BLOCK_DELIMITER}
-  `
-        )
-      );
-      return;
-    }
-
-    if (result.value) {
+      this.messageBus.send(messageBuilder.error(this.id, result.message));
+    } else if (result.value) {
       await this.actionHandler.handle(this.id, result.value);
     }
   }

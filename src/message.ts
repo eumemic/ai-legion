@@ -126,18 +126,19 @@ ${CODE_BLOCK_DELIMITER}
         ? `Usage:
 
 ${CODE_BLOCK_DELIMITER}
-${actionSchema.properties.name.const}
-${Object.entries(actionSchema.properties)
-  .flatMap(([argName, { description }]) =>
-    argName === "name"
-      ? []
-      : [
-          `${argName}: <${description.toLowerCase()}>${
-            !actionSchema.required.includes(argName) ? " (optional)" : ""
-          }`,
-        ]
-  )
-  .join("\n")}
+${actionSchema.properties.name.const}${Object.entries(actionSchema.properties)
+            .flatMap(([argName, { description }]) =>
+              argName === "name"
+                ? []
+                : [
+                    `${argName}: <${description.toLowerCase()}>${
+                      !actionSchema.required.includes(argName)
+                        ? " (optional)"
+                        : ""
+                    }`,
+                  ]
+            )
+            .map((part) => `\n${part}`)}
 ${CODE_BLOCK_DELIMITER}`
         : `Unknown action \`${aboutAction}\`. Try using \`help\` with no arguments to see what actions are available.`
     );
@@ -153,7 +154,8 @@ ${CODE_BLOCK_DELIMITER}`
 
   generic: singleTargetSystemMessage,
 
-  error: singleTargetSystemMessage,
+  error: (agentId: string, content: string) =>
+    singleTargetSystemMessage(agentId, `--- ERROR ---\n\n${content}`),
 
   agentToAgent: (
     sourceAgentId: string,
@@ -162,7 +164,9 @@ ${CODE_BLOCK_DELIMITER}`
   ) => ({
     source: agentSource(sourceAgentId),
     targetAgentIds,
-    content,
+    content: `--- INCOMING MESSAGE FROM ${agentName(
+      sourceAgentId
+    ).toUpperCase()} ---\n\n${content}`,
   }),
 });
 

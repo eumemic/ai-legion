@@ -49,7 +49,7 @@ export default class ActionHandler {
           );
         else
           this.messageBus.send(
-            messageBuilder.generic(
+            messageBuilder.error(
               agentId,
               `You tried to send your message to an invalid targetAgentId (${JSON.stringify(
                 action.targetAgentId
@@ -62,7 +62,7 @@ export default class ActionHandler {
         readdir(action.path, (err, files) => {
           if (err) {
             this.messageBus.send(
-              messageBuilder.generic(agentId, JSON.stringify(err))
+              messageBuilder.error(agentId, JSON.stringify(err))
             );
           } else {
             this.messageBus.send(
@@ -87,13 +87,13 @@ export default class ActionHandler {
           // If there's an error, log it and exit
           if (err) {
             this.messageBus.send(
-              messageBuilder.generic(agentId, JSON.stringify(err))
+              messageBuilder.error(agentId, JSON.stringify(err))
             );
           } else {
             this.messageBus.send(
               messageBuilder.generic(
                 agentId,
-                `Contents of ${action.path}:\n${data}`
+                `Contents of ${action.path}:\n\n${data}`
               )
             );
           }
@@ -104,7 +104,7 @@ export default class ActionHandler {
         writeFile(action.path, action.newContent, "utf8", (err) => {
           if (err) {
             this.messageBus.send(
-              messageBuilder.generic(agentId, JSON.stringify(err))
+              messageBuilder.error(agentId, JSON.stringify(err))
             );
           } else {
             this.messageBus.send(
@@ -121,7 +121,7 @@ export default class ActionHandler {
     const resolvedPath = resolvePath(path);
     if (!resolvedPath.startsWith(currentDirectory)) {
       this.messageBus.send(
-        messageBuilder.generic(
+        messageBuilder.error(
           agentId,
           "Invalid path; must be within the current directory."
         )
@@ -133,7 +133,7 @@ export default class ActionHandler {
       resolvedPath.includes("node_modules")
     ) {
       this.messageBus.send(
-        messageBuilder.generic(agentId, "That path is off-limits!")
+        messageBuilder.error(agentId, "That path is off-limits!")
       );
       return false;
     }

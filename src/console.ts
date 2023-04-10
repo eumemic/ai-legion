@@ -2,7 +2,6 @@ import readline from "readline";
 import { messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import { toOpenAiMessage } from "./openai";
 
 const AGENT_ID = "0";
 
@@ -16,7 +15,7 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
   messageBus.subscribe((message) => {
     if (message.targetAgentIds && !message.targetAgentIds.includes(AGENT_ID))
       return;
-    console.log(`\n${toOpenAiMessage(messageMemento(message)).content}\n`);
+    console.log(`\n${message.content}\n`);
     rl.prompt();
   });
 

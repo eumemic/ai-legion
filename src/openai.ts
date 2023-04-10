@@ -51,18 +51,10 @@ const openai = memoize(() => {
   return new OpenAIApi(configuration);
 });
 
-export function toOpenAiMessage(
-  memento: Memento
-): ChatCompletionRequestMessage {
+function toOpenAiMessage(memento: Memento): ChatCompletionRequestMessage {
   if (memento.type === "message") {
-    let { source, content } = memento.message;
+    const { source, content } = memento.message;
     const role = source.type === "system" ? "system" : "user";
-
-    if (source.type !== "system")
-      content = `--- INCOMING MESSAGE FROM ${agentName(
-        source.id
-      ).toUpperCase()} ---\n\n${content}`;
-
     return {
       role,
       content,
