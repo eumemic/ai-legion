@@ -37,16 +37,26 @@ export class Agent {
 
     const actionJson = data.choices[0].message?.content;
     if (!actionJson) {
-      console.error("no response received");
+      this.eventBus.publish({
+        targetAgentIds: [this.id],
+        payload: { type: "error", message: "No response received" },
+      });
       return;
     }
 
-    const action = parseAction(actionJson);
-    if (action) {
-      await this.memory.append({ type: "action", action });
+    const result = parseAction(actionJson);
+    if (result.type === "error") {
+      this.eventBus.publish({
+        targetAgentIds: [this.id],
+        payload: {
+          type: "error",
+          message: `Error parsing and validating action. Make sure you are only sending JSON and that it conforms to the Action Dictionary! Confine all natural language to the 'comment' field`,
+        },
+      });
+      return;
     }
 
-    return action;
+    return result.value;
   }
 
   private initialSystemPrompt: ChatCompletionRequestMessage = {
@@ -75,6 +85,9 @@ export class Agent {
     be valid according to the Action Dictionary.
 
     Any extra commentary about your thought process can go in the 'comment' field of the Action.
+
+    If you receive an Event with type 'error', it probably means there was a problem with your last
+    Action. Ensure that you are creating properly-formatted JSON that conforms to the Action Dictionary.
   `,
   };
 }

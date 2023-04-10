@@ -45,6 +45,23 @@
           },
           "required": ["type", "fromId", "toId", "message"],
           "additionalProperties": false
+        },
+        {
+          "title": "ErrorEvent",
+          "type": "object",
+          "description": "An indication that something went wrong.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "error"
+            },
+            "message": {
+              "type": "string",
+              "description": "Information about the error."
+            }
+          },
+          "required": ["type", "message"],
+          "additionalProperties": false
         }
       ]
     }

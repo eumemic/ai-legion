@@ -10,7 +10,7 @@ export interface Event {
    * The ID of the agent for whom this event is intended. If empty, no agents will receive it. If null, all agents will receive it.
    */
   targetAgentIds?: string[];
-  payload: HeartbeatEvent | MessageEvent;
+  payload: HeartbeatEvent | MessageEvent | ErrorEvent;
 }
 /**
  * A heartbeat event that occurs periodically.
@@ -29,6 +29,16 @@ export interface MessageEvent {
   sourceAgentId?: string;
   /**
    * The content of the message.
+   */
+  message: string;
+}
+/**
+ * An indication that something went wrong.
+ */
+export interface ErrorEvent {
+  type: "error";
+  /**
+   * Information about the error.
    */
   message: string;
 }
