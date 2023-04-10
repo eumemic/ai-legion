@@ -10,7 +10,7 @@ export interface EventMemento {
 
 export interface ActionMemento {
   type: "action";
-  action: Action;
+  action: string;
 }
 
 export interface Memory {

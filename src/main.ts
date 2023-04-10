@@ -9,9 +9,12 @@ import ActionHandler from "./action-handler";
 dotenv.config();
 
 const numberOfAgents = 1;
-const pollingInterval = 10000;
+const pollingInterval = 60000;
 
-const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
+const agentIds = Array.from(
+  { length: numberOfAgents },
+  (_, i) => `agent-${i + 1}`
+);
 
 const eventBus: EventBus = new InMemoryEventBus();
 const memory: Memory = new InMemoryMemory();
@@ -29,7 +32,7 @@ async function main() {
         return;
 
       console.log(
-        `agent ${agent.id} received event: ${JSON.stringify(event, null, 2)}`
+        `${agent.id} received event: ${JSON.stringify(event, null, 2)}`
       );
 
       const action = await agent.handleEvent(event);
