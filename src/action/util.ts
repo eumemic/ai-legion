@@ -6,16 +6,17 @@ export function getUsageText(actionDef: ActionDefinition): string {
 
 ${CODE_BLOCK_DELIMITER}
 ${actionDef.name}
-thoughts: <reasoning behind this action> (optional)
-${Object.entries(actionDef.parameters)
-  .map(([name, { description }]) =>
-    name === "name"
-      ? undefined
-      : `${name}: <${description.toLowerCase()}>${
-          actionDef.parameters[name].optional ? " (optional)" : ""
-        }`
+thoughts: <reasoning behind this action> (optional)${Object.entries(
+    actionDef.parameters
   )
-  .filter(Boolean)
-  .join("\n")}
+    .map(([name, { description }]) =>
+      name === "name"
+        ? undefined
+        : `\n${name}: <${description.toLowerCase()}>${
+            actionDef.parameters[name].optional ? " (optional)" : ""
+          }`
+    )
+    .filter(Boolean)
+    .join("")}
 ${CODE_BLOCK_DELIMITER}`;
 }
