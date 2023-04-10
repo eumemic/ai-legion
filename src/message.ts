@@ -9,6 +9,8 @@ export interface Message {
   content: string;
 }
 
+type TypelessMessage = Omit<Message, "type">;
+
 export type MessageType = keyof typeof messageBuilder;
 
 export type MessageSource = SystemMessageSource | AgentMessageSource;
@@ -36,10 +38,12 @@ export const agentSource = (id: string): AgentMessageSource => ({
 const CODE_BLOCK_DELIMITER = "```";
 
 export const messageBuilder = addMessageTypes({
-  primer: systemMessageBuilder(
-    (agentId) => `You are ${agentName(
-      agentId
-    )}, one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out actions which you will send in response to my messages.
+  primer: (agentId: string) =>
+    singleTargetSystemMessage(
+      agentId,
+      `You are ${agentName(
+        agentId
+      )}, one of potentially several sophisticated autonomous entities who is able to communicate with me and one another to accomplish tasks together. I am your liaison to the real world, able to carry out actions which you will send in response to my messages.
 
 Respond to every message with an action in the following format:
 
@@ -90,15 +94,14 @@ You will periodically receive a "heartbeat" message, giving you a chance to take
 
 In the course of your work you may be assigned tasks by other agents, at which point you will work towards accomplishing them using the actions at your disposal.
 `
+    ),
+
+  heartbeat: constantSingleTargetSystemMessageBuilder(
+    `This is your regularly scheduled heartbeat message. Is there anything you need to do?`
   ),
 
-  heartbeat: systemMessageBuilder(
-    () =>
-      `This is your regularly scheduled heartbeat message. Is there anything you need to do?`
-  ),
-
-  listAllActions: systemMessageBuilder(
-    () => `You can take the following actions:
+  listAllActions: constantSingleTargetSystemMessageBuilder(
+    `You can take the following actions:
 
 ${actionDictionary.oneOf
   .map((action) => action.properties.name.const)
@@ -113,14 +116,14 @@ ${CODE_BLOCK_DELIMITER}
 `
   ),
 
-  helpOnAction: (actionId: string, aboutAction: string) =>
-    systemMessageBuilder(() => {
-      const actionSchema = actionDictionary.oneOf.find(
-        (action) => action.properties.name.const === aboutAction
-      );
-      if (!actionSchema)
-        return `Unknown action \`${aboutAction}\`. Try using \`help\` with no arguments to see what actions are available.`;
-      return `Usage:
+  helpOnAction: (agentId: string, aboutAction: string) => {
+    const actionSchema = actionDictionary.oneOf.find(
+      (action) => action.properties.name.const === aboutAction
+    );
+    return singleTargetSystemMessage(
+      agentId,
+      actionSchema
+        ? `Usage:
 
 ${CODE_BLOCK_DELIMITER}
 ${actionSchema.properties.name.const}
@@ -135,17 +138,17 @@ ${Object.entries(actionSchema.properties)
         ]
   )
   .join("\n")}
-${CODE_BLOCK_DELIMITER}
-`;
-    })(actionId),
+${CODE_BLOCK_DELIMITER}`
+        : `Unknown action \`${aboutAction}\`. Try using \`help\` with no arguments to see what actions are available.`
+    );
+  },
 
-  noResponseError: systemMessageBuilder(
-    () => `No response received, could you try again?`
+  noResponseError: constantSingleTargetSystemMessageBuilder(
+    `No response received, could you try again?`
   ),
 
-  malformattedResponseError: systemMessageBuilder(
-    () =>
-      `Your last message wasn't formatted correctly. If you need help, respond with simply:
+  malformattedResponseError: constantSingleTargetSystemMessageBuilder(
+    `Your last message wasn't formatted correctly. If you need help, respond with simply:
 
 ${CODE_BLOCK_DELIMITER}
 help
@@ -153,16 +156,15 @@ ${CODE_BLOCK_DELIMITER}
 `
   ),
 
-  listAgents: (agentId: string, agentIds: string[]) =>
-    systemMessageBuilder(
-      () =>
-        `These are the agents in the system:\n\n${agentIds
-          .map((id) => `${agentName(id)} [agentId=${id}]`)
-          .join("\n")}`
-    )(agentId),
+  listAgents: (agentId: string, allAgentIds: string[]) =>
+    singleTargetSystemMessage(
+      agentId,
+      `These are the agents in the system:\n\n${allAgentIds
+        .map((id) => `${agentName(id)} [agentId=${id}]`)
+        .join("\n")}`
+    ),
 
-  generic: (agentId: string, content: string) =>
-    systemMessageBuilder(() => content)(agentId),
+  generic: singleTargetSystemMessage,
 
   agentToAgent: (
     sourceAgentId: string,
@@ -176,7 +178,7 @@ ${CODE_BLOCK_DELIMITER}
 });
 
 function addMessageTypes<
-  T extends Record<string, (...args: any) => Omit<Message, "type">>
+  T extends Record<string, (...args: any) => TypelessMessage>
 >(record: T): { [K in keyof T]: (...args: Parameters<T[K]>) => Message } {
   for (const [standardMessageType, builder] of Object.entries(record)) {
     (record as any)[standardMessageType] = (...args: any) => ({
@@ -187,10 +189,17 @@ function addMessageTypes<
   return record as any;
 }
 
-function systemMessageBuilder(getContent: (agentId: string) => string) {
-  return (agentId: string): Omit<Message, "type"> => ({
+function constantSingleTargetSystemMessageBuilder(message: string) {
+  return (agentId: string) => singleTargetSystemMessage(agentId, message);
+}
+
+function singleTargetSystemMessage(
+  agentId: string,
+  content: string
+): TypelessMessage {
+  return {
     source: systemSource,
     targetAgentIds: [agentId],
-    content: getContent(agentId),
-  });
+    content,
+  };
 }
