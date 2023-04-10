@@ -1,7 +1,13 @@
 import { Event, MessageEvent } from "./event";
+import { EventLog } from "./event-log";
+import { Memory } from "./memory";
 
 export class Agent {
-  constructor(private agentId: string, domain: string) {}
+  constructor(
+    private agentId: string,
+    private eventLog: EventLog,
+    private memory: Memory
+  ) {}
 
   handleEvent(event: Event): void {
     switch (event.type) {
