@@ -1,5 +1,5 @@
 export function sleep(milliseconds: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 1000));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 export function sleepUntil(condition: () => boolean): Promise<void> {

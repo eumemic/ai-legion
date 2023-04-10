@@ -57,7 +57,7 @@ In the course of our work I or other agents may assign you tasks, at which point
 
   malformattedResponseError: singleTargetMessageBuilder(
     (agentId) =>
-      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command.`
+      `I wasn't able to understand your last message because it wasn't formatted as JSON conforming to the Action Dictionary. As a reminder, I cannot understand natural language, only well-formatted Actions, and the ENTIRETY of your response must be in the form of a valid JSON string. You can put any natural language content in the 'comment' field of the command. If you need to view the command dictionary again, use the 'view-command-dictionary' command by responding with \`{ "type": "view-command-dictionary" }\`.`
   ),
 
   generic: (agentId: string, content: string) =>

@@ -9,7 +9,7 @@ import { MessageBus } from "./message-bus";
 
 dotenv.config();
 
-const numberOfAgents = 2;
+const numberOfAgents = 1;
 
 const agentIds = Array.from({ length: numberOfAgents }, (_, i) => `${i + 1}`);
 
@@ -21,12 +21,12 @@ main();
 async function main() {
   for (const id of agentIds) {
     const memory: Memory = new InMemoryMemory(
-      messageBuilder.primer(id)
-      // messageBuilder.agentResponse(
-      //   id,
-      //   "Hello Control, it is nice to meet you as well. I understand the Action Dictionary and will respond with Actions in the specified format. Please let me know if there is anything specific you would like me to do at this time."
-      // ),
-      // messageBuilder.malformattedResponseError(id)
+      messageBuilder.primer(id),
+      messageBuilder.agentResponse(
+        id,
+        "Hello Control, it is nice to meet you as well. I understand the Action Dictionary and will respond with Actions in the specified format. Please let me know if there is anything specific you would like me to do at this time."
+      ),
+      messageBuilder.malformattedResponseError(id)
     );
     const agent = new Agent(id, memory, messageBus, actionHandler);
     await agent.start();

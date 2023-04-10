@@ -9,7 +9,7 @@ export interface Action {
   /**
    * The payload that's specific to a particular action.
    */
-  payload: NoOpAction | QueryAgentRegistryAction | SendMessageAction;
+  payload: NoOpAction | ViewActionDictionaryAction | QueryAgentRegistryAction | SendMessageAction;
   /**
    * Use this field to articulate your thought process in choosing this action.
    */
@@ -20,6 +20,12 @@ export interface Action {
  */
 export interface NoOpAction {
   type: "no-op";
+}
+/**
+ * View the Action Dictionary which describes how to validly format your responses in JSON.
+ */
+export interface ViewActionDictionaryAction {
+  type: "view-action-dictionary";
 }
 /**
  * Ask who the other agents are that I can talk to.

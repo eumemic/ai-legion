@@ -19,6 +19,18 @@
           "additionalProperties": false
         },
         {
+          "title": "ViewActionDictionaryAction",
+          "description": "View the Action Dictionary which describes how to validly format your responses in JSON.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "view-action-dictionary"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
           "title": "QueryAgentRegistryAction",
           "description": "Ask who the other agents are that I can talk to.",
           "properties": {
