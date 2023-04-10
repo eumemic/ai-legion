@@ -35,7 +35,7 @@ export const agentSource = (id: string): AgentMessageSource => ({
   id,
 });
 
-const CODE_BLOCK_DELIMITER = "```";
+export const CODE_BLOCK_DELIMITER = "```";
 
 export const messageBuilder = addMessageTypes({
   primer: (agentId: string) =>
@@ -143,19 +143,6 @@ ${CODE_BLOCK_DELIMITER}`
     );
   },
 
-  noResponseError: constantSingleTargetSystemMessageBuilder(
-    `No response received, could you try again?`
-  ),
-
-  malformattedResponseError: constantSingleTargetSystemMessageBuilder(
-    `Your last message wasn't formatted correctly. If you need help, respond with simply:
-
-${CODE_BLOCK_DELIMITER}
-help
-${CODE_BLOCK_DELIMITER}
-`
-  ),
-
   listAgents: (agentId: string, allAgentIds: string[]) =>
     singleTargetSystemMessage(
       agentId,
@@ -165,6 +152,8 @@ ${CODE_BLOCK_DELIMITER}
     ),
 
   generic: singleTargetSystemMessage,
+
+  error: singleTargetSystemMessage,
 
   agentToAgent: (
     sourceAgentId: string,

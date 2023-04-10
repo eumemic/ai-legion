@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
 import { actionMemento, Memory, messageMemento } from "./memory";
-import { messageBuilder } from "./message";
+import { CODE_BLOCK_DELIMITER, messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
 import generateText from "./openai";
 import parseAction from "./parse-action";
@@ -64,7 +64,12 @@ export class Agent {
 
     const actionText = response.data.choices[0].message?.content;
     if (!actionText) {
-      this.messageBus.send(messageBuilder.noResponseError(this.id));
+      this.messageBus.send(
+        messageBuilder.error(
+          this.id,
+          `No response received, could you try again?`
+        )
+      );
       return;
     }
 
@@ -85,7 +90,17 @@ export class Agent {
     }
 
     if (result.type === "error") {
-      this.messageBus.send(messageBuilder.malformattedResponseError(this.id));
+      this.messageBus.send(
+        messageBuilder.error(
+          this.id,
+          `Your last message wasn't formatted correctly. If you need help, respond with simply:
+
+  ${CODE_BLOCK_DELIMITER}
+  help
+  ${CODE_BLOCK_DELIMITER}
+  `
+        )
+      );
       return;
     }
 
