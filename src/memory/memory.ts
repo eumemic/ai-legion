@@ -27,7 +27,10 @@ export class Memory {
     }
     events.push(event);
     events = await this.summarize(events);
-    await this.store.set(this.key, JSON.stringify(events.slice(1), null, 2));
+    await this.store.set(
+      this.key,
+      JSON.stringify(events.slice(this.prefixedEvents.length), null, 2)
+    );
     return events;
   }
 
@@ -35,9 +38,12 @@ export class Memory {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
     // events.forEach((event) => this.printEvent(event));
+    return [...this.prefixedEvents, ...events];
+  }
+
+  private get prefixedEvents(): Event[] {
     return [
       { type: "message", message: primer(this.agentId, this.actionDictionary) },
-      ...events,
     ];
   }
 
@@ -90,10 +96,10 @@ export class Memory {
     );
 
     if (thresholdOverrun > 0) {
-      for (let i = 1; i < events.length; i++) {
+      for (let i = this.prefixedEvents.length; i < events.length; i++) {
         const precedingTokens = cumulativeTokenCounts[i - 1];
         if (precedingTokens > truncationThreshold) {
-          // const summarizedEvents = events.slice(1, i);
+          // const summarizedEvents = events.slice(this.prefixedEvents.length, i);
 
           const summaryWordLimit = Math.floor(
             (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6
