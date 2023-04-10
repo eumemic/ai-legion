@@ -38,7 +38,7 @@ test("case 3", () => {
   assertValid(`
 write-file
 path: ./schema/action-dictionary.json
-newContent:
+content:
 % ff9d7713-0bb0-40d4-823c-5a66de48761b
 {
   "$schema": "http://json-schema.org/draft-07/schema#",

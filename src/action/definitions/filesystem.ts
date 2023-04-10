@@ -86,20 +86,20 @@ export default defineActionModule({
         path: {
           description: "The path of the file you want to write to",
         },
-        newContent: {
+        content: {
           description: "The new content of the file",
         },
       },
     }).withHandler(
       async ({
-        parameters: { path, newContent },
+        parameters: { path, content },
         context: { sourceAgentId },
         sendMessage,
       }) => {
         if (!checkPath(sourceAgentId, path, sendMessage)) return;
 
         try {
-          await writeFile(path, newContent, "utf8");
+          await writeFile(path, content, "utf8");
           sendMessage(
             messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
           );
