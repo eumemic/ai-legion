@@ -1,8 +1,8 @@
 import { agentName, MULTILINE_DELIMITER } from "./util";
 import { messageBuilder, CODE_BLOCK_DELIMITER } from "./message";
-import { ActionDictionary } from "./module/action-dictionary";
+import { ModuleManager } from "./module/module-manager";
 
-export function primer(agentId: string, actionDictionary: ActionDictionary) {
+export function primer(agentId: string, moduleManager: ModuleManager) {
   return messageBuilder.spontaneous(
     agentId,
     `
@@ -39,7 +39,7 @@ ${CODE_BLOCK_DELIMITER}
 
 2) These are the actions at your disposal:
 
-${actionDictionary.definitions
+${moduleManager.definitions
   .map((actionDef) => `\`${actionDef.name}\` - ${actionDef.description}`)
   .join("\n")}
 

@@ -21,10 +21,10 @@ export default defineModule({
       },
       async execute({
         parameters: { aboutAction },
-        context: { sourceAgentId, actionDictionary },
+        context: { sourceAgentId, moduleManager: moduleManager },
         sendMessage,
       }) {
-        const actionDef = actionDictionary.getDefinition(aboutAction);
+        const actionDef = moduleManager.getActionDefinition(aboutAction);
         if (!actionDef) {
           sendMessage(
             messageBuilder.error(

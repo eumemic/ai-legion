@@ -5,14 +5,14 @@ import { messageBuilder } from "../message";
 import { primer } from "../primer";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
-import { ActionDictionary } from "../module/action-dictionary";
+import { ModuleManager } from "../module/module-manager";
 
 const AVG_WORDS_PER_TOKEN = 0.75;
 
 export class Memory {
   constructor(
     private agentId: string,
-    private actionDictionary: ActionDictionary,
+    private moduleManager: ModuleManager,
     private store: Store,
     private compressionThreshold: number
   ) {}
@@ -43,7 +43,7 @@ export class Memory {
 
   private get prefixedEvents(): Event[] {
     return [
-      { type: "message", message: primer(this.agentId, this.actionDictionary) },
+      { type: "message", message: primer(this.agentId, this.moduleManager) },
     ];
   }
 

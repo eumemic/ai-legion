@@ -1,4 +1,4 @@
-import { ActionDictionary } from "./module/action-dictionary";
+import { ModuleManager } from "./module/module-manager";
 import { allActionDefinitions } from "./module/definitions";
 import core from "./module/definitions/core";
 import messaging from "./module/definitions/messaging";
@@ -6,7 +6,7 @@ import { getUsageText } from "./module/util";
 import parseAction, { Action } from "./parse-action";
 import { MULTILINE_DELIMITER } from "./util";
 
-const dict = new ActionDictionary(allActionDefinitions);
+const dict = new ModuleManager(allActionDefinitions);
 
 test("case 1", () => {
   assertValid(`

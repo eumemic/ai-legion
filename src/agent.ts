@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import ActionHandler from "./action-handler";
-import { ActionDictionary } from "./module/action-dictionary";
+import { ModuleManager } from "./module/module-manager";
 import makeDecision from "./make-decision";
 import { Memory } from "./memory";
 import { messageBuilder } from "./message";
@@ -14,7 +14,7 @@ export class Agent {
     public id: string,
     private memory: Memory,
     private messageBus: MessageBus,
-    private actionDictionary: ActionDictionary,
+    private moduleManager: ModuleManager,
     private actionHandler: ActionHandler
   ) {}
 
@@ -61,7 +61,7 @@ export class Agent {
       // Reassign events in case summarization occurred
       events = await this.memory.append({ type: "decision", decision });
 
-      const result = parseAction(this.actionDictionary, decision.actionText);
+      const result = parseAction(this.moduleManager, decision.actionText);
       if (result.type === "error") {
         this.messageBus.send(messageBuilder.error(this.id, result.message));
       } else {

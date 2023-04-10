@@ -1,6 +1,6 @@
 import { ActionDefinition, PartialActionDefinition } from "./action-definition";
 import { Message } from "../message";
-import { ActionDictionary } from "./action-dictionary";
+import { ModuleManager } from "./module-manager";
 
 export interface Module<S = any, A extends string = string>
   extends ModuleInputs1<S> {
@@ -24,6 +24,6 @@ export interface ModuleStateInputs {
 export interface Context<S> {
   sourceAgentId: string;
   allAgentIds: string[];
-  actionDictionary: ActionDictionary;
+  moduleManager: ModuleManager;
   state: S;
 }

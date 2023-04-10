@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import ActionHandler from "./action-handler";
-import { ActionDictionary } from "./module/action-dictionary";
+import { ModuleManager } from "./module/module-manager";
 import { allActionDefinitions } from "./module/definitions";
 import { Agent } from "./agent";
 import { startConsole } from "./console";
@@ -15,9 +15,9 @@ dotenv.config();
 
 const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
 
-const actionDictionary = new ActionDictionary(allActionDefinitions);
+const moduleManager = new ModuleManager(allActionDefinitions);
 const messageBus: MessageBus = new InMemoryMessageBus();
-const actionHandler = new ActionHandler(agentIds, messageBus, actionDictionary);
+const actionHandler = new ActionHandler(agentIds, messageBus, moduleManager);
 
 main();
 
@@ -28,17 +28,12 @@ async function main() {
     const store = new FileStore([id]);
     // We have to leave room for the agent's next action, which is of unknown size
     const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
-    const memory = new Memory(
-      id,
-      actionDictionary,
-      store,
-      compressionThreshold
-    );
+    const memory = new Memory(id, moduleManager, store, compressionThreshold);
     const agent = new Agent(
       id,
       memory,
       messageBus,
-      actionDictionary,
+      moduleManager,
       actionHandler
     );
     await agent.start();

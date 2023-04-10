@@ -1,4 +1,4 @@
-import { ActionDictionary } from "./module/action-dictionary";
+import { ModuleManager } from "./module/module-manager";
 import { getActionState } from "./module/definitions";
 import { MessageBus } from "./message-bus";
 import { Action } from "./parse-action";
@@ -7,7 +7,7 @@ export default class ActionHandler {
   constructor(
     private agentIds: string[],
     private messageBus: MessageBus,
-    private actionDictionary: ActionDictionary
+    private moduleManager: ModuleManager
   ) {}
 
   async handle(agentId: string, { actionDef, parameters }: Action) {
@@ -15,7 +15,7 @@ export default class ActionHandler {
       context: {
         sourceAgentId: agentId,
         allAgentIds: this.agentIds,
-        actionDictionary: this.actionDictionary,
+        moduleManager: this.moduleManager,
         state: getActionState(agentId, actionDef.name),
       },
       parameters,
