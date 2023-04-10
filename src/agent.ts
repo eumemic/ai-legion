@@ -8,7 +8,6 @@ import { MessageBus } from "./message-bus";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 
-const actionInterval = 10 * 1000;
 // const heartbeatInterval = 60 * 1000;
 
 export class Agent {
@@ -28,11 +27,13 @@ export class Agent {
     this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      this.memory.append({ type: "message", message });
+      this.taskQueue.run(async () => {
+        await this.memory.append({ type: "message", message });
+        await this.takeAction();
+      });
     });
 
-    // Act on messages periodically
-    this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
+    await this.taskQueue.run(() => this.takeAction());
 
     // Start heartbeat
     // this.taskQueue.runPeriodically(async () => {
