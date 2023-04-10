@@ -34,7 +34,9 @@ export const agentSource = (id: string): AgentMessageSource => ({
 export const CODE_BLOCK_DELIMITER = "```";
 
 export const messageBuilder = addMessageTypes({
-  standard: singleTargetSystemMessage,
+  spontaneous: singleTargetSystemMessage,
+
+  ok: singleTargetSystemMessage,
 
   error: singleTargetSystemMessage,
 

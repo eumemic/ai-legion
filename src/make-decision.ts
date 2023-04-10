@@ -53,7 +53,8 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
       const role = source.type === "system" ? "system" : "user";
       let header: string;
       switch (messageType) {
-        case "standard":
+        case "spontaneous":
+        case "ok":
         case "agentToAgent":
           header = `MESSAGE FROM ${messageSourceName(source).toUpperCase()}`;
           break;

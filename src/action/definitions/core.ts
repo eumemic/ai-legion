@@ -31,9 +31,7 @@ export default defineActionModule({
           )
         );
       } else {
-        sendMessage(
-          messageBuilder.standard(sourceAgentId, getUsageText(actionDef))
-        );
+        sendMessage(messageBuilder.ok(sourceAgentId, getUsageText(actionDef)));
       }
     },
   },

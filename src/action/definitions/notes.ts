@@ -24,7 +24,7 @@ export default defineActionModule<Store>({
     }) {
       await state.set(title, content);
       sendMessage(
-        messageBuilder.standard(
+        messageBuilder.ok(
           sourceAgentId,
           `Note "${title}" has been written successfully.`
         )
@@ -47,7 +47,7 @@ export default defineActionModule<Store>({
       const content = await state.get(title);
       if (content) {
         sendMessage(
-          messageBuilder.standard(
+          messageBuilder.ok(
             sourceAgentId,
             `Content of "${title}":\n\n${content}`
           )
@@ -65,7 +65,7 @@ export default defineActionModule<Store>({
     async execute({ context: { sourceAgentId, state }, sendMessage }) {
       const noteTitles = await state.list();
       sendMessage(
-        messageBuilder.standard(
+        messageBuilder.ok(
           sourceAgentId,
           noteTitles.length
             ? `List of note titles:\n\n${noteTitles
@@ -91,7 +91,7 @@ export default defineActionModule<Store>({
     }) {
       if (await state.delete(title)) {
         sendMessage(
-          messageBuilder.standard(sourceAgentId, `Deleted note "${title}".`)
+          messageBuilder.ok(sourceAgentId, `Deleted note "${title}".`)
         );
       } else {
         sendMessage(

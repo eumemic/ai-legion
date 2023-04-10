@@ -9,7 +9,7 @@ export default defineActionModule({
     description: "Ask who the other agents are that you can talk to",
     async execute({ context: { sourceAgentId, allAgentIds }, sendMessage }) {
       sendMessage(
-        messageBuilder.standard(
+        messageBuilder.ok(
           sourceAgentId,
           `These are the agents in the system:\n\n${allAgentIds
             .map((id) => `${agentName(id)} [agentId=${id}]`)

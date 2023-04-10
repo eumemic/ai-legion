@@ -35,7 +35,7 @@ export default defineActionModule({
         });
         const filesWithStats = await Promise.all(filesWithStatsPromises);
         sendMessage(
-          messageBuilder.standard(
+          messageBuilder.ok(
             sourceAgentId,
             `Here are the contents of ${path}:\n${filesWithStats.join("\n")}`
           )
@@ -63,10 +63,7 @@ export default defineActionModule({
       try {
         const data = await readFile(path, "utf8");
         sendMessage(
-          messageBuilder.standard(
-            sourceAgentId,
-            `Contents of ${path}:\n\n${data}`
-          )
+          messageBuilder.ok(sourceAgentId, `Contents of ${path}:\n\n${data}`)
         );
       } catch (err) {
         sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
@@ -93,9 +90,7 @@ export default defineActionModule({
 
       try {
         await writeFile(path, content, "utf8");
-        sendMessage(
-          messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
-        );
+        sendMessage(messageBuilder.ok(sourceAgentId, `Wrote to ${path}.`));
       } catch (err) {
         sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }
@@ -123,7 +118,7 @@ export default defineActionModule({
       try {
         await rename(sourcePath, destinationPath);
         sendMessage(
-          messageBuilder.standard(
+          messageBuilder.ok(
             sourceAgentId,
             `Moved ${sourcePath} to ${destinationPath}.`
           )
@@ -150,7 +145,7 @@ export default defineActionModule({
 
       try {
         await unlink(path);
-        sendMessage(messageBuilder.standard(sourceAgentId, `Deleted ${path}.`));
+        sendMessage(messageBuilder.ok(sourceAgentId, `Deleted ${path}.`));
       } catch (err) {
         sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
       }

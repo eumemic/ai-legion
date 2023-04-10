@@ -3,7 +3,7 @@ import { messageBuilder, CODE_BLOCK_DELIMITER } from "./message";
 import { ActionDictionary } from "./action/action-dictionary";
 
 export function primer(agentId: string, actionDictionary: ActionDictionary) {
-  return messageBuilder.standard(
+  return messageBuilder.spontaneous(
     agentId,
     `
 --- PRIMER ---
