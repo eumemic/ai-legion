@@ -2,7 +2,7 @@ import { Decision } from "../make-decision";
 import { Message } from "../message";
 export { Memory } from "./memory";
 
-export type Event = MessageEvent | DecisionEvent;
+export type Event = MessageEvent | DecisionEvent | SummaryEvent;
 
 export interface MessageEvent {
   type: "message";
@@ -14,10 +14,8 @@ export interface DecisionEvent {
   decision: Decision;
 }
 
-export function messageEvent(message: Message): Event {
-  return { type: "message", message };
-}
-
-export function decisionEvent(agentId: string, decision: Decision): Event {
-  return { type: "decision", decision };
+export interface SummaryEvent {
+  type: "summary";
+  summary: string;
+  summarizedEvents: Event[];
 }

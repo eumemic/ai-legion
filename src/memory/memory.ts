@@ -1,8 +1,9 @@
 import { isEmpty } from "lodash";
-import { Event, messageEvent } from ".";
+import { Event } from ".";
 import { primerMessage } from "../message";
 import { Store } from "../store";
 import { agentName, messageSourceName } from "../util";
+import { toOpenAiMessage } from "../make-decision";
 
 export class Memory {
   constructor(private agentId: string, private store: Store) {}
@@ -18,7 +19,8 @@ export class Memory {
   async retrieve(): Promise<Event[]> {
     const eventsText = await this.store.get(this.key);
     const events: Event[] = JSON.parse(eventsText || "[]");
-    if (isEmpty(events)) events.push(messageEvent(primerMessage(this.agentId)));
+    if (isEmpty(events))
+      events.push({ type: "message", message: primerMessage(this.agentId) });
     return events;
   }
 
@@ -29,21 +31,18 @@ export class Memory {
   private printEvent(event: Event) {
     let sourceName: string;
     let targetNames: string[];
-    let content: string;
     if (event.type === "message") {
       const { message } = event;
       sourceName = messageSourceName(message.source);
       targetNames = message.targetAgentIds?.map(agentName);
-      content = message.content;
     } else {
       sourceName = agentName(this.agentId);
       targetNames = ["System"];
-      content = event.decision.actionText;
     }
     console.log(
-      `${sourceName} -> ${targetNames.join(
-        ", "
-      )}:\n\n${content}\n\n=============\n`
+      `${sourceName} -> ${targetNames.join(", ")}:\n\n${
+        toOpenAiMessage(event).content
+      }\n\n=============\n`
     );
   }
 }

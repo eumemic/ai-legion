@@ -93,18 +93,42 @@ const openai = memoize(() => {
   return new OpenAIApi(configuration);
 });
 
-function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
-  if (event.type === "message") {
-    const { source, content } = event.message;
-    const role = source.type === "system" ? "system" : "user";
-    return {
-      role,
-      content,
-    };
-  } else {
-    return {
-      role: "assistant",
-      content: event.decision.actionText,
-    };
+export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
+  switch (event.type) {
+    case "message":
+      const { source, content } = event.message;
+      const role = source.type === "system" ? "system" : "user";
+      return {
+        role,
+        content,
+      };
+    case "decision":
+      return {
+        role: "assistant",
+        content: event.decision.actionText,
+      };
+    case "summary":
+      const { summary, summarizedEvents } = event;
+      return {
+        role: "system",
+        content: `
+${
+  summarizedEvents.length
+} events are omitted here to free up real estate in your context window.
+
+SUMMARY: ${summary}
+
+EVENTS:
+${summarizedEvents.map(
+  (event, index) => `${index + 1}) ${truncate(toOpenAiMessage(event).content)}`
+)}
+`.trim(),
+      };
   }
+}
+
+function truncate(text: string) {
+  const limit = 100;
+  if (text.length < limit) return text;
+  return JSON.stringify(text.substring(0, limit) + " ...");
 }
