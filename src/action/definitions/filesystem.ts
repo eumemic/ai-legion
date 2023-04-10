@@ -25,7 +25,7 @@ export default [
           sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
         } else {
           sendMessage(
-            messageBuilder.generic(
+            messageBuilder.standard(
               sourceAgentId,
               `Here are the contents of ${path}:\n${files
                 .map((file) => {
@@ -41,6 +41,7 @@ export default [
       });
     }
   ),
+
   defineAction({
     name: "read-file",
     description: "Read the contents of a particular file",
@@ -62,7 +63,7 @@ export default [
           sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
         } else {
           sendMessage(
-            messageBuilder.generic(
+            messageBuilder.standard(
               sourceAgentId,
               `Contents of ${path}:\n\n${data}`
             )
@@ -71,6 +72,7 @@ export default [
       });
     }
   ),
+
   defineAction({
     name: "write-file",
     description: "Write the contents of a particular file",
@@ -95,7 +97,7 @@ export default [
           sendMessage(messageBuilder.error(sourceAgentId, JSON.stringify(err)));
         } else {
           sendMessage(
-            messageBuilder.generic(sourceAgentId, `Wrote to ${path}.`)
+            messageBuilder.standard(sourceAgentId, `Wrote to ${path}.`)
           );
         }
       });

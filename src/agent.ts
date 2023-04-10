@@ -38,8 +38,13 @@ export class Agent {
     // this.taskQueue.runPeriodically(async () => {
     //   const messages = await this.memory.retrieve();
     //   const lastMessage = last(messages);
-    //   if (lastMessage?.messageType === "agentResponse") {
-    //     this.messageBus.send(messageBuilder.heartbeat(this.id));
+    //   if (lastMessage?.type === "action") {
+    //     this.messageBus.send(
+    //       messageBuilder.standard(
+    //         this.id,
+    //         "This is your regularly scheduled heartbeat message. Is there anything you need to do?"
+    //       )
+    //     );
     //   }
     // }, heartbeatInterval);
   }

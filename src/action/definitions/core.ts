@@ -1,11 +1,14 @@
 import { defineAction } from "../action-definition";
-import { messageBuilder } from "../../message";
+import { CODE_BLOCK_DELIMITER, messageBuilder } from "../../message";
+import { agentName } from "../../util";
+import { getUsageText } from "../util";
 
 export default [
   defineAction({
     name: "no-op",
     description: "Do nothing",
   }).withHandler(async () => {}),
+
   defineAction({
     name: "help",
     description: "Get help on a specific action, or list all available actions",
@@ -23,27 +26,55 @@ export default [
     }) => {
       if (!aboutAction) {
         sendMessage(
-          messageBuilder.listAllActions(sourceAgentId, actionDictionary)
-        );
-      } else {
-        sendMessage(
-          messageBuilder.helpOnAction(
+          messageBuilder.standard(
             sourceAgentId,
-            aboutAction,
-            actionDictionary
+            `You can take the following actions:
+
+${actionDictionary.definitions.map((actionDef) => actionDef.name).join("\n")}
+
+To get help on a specific action, use the \`help\` action with the \`aboutAction\` parameter set to the name of the action you want help with. For example:
+
+${CODE_BLOCK_DELIMITER}
+help
+aboutAction: send-message
+${CODE_BLOCK_DELIMITER}
+`
           )
         );
+      } else {
+        const actionDef = actionDictionary.getDefinition(aboutAction);
+        if (!actionDef) {
+          sendMessage(
+            messageBuilder.error(
+              sourceAgentId,
+              `Unknown action \`${aboutAction}\`. Try using \`help\` with no parameters to see what actions are available.`
+            )
+          );
+        } else {
+          sendMessage(
+            messageBuilder.standard(sourceAgentId, getUsageText(actionDef))
+          );
+        }
       }
     }
   ),
+
   defineAction({
     name: "query-agent-registry",
     description: "Ask who the other agents are that I can talk to",
   }).withHandler(
     async ({ context: { sourceAgentId, allAgentIds }, sendMessage }) => {
-      sendMessage(messageBuilder.listAgents(sourceAgentId, allAgentIds));
+      sendMessage(
+        messageBuilder.standard(
+          sourceAgentId,
+          `These are the agents in the system:\n\n${allAgentIds
+            .map((id) => `${agentName(id)} [agentId=${id}]`)
+            .join("\n")}`
+        )
+      );
     }
   ),
+
   defineAction({
     name: "send-message",
     description: "Send a message to another agent",
