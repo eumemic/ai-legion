@@ -1,8 +1,8 @@
 {
   "name": "gpt-legion",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/index.ts",
+  "description": "My name is Legion, for we are many",
+  "main": "src/main.ts",
   "scripts": {
     "build": "tsc",
     "generate": "npm run generate-event-types && npm run generate-action-types",
