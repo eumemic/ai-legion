@@ -75,12 +75,12 @@ In the course of our work I or other agents may assign you tasks, at which point
   ),
 
   heartbeat: singleTargetMessageBuilder(
-    (agentId) =>
+    () =>
       `This is your regularly scheduled heartbeat message. Is there anything you need to do?`
   ),
 
   listAllActions: singleTargetMessageBuilder(
-    (agentId) => `You can take the following actions:
+    () => `You can take the following actions:
 
 ${actionDictionary.oneOf
   .map((action) => action.properties.name.const)
@@ -96,7 +96,7 @@ ${CODE_BLOCK_DELIMITER}
   ),
 
   helpOnAction: (actionId: string, aboutAction: string) =>
-    singleTargetMessageBuilder((agentId) => {
+    singleTargetMessageBuilder(() => {
       const actionSchema = actionDictionary.oneOf.find(
         (action) => action.properties.name.const === aboutAction
       );
@@ -122,11 +122,11 @@ ${CODE_BLOCK_DELIMITER}
     })(actionId),
 
   noResponseError: singleTargetMessageBuilder(
-    (agentId) => `I did not receive any response, could you try again?`
+    () => `I did not receive any response, could you try again?`
   ),
 
   malformattedResponseError: singleTargetMessageBuilder(
-    (agentId) =>
+    () =>
       `I wasn't able to understand your last message because it wasn't formatted correctly. As a reminder, I cannot understand natural language, only well-formatted actions, per my initial instructions. If you need help, respond with simply:
 
 ${CODE_BLOCK_DELIMITER}
