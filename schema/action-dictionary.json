@@ -2,26 +2,38 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Action",
-  "oneOf": [
-    {
-      "title": "SendMessageAction",
-      "description": "Send a message to another agent.",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "send-message"
-        },
-        "agentId": {
-          "type": "string",
-          "description": "The target agent's ID."
-        },
-        "message": {
-          "type": "string",
-          "description": "The content of the message."
+  "properties": {
+    "payload": {
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "SendMessageAction",
+          "description": "Send a message to another agent.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "send-message"
+            },
+            "agentId": {
+              "type": "string",
+              "description": "The target agent's ID."
+            },
+            "message": {
+              "type": "string",
+              "description": "The content of the message."
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
         }
-      },
-      "required": ["type"],
-      "additionalProperties": false
+      ],
+      "description": "The payload that's specific to a particular action."
+    },
+    "comment": {
+      "type": "string",
+      "description": "Use this field to articulate your thought process in choosing this action."
     }
-  ]
+  },
+  "additionalProperties": false,
+  "required": ["payload", "comment"]
 }

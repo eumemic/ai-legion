@@ -5,8 +5,16 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Action = SendMessageAction;
-
+export interface Action {
+  /**
+   * The payload that's specific to a particular action.
+   */
+  payload: SendMessageAction;
+  /**
+   * Use this field to articulate your thought process in choosing this action.
+   */
+  comment: string;
+}
 /**
  * Send a message to another agent.
  */
