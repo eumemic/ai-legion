@@ -1,6 +1,13 @@
+import Ajv from "ajv";
 import { Event, MessageEvent } from "./event";
 import { EventLog } from "./event-log";
 import { Memory } from "./memory";
+
+import eventSchema from "./event-dictionary.json";
+
+const ajv = new Ajv();
+
+const validateEvent = ajv.compile(eventSchema);
 
 export class Agent {
   constructor(
@@ -10,26 +17,14 @@ export class Agent {
   ) {}
 
   handleEvent(event: Event): void {
-    switch (event.type) {
-      case "heartbeat":
-        this.handleHeartbeat();
-        break;
-      case "message":
-        this.handleMessageEvent(event);
-        break;
-    }
-  }
-
-  handleHeartbeat(): void {
-    console.log(`Agent ${this.agentId} received a heartbeat`);
-    // Take any necessary action based on the agent's internal state
-  }
-
-  handleMessageEvent(event: MessageEvent): void {
-    const { fromId, toId, message } = event;
+    const isValid = validateEvent(event);
     console.log(
-      `Agent ${this.agentId} received a message from agent ${fromId}: ${message}`
+      `Agent ${this.agentId} received ${
+        isValid ? "valid" : "invalid"
+      } event: ${JSON.stringify(event)}`
     );
-    // Process the message and take appropriate actions
+    if (!isValid) {
+      console.log(`Validation errors: ${validateEvent.errors}`);
+    }
   }
 }
