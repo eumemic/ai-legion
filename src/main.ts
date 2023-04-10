@@ -7,7 +7,6 @@ import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { actionMemento, Memory, messageMemento } from "./memory";
 import { messageBuilder } from "./message";
 import { MessageBus } from "./message-bus";
-import { agentName } from "./util";
 
 dotenv.config();
 
