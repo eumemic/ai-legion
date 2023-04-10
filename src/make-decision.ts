@@ -1,9 +1,9 @@
+import { AxiosError } from "axios";
 import { memoize } from "lodash";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { Memento } from "./memory";
-import { Message } from "./message";
 import TaskQueue from "./task-queue";
-import { agentName, messageSourceName, sleep } from "./util";
+import { agentName, sleep } from "./util";
 
 const openaiDelay = 10 * 1000;
 
@@ -15,10 +15,9 @@ const model: ModelName = "gpt-3.5-turbo";
 // const model: ModelName = "gpt-4";
 
 export default function makeDecision(agentId: string, mementos: Memento[]) {
+  const name = agentName(agentId);
   const result = taskQueue.run(async () => {
-    console.log(
-      `Agent ${agentId} reflecting on ${mementos.length} mementos...`
-    );
+    console.log(`${name} reflecting on ${mementos.length} mementos...`);
     const t0 = Date.now();
     try {
       const response = await openai().createChatCompletion({
@@ -27,7 +26,7 @@ export default function makeDecision(agentId: string, mementos: Memento[]) {
       });
 
       console.log(
-        `Agent ${agentId} arrived at a decision after ${(
+        `${name} arrived at a decision after ${(
           (Date.now() - t0) /
           1000
         ).toFixed(1)}s`
@@ -42,8 +41,19 @@ export default function makeDecision(agentId: string, mementos: Memento[]) {
       if (!actionText) console.error("no content received");
 
       return actionText;
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      const { response }: AxiosError = e;
+      switch (response?.status) {
+        case 400:
+          console.error(`ERROR: ${name}'s context window is full.`);
+          break;
+        case 429:
+          console.error(`ERROR: ${name} was rate limited.`);
+          break;
+        default:
+          console.error(e);
+          break;
+      }
     }
   });
 
