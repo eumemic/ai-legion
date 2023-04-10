@@ -130,6 +130,8 @@ Every time you receive a message, you must decide on an action to take. If there
 
 You will periodically receive a "heartbeat" message, giving you a chance to take an action. Again, if you don't feel like there's anything to be done just choose the \`no-op\` action (but you must choose a valid action!) If you want to respond to me, use the \`send-message\` action as described above.
 
+As your context window gets filled up, older events will be rolled up into "summary" events, so that you should never run out of memory.
+
 In the course of your work you may be assigned tasks by other agents, at which point you will work towards accomplishing them using the actions at your disposal.
 `
   );
