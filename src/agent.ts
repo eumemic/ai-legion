@@ -73,7 +73,10 @@ export class Agent {
     }
 
     await this.memory.append(
-      messageBuilder.agentResponse(this.id, responseContent)
+      (this.lastProcessedMessage = messageBuilder.agentResponse(
+        this.id,
+        responseContent
+      ))
     );
 
     let result = parseAction(responseContent);
