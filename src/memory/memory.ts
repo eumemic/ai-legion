@@ -55,7 +55,7 @@ export class Memory {
         Math.floor((totalTokenCount - cumulativeTokenCounts[0]) / 2)
       );
 
-    console.log({ totalTokenCount, thresholdOverrun, truncationThreshold });
+    // console.log({ totalTokenCount, thresholdOverrun, truncationThreshold });
 
     if (thresholdOverrun > 0) {
       for (let i = 1; i < events.length; i++) {
@@ -84,9 +84,9 @@ export class Memory {
           const summaryTokens = countTokens(summaryEvent);
           const tokenSavings = precedingTokens - summaryTokens;
           if (tokenSavings > 0) {
-            console.log(
-              `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens:\n\n${summary}`
-            );
+            // console.log(
+            //   `Summarized ${summarizedEvents.length} events, saving ${tokenSavings} tokens:\n\n${summary}`
+            // );
 
             return [events[0], summaryEvent, ...events.slice(i)];
           }
