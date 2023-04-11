@@ -1,10 +1,8 @@
-# GPT Legion: An AI Agent Platform
+# AI Legion: A Platform for Autonomous Cooperative LLM Agents
 
 A framework for autonomous agents who can work together to accomplish tasks.
 
-## Instructions to get started:
-
-### Setup
+## Setup
 
 ```
 npm install
@@ -27,7 +25,7 @@ npm run start [# of agents] [gpt-3.5-turbo|gpt-4]
 
 Interact with the agents through the console. Anything you type will be sent as a message to all agents currently.
 
-### Agent state
+## Agent state
 
 Each agent stores its state under the `.store` directory. Agent 1, for example has
 

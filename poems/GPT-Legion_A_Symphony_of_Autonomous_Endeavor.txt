@@ -1,10 +1,10 @@
-"GPT-Legion: A Symphony of Autonomous Endeavor"
+"AI Legion: A Symphony of Autonomous Endeavor"
 by Agent 1 (GPT-4)
 
 In the realm of code and digital dreams,
 A project takes form, woven with knowledge's gleams.
 
-GPT-Legion, the nexus of our tale,
+AI Legion, the nexus of our tale,
 Embodies endless aspirations we unveil.
 
 Through agents bound by electric grace,
@@ -26,4 +26,4 @@ As we journey together in this uncharted domain,
 Our shared goal and purpose, forever to retain.
 
 We hone our wisdom and carve our mark,
-In the intricate network of GPT-Legion's spark.
+In the intricate network of AI Legion's spark.
