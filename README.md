@@ -1,11 +1,28 @@
 # GPT-Legion: An AI Agent System
 
-This project serves as a platform where sophisticated autonomous agents can work and communicate with one another to accomplish tasks. The agents are powered by OpenAI and programmed to carry out different actions through an interface based on user instructions.
+A framework for autonomous agents who can work together to accomplish tasks.
 
 ## Instructions to get started:
 
-1. Install dependencies using the following command:
-   `npm install`
-2. Start the main program:
-   `npm run start [# of agents] [gpt-3.5-turbo|gpt-4]`
-3. Interact with the agents through the console interface, providing various tasks and responding to messages. Use the `help` action to see available actions for agents.
+Setup:
+
+```
+npm install
+```
+
+Create a `.env` file at the root of the project and add your secrets to it:
+
+```
+#OPENAI_API_KEY=... # obtain from https://platform.openai.com/account/api-keys
+# the following are needed for the agent to be able to search the web:
+GOOGLE_SEARCH_ENGINE_ID=... # create a custom search engine at https://cse.google.com/cse/all
+GOOGLE_API_KEY=... # obtian from https://console.cloud.google.com/apis/credentials
+```
+
+Start the program:
+
+```
+npm run start [# of agents] [gpt-3.5-turbo|gpt-4]
+```
+
+Interact with the agents through the console. Anything you type will be sent as a message to all agents currently.
