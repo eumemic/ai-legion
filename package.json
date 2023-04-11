@@ -12,8 +12,8 @@
     "test:watch": "jest --watch"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "eumemic@gmail.com",
+  "license": "MIT",
   "devDependencies": {
     "@types/postlight__mercury-parser": "^2.2.4",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
