@@ -9,6 +9,9 @@ import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
 
+const actionInterval = 10 * 1000;
+// const heartbeatInterval = 60 * 1000;
+
 export class Agent {
   constructor(
     public id: string,
@@ -26,13 +29,11 @@ export class Agent {
     this.messageBus.subscribe((message) => {
       if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
         return;
-      this.taskQueue.run(async () => {
-        await this.memory.append({ type: "message", message });
-        await this.takeAction();
-      });
+      this.memory.append({ type: "message", message });
     });
 
-    await this.taskQueue.run(() => this.takeAction());
+    // Act on messages periodically
+    this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
 
     // Start heartbeat
     // this.taskQueue.runPeriodically(async () => {
@@ -46,7 +47,7 @@ export class Agent {
     //       )
     //     );
     //   }
-    // }, 60 * 1000);
+    // }, heartbeatInterval);
   }
 
   private async takeAction(): Promise<void> {
