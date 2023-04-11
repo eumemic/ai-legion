@@ -1,4 +1,4 @@
-# GPT-Legion: An AI Agent System
+# GPT Legion: An AI Agent Platform
 
 A framework for autonomous agents who can work together to accomplish tasks.
 
