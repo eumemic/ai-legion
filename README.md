@@ -1,4 +1,4 @@
-# AI Legion: An LLM-powered autonomous agent platform
+# AI Legion: an LLM-powered autonomous agent platform
 
 A framework for autonomous agents who can work together to accomplish tasks.
 
