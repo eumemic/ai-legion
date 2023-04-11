@@ -29,4 +29,4 @@ export interface ActionHandlerInputs<S = void, P extends string = string> {
   context: ModuleContext<S>;
   sendMessage: (message: Message) => void;
 }
-export { ModuleContext as Context };
+export { ModuleContext };
