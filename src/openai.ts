@@ -1,6 +1,8 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { memoize } from "lodash";
 import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
+import TaskQueue from "./task-queue";
+import { sleep } from "./util";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";
@@ -12,9 +14,9 @@ export const contextWindowSize = {
 
 export type Model = typeof GPT_3_5_TURBO | typeof GPT_4;
 
-// const GPT4_DELAY = 10 * 1000;
+const GPT4_DELAY = 5 * 1000;
 
-// const taskQueue = new TaskQueue();
+const taskQueue = new TaskQueue();
 
 export function createChatCompletion(
   request: CreateChatCompletionRequest,
@@ -40,12 +42,11 @@ export function createChatCompletion(
   };
 
   // avoid rate limits
-  // if (request.model === "gpt-4")
-  //   return taskQueue
-  //     .run(task)
-  //     .finally(() => taskQueue.run(() => sleep(GPT4_DELAY)));
-  // else
-  return task();
+  if (request.model === "gpt-4")
+    return taskQueue
+      .run(task)
+      .finally(() => taskQueue.run(() => sleep(GPT4_DELAY)));
+  else return task();
 }
 
 // lazy load to avoid accessing OPENAI_API_KEY before env has been loaded
