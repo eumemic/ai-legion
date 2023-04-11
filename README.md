@@ -4,6 +4,8 @@ A framework for autonomous agents who can work together to accomplish tasks.
 
 ## Setup
 
+You will need at least Node 10.
+
 ```
 npm install
 ```
