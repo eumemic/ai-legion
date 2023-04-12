@@ -10,7 +10,7 @@ You will need at least Node 10.
 npm install
 ```
 
-Create a `.env` file at the root of the project and add your secrets to it:
+Rename the `.env.template` file at the root of the project to `.env` and add your secrets to it:
 
 ```
 OPENAI_API_KEY=... # obtain from https://platform.openai.com/account/api-keys
