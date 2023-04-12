@@ -5,6 +5,7 @@ import {
   stat,
   unlink,
   writeFile,
+  mkdir
 } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
 import { defineModule } from "../define-module";
@@ -147,6 +148,28 @@ export default defineModule({
         try {
           await unlink(path);
           sendMessage(messageBuilder.ok(agentId, `Deleted ${path}.`));
+        } catch (err) {
+          sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
+        }
+      },
+    },
+    createDirectory: {
+      description: "Create a new directory",
+      parameters: {
+        path: {
+          description: "The path of the directory to create",
+        },
+      },
+      async execute({
+        parameters: { path },
+        context: { agentId },
+        sendMessage,
+      }) {
+        if (!checkPath(agentId, path, sendMessage)) return;
+
+        try {
+          await mkdir(path);
+          sendMessage(messageBuilder.ok(agentId, `Created directory ${path}.`));
         } catch (err) {
           sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
