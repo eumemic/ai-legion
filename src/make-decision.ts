@@ -9,7 +9,7 @@ const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export default function makeDecision(events: Event[], temperature = 0.0): Promise<string> {
+export default function makeDecision(events: Event[], temperature?: number): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
     // console.log(`Reflecting on ${events.length} events...`);
     // const t0 = Date.now();
@@ -17,11 +17,12 @@ export default function makeDecision(events: Event[], temperature = 0.0): Promis
     const messages = events.map(toOpenAiMessage);
 
     // console.log(JSON.stringify(messages, null, 2));
+    temperature = 0.0;
 
     const responseContent = await createChatCompletion({
       model,
       messages,
-      temperature,
+      temperature
     });
 
     // console.log(
