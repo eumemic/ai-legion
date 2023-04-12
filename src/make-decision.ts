@@ -16,7 +16,6 @@ export default function makeDecision(events: Event[], temperature = 0.0): Promis
 
     const messages = events.map(toOpenAiMessage);
 
-
     // console.log(JSON.stringify(messages, null, 2));
 
     const responseContent = await createChatCompletion({
