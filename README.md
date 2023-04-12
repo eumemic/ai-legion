@@ -16,8 +16,12 @@ Create a `.env` file at the root of the project and add your secrets to it:
 OPENAI_API_KEY=... # obtain from https://platform.openai.com/account/api-keys
 # the following are needed for the agent to be able to search the web:
 GOOGLE_SEARCH_ENGINE_ID=... # create a custom search engine at https://cse.google.com/cse/all
-GOOGLE_API_KEY=... # obtian from https://console.cloud.google.com/apis/credentials
+GOOGLE_API_KEY=... # obtain from https://console.cloud.google.com/apis/credentials
 ```
+
+You'll also need to enable the Google Custom Search API for your Google Cloud account, e.g. <https://console.cloud.google.com/apis/library/customsearch.googleapis.com>
+
+## Running
 
 Start the program:
 
