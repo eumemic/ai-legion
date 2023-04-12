@@ -101,7 +101,7 @@ export class Memory {
   private async summarize(events: Event[]): Promise<Event[]> {
     if (!events.length) return [];
 
-    const cumulativeTokenCounts: number[] = this.getCumulativeTokenCounts(events);
+    const cumulativeTokenCounts = this.getCumulativeTokenCounts(events);
 
     const totalTokenCount: number =
       cumulativeTokenCounts[cumulativeTokenCounts.length - 1];
