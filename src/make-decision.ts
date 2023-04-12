@@ -16,11 +16,14 @@ export default function makeDecision(events: Event[]): Promise<string> {
 
     const messages = events.map(toOpenAiMessage);
 
+    const temperature = 0.0;
+
     // console.log(JSON.stringify(messages, null, 2));
 
     const responseContent = await createChatCompletion({
       model,
       messages,
+      temperature,
     });
 
     // console.log(
