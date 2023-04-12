@@ -101,12 +101,12 @@ export class Memory {
   private async summarize(events: Event[]): Promise<Event[]> {
     if (!events.length) return [];
 
-    const cumulativeTokenCounts = this.getCumulativeTokenCounts(events);
+    const cumulativeTokenCounts: number[] = this.getCumulativeTokenCounts(events);
 
-    const totalTokenCount =
+    const totalTokenCount: number =
       cumulativeTokenCounts[cumulativeTokenCounts.length - 1];
-    const thresholdOverrun = totalTokenCount - this.compressionThreshold;
-    const truncationThreshold =
+    const thresholdOverrun: number = totalTokenCount - this.compressionThreshold;
+    const truncationThreshold: number =
       cumulativeTokenCounts[0] +
       Math.max(
         thresholdOverrun,
@@ -132,9 +132,9 @@ export class Memory {
       for (; i > 0 && cumulativeTokenCounts[i - 1] > this.compressionThreshold; i--);
       i = Math.max(i, 3);
 
-      const precedingTokens = cumulativeTokenCounts[i - 1];
+      const precedingTokens: number = cumulativeTokenCounts[i - 1];
       // console.log({ truncationIndex: i, precedingTokens });
-      const summaryWordLimit = Math.floor(
+      const summaryWordLimit: number = Math.floor(
         (this.compressionThreshold * AVG_WORDS_PER_TOKEN) / 6
       );
 
@@ -146,7 +146,7 @@ export class Memory {
       //     .reduce((sum, next) => sum + next, 0)} tokens)`
       // );
 
-      const summaryContent = await makeDecision([
+      const summaryContent: string = await makeDecision([
         ...eventsToSummarize,
         {
           type: "message",
@@ -172,7 +172,7 @@ export class Memory {
         //   `Summarized events, saving ${tokenSavings} tokens:\n\n${summary}`
         // );
 
-        const newEvents = [events[0], summaryEvent, ...events.slice(i)];
+        const newEvents: Event[] = [events[0], summaryEvent, ...events.slice(i)];
 
         // const newCumulativeTokenCounts =
         //   this.getCumulativeTokenCounts(newEvents);

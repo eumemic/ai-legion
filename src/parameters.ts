@@ -1,6 +1,6 @@
 import { GPT_3_5_TURBO, GPT_4, Model } from "./openai";
 
-const args = process.argv.slice(2); // Remove the first two elements (Node.js executable and script path)
+const args: string[] = process.argv.slice(2); // Remove the first two elements (Node.js executable and script path)
 
 export const numberOfAgents = args.length > 0 ? parseInt(args[0]) : 1;
 console.log(`Number of agents: ${numberOfAgents}`);

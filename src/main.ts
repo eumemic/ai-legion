@@ -19,7 +19,7 @@ import JsonStore from "./store/json-store";
 
 dotenv.config();
 
-const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
+const agentIds: string[] = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
 
