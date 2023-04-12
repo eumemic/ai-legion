@@ -9,14 +9,13 @@ const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export default function makeDecision(events: Event[]): Promise<string> {
+export default function makeDecision(events: Event[], temperature = 0.0): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
     // console.log(`Reflecting on ${events.length} events...`);
     // const t0 = Date.now();
 
     const messages = events.map(toOpenAiMessage);
 
-    const temperature = 0.0;
 
     // console.log(JSON.stringify(messages, null, 2));
 
