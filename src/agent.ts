@@ -1,85 +1,59 @@
-import { last } from "lodash";
-import ActionHandler from "./action-handler";
-import makeDecision from "./make-decision";
-import { Memory } from "./memory";
-import { messageBuilder } from "./message";
-import { MessageBus } from "./message-bus";
-import { ModuleManager } from "./module/module-manager";
-import parseAction from "./parse-action";
-import TaskQueue from "./task-queue";
-import { agentName, sleep } from "./util";
+// agent.ts
 
-const actionInterval = 10 * 1000;
-// const heartbeatInterval = 60 * 1000;
+import { parentPort } from 'worker_threads';
+import TaskQueue from './task-queue';
 
-export class Agent {
-  constructor(
-    public id: string,
-    private memory: Memory,
-    private messageBus: MessageBus,
-    private moduleManager: ModuleManager,
-    private actionHandler: ActionHandler
-  ) {}
+const ACTION_INTERVAL = 10 * 1000;
 
-  private taskQueue = new TaskQueue();
+interface Message {
+  type: string;
+  id: string;
+  memoryFunction: string;
+}
 
-  // Start this Agent's event loop
-  async start() {
-    // Subscribe to messages
-    this.messageBus.subscribe((message) => {
-      if (message.targetAgentIds && !message.targetAgentIds.includes(this.id))
-        return;
-      this.memory.append({ type: "message", message });
-    });
+interface AgentMessage {
+  agentId: string;
+  type: string;
+  data?: any;
+}
 
-    // Act on messages periodically
-    this.taskQueue.runPeriodically(() => this.takeAction(), actionInterval);
+class Agent {
+  private agentId: string;
 
-    // Start heartbeat
-    // this.taskQueue.runPeriodically(async () => {
-    //   const messages = await this.memory.retrieve();
-    //   const lastMessage = last(messages);
-    //   if (lastMessage?.type === "decision") {
-    //     this.messageBus.send(
-    //       messageBuilder.spontaneous(
-    //         this.id,
-    //         "This is your regularly scheduled heartbeat message. Is there anything you need to do?"
-    //       )
-    //     );
-    //   }
-    // }, heartbeatInterval);
+  constructor(agentId: string) {
+    this.agentId = agentId;
   }
 
-  private async takeAction(): Promise<void> {
-    try {
-      let events = await this.memory.retrieve();
-
-      // Do not act again if the last event was a decision
-      if (last(events)?.type === "decision") return;
-
-      const actionText = await makeDecision(events);
-
-      // Reassign events in case summarization occurred
-      events = await this.memory.append({
-        type: "decision",
-        actionText,
-      });
-
-      const result = parseAction(this.moduleManager.actions, actionText);
-      if (result.type === "error") {
-        this.messageBus.send(messageBuilder.error(this.id, result.message));
-      } else {
-        await this.actionHandler.handle(this.id, result.action);
-      }
-    } catch (e) {
-      console.error(
-        `${agentName(
-          this.id
-        )} encountered the following problem while attempting to take action:`
-      );
-      console.error(e);
-    } finally {
-      await sleep(5000);
-    }
+  public async callTakeAction(): Promise<void> {
+    const agentMessage: AgentMessage = {
+      agentId: this.agentId,
+      type: 'takeAction'
+    };
+    parentPort?.postMessage(agentMessage);
   }
 }
+
+if (!parentPort) {
+  throw new Error('Agent must be run as a worker thread');
+}
+
+parentPort.on('message', (message: Message) => {
+  if (message.type === 'init' && parentPort) {
+    const agentId = message.id;
+
+    const agent = new Agent(agentId);
+
+    const agentMessage: AgentMessage = {
+      agentId,
+      type: 'subscribed'
+    };
+
+    parentPort.postMessage(agentMessage);
+    const taskQueue = new TaskQueue();
+
+    // Act on messages periodically
+    taskQueue.runPeriodically(() => agent.callTakeAction(), ACTION_INTERVAL);
+
+    agent.callTakeAction();
+  }
+});
