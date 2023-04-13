@@ -7,7 +7,8 @@ import { MessageBus } from "./message-bus";
 import { ModuleManager } from "./module/module-manager";
 import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
-import { agentName, sleep } from "./util";
+import { agentName } from "./util";
+import { setTimeout } from 'timers';
 
 const actionInterval = 10 * 1000;
 // const heartbeatInterval = 60 * 1000;
@@ -79,7 +80,7 @@ export class Agent {
       );
       console.error(e);
     } finally {
-      await sleep(5000);
+      setTimeout(() => this.takeAction(), 5000);
     }
   }
 }
