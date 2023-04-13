@@ -31,6 +31,14 @@ npm run start [# of agents] [gpt-3.5-turbo|gpt-4]
 
 Interact with the agents through the console. Anything you type will be sent as a message to all agents currently.
 
+## Action errors
+
+After spinning up a new agent, you will often see them make some mistakes which generate errors:
+- Trying to use an action before they've asked for `help` on it to know what its parameters are
+- Trying to just use a raw text response instead of a correctly-formatted action (or raw text wrapping a code block which contains a valid action)
+- Trying to use a multi-line parameter value without wrapping it in the multiline delimiter (`% ff9d7713-0bb0-40d4-823c-5a66de48761b`)
+This is a normal period of adjustment as they learn to operate themselves. They generally will learn from these mistakes and recover, although `gpt-3.5-turbo` agents sometimes devolve into endless error loops and can't figure out what the problem is. It's highly advised never to leave an agent unattended, since such infinite loops can eat through your tokens quickly (especially if they're stuck on a high-token-count action such as `writeFile`).
+
 ## Agent state
 
 Each agent stores its state under the `.store` directory. Agent 1, for example, has
