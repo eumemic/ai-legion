@@ -1,12 +1,9 @@
 import dotenv from 'dotenv';
-
 import { startConsole } from './console';
 import { InMemoryMessageBus } from './in-memory-message-bus';
-
 import { MessageBus } from './message-bus';
-
 import { numberOfAgents, model } from './parameters';
-
+import { WebSocketServer } from './web-socket-server';
 import { Control } from './control';
 
 dotenv.config();
@@ -21,7 +18,8 @@ console.log(`Model: ${model}`);
 main();
 
 async function main() { 
-
+  const webSocketServer = new WebSocketServer(messageBus, 8080);
+  
   startConsole(agentIds, messageBus);
   const control = new Control(model, agentIds, messageBus);
 }
