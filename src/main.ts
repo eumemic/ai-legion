@@ -1,12 +1,8 @@
 import dotenv from "dotenv";
-
 import { startConsole } from "./console";
 import { InMemoryMessageBus } from "./services/in-memory-message-bus";
-
 import { IMessageBus } from "./interfaces/messageBus.interface";
-
 import { numberOfAgents, model } from "./parameters";
-
 import { Control } from "./control";
 
 dotenv.config();

@@ -5,7 +5,9 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
