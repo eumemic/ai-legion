@@ -5,7 +5,7 @@ export interface Message {
   content: string;
 }
 
-type TypelessMessage = Omit<Message, "type">;
+type TypelessMessage = Omit<Message, 'type'>;
 
 export type MessageType = keyof typeof messageBuilder;
 
@@ -16,22 +16,22 @@ interface MessageSourceBase {
 }
 
 interface SystemMessageSource extends MessageSourceBase {
-  type: "system";
+  type: 'system';
   id?: undefined;
 }
 
 interface AgentMessageSource extends MessageSourceBase {
-  type: "agent";
+  type: 'agent';
   id: string;
 }
 
-export const systemSource: SystemMessageSource = { type: "system" };
+export const systemSource: SystemMessageSource = { type: 'system' };
 export const agentSource = (id: string): AgentMessageSource => ({
-  type: "agent",
-  id,
+  type: 'agent',
+  id
 });
 
-export const CODE_BLOCK_DELIMITER = "```";
+export const CODE_BLOCK_DELIMITER = '```';
 
 export const messageBuilder = addMessageTypes({
   spontaneous: singleTargetSystemMessage,
@@ -47,8 +47,8 @@ export const messageBuilder = addMessageTypes({
   ) => ({
     source: agentSource(sourceAgentId),
     targetAgentIds,
-    content,
-  }),
+    content
+  })
 });
 
 function addMessageTypes<
@@ -57,7 +57,7 @@ function addMessageTypes<
   for (const [type, builder] of Object.entries(record)) {
     (record as any)[type] = (...args: any) => ({
       type,
-      ...(builder as any)(...args),
+      ...(builder as any)(...args)
     });
   }
   return record as any;
@@ -70,6 +70,6 @@ function singleTargetSystemMessage(
   return {
     source: systemSource,
     targetAgentIds: [agentId],
-    content,
+    content
   };
 }
