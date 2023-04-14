@@ -5,7 +5,7 @@ import {
   stat,
   unlink,
   writeFile,
-  mkdir
+  mkdir,
 } from "fs/promises";
 import { join as joinPath, resolve as resolvePath } from "path";
 import { defineModule } from "../define-module";

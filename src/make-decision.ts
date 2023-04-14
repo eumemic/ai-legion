@@ -22,7 +22,7 @@ export default function makeDecision(events: Event[]): Promise<string> {
     const responseContent = await createChatCompletion({
       model,
       messages,
-      temperature
+      temperature,
     });
 
     console.log(
