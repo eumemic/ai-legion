@@ -13,13 +13,13 @@ import notes from "./module/definitions/notes";
 import web from "./module/definitions/web";
 import { ModuleManager } from "./module/module-manager";
 import { contextWindowSize } from "./openai";
-import { model, numberOfAgents } from "./parameters";
+import { model, numberOfAgents, projectName } from "./parameters";
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
 
 dotenv.config();
 
-const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
+const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${projectName + '-' + i}`);
 
 const messageBus: MessageBus = new InMemoryMessageBus();
 
