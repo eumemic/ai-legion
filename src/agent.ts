@@ -12,8 +12,7 @@ import messaging from './module/definitions/messaging';
 import notes from './module/definitions/notes';
 import web from './module/definitions/web';
 import { ModuleManager } from './module/module-manager';
-import { contextWindowSize } from './openai';
-import { model } from './parameters';
+import { contextWindowSize, Model } from './openai';
 import parseAction from './parse-action';
 import FileStore from './store/file-store';
 import JsonStore from './store/json-store';
@@ -36,14 +35,16 @@ export interface AgentMessage {
 
 class Agent {
   private agentId: string;
+  private model: Model;
   private agents: string[];
   private memory: Memory;
   private moduleManager: ModuleManager;
   private actionHandler: ActionHandler;
 
-  constructor(agentId: string, agents: string[]) {
+  constructor(agentId: string, agents: string[], model: Model) {
     this.agentId = agentId;
     this.agents = agents;
+    this.model = model;
 
     this.moduleManager = new ModuleManager(this.agentId, this.agents, [
       core,
@@ -58,7 +59,9 @@ class Agent {
 
     const store = new JsonStore<Event[]>(new FileStore([this.agentId]));
     // We have to leave room for the agent's next action, which is of unknown size
-    const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
+    const compressionThreshold = Math.round(
+      contextWindowSize[this.model] * 0.75
+    );
 
     this.memory = new Memory(
       this.agentId,
@@ -129,8 +132,8 @@ process.on('message', (message: ControlMessage) => {
   if (message.type === 'init') {
     const agentId = message.controlMessage?.id;
     const agents = message.controlMessage?.agents;
-
-    const agent = new Agent(agentId, agents);
+    const model = message.controlMessage?.model;
+    const agent = new Agent(agentId, agents, model);
 
     const taskQueue = new TaskQueue();
 

@@ -12,7 +12,11 @@ interface Agent {
 export class Control {
   private agents: Agent[] = [];
 
-  constructor(agentIds: string[], private messageBus: MessageBus) {
+  constructor(
+    model: string,
+    agentIds: string[],
+    private messageBus: MessageBus
+  ) {
     for (const id of agentIds.slice(1)) {
       const agentModulePath = path.join(__dirname, 'agent');
 
@@ -56,7 +60,7 @@ export class Control {
 
       agentProcess.send({
         type: 'init',
-        controlMessage: { id, agents: agentIds }
+        controlMessage: { id, agents: agentIds, model }
       });
     }
   }
