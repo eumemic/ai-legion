@@ -75,43 +75,13 @@ class Agent {
     if (process?.send) process.send(agentMessage);
 
     process.on('message', (message: ControlMessage) => {
-      switch (message.type) {
-        case 'init':
-          {
-            const agentId = message.controlMessage?.id;
-            const agents = message.controlMessage?.agents;
-
-            const agent = new Agent(agentId, agents);
-
-            const taskQueue = new TaskQueue();
-
-            taskQueue.runPeriodically(
-              () => agent.callTakeAction(),
-              ACTION_INTERVAL
-            );
-
-            agent.callTakeAction();
-          }
-          break;
-        case 'appendMemory':
-          {
-            this.memory.append({
-              type: 'message',
-              message: message.controlMessage
-            });
-          }
-          break;
+      if (message.type === 'appendMemory') {
+        this.memory.append({
+          type: 'message',
+          message: message.controlMessage
+        });
       }
     });
-  }
-
-  public async callTakeAction(): Promise<void> {
-    const agentMessage: AgentMessage = {
-      agentId: this.agentId,
-      type: 'takeAction'
-    };
-
-    if (process?.send) process.send(agentMessage);
   }
 
   public async takeAction(): Promise<void> {
@@ -154,3 +124,18 @@ class Agent {
     }
   }
 }
+
+process.on('message', (message: ControlMessage) => {
+  if (message.type === 'init') {
+    const agentId = message.controlMessage?.id;
+    const agents = message.controlMessage?.agents;
+
+    const agent = new Agent(agentId, agents);
+
+    const taskQueue = new TaskQueue();
+
+    taskQueue.runPeriodically(() => agent.takeAction(), ACTION_INTERVAL);
+
+    agent.takeAction();
+  }
+});
