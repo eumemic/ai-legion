@@ -6,7 +6,6 @@ import { messageBuilder } from './message';
 import parseAction from './parse-action';
 import { agentName, sleep } from './util';
 import ActionHandler from './action-handler';
-import { InMemoryMessageBus } from './in-memory-message-bus';
 import { Event, Memory } from './memory';
 import { MessageBus } from './message-bus';
 import core from './module/definitions/core';
@@ -20,6 +19,7 @@ import { contextWindowSize } from './openai';
 import { model } from './parameters';
 import FileStore from './store/file-store';
 import JsonStore from './store/json-store';
+import path from 'path';
 
 interface Agent {
   id: string;
@@ -40,11 +40,12 @@ export class Control {
   private agents: Agent[] = [];
   private messageBus: EventEmitter = new EventEmitter();
 
-  constructor(agentIds: string[]) {
-    const messageBus: MessageBus = new InMemoryMessageBus();
-
+  constructor(agentIds: string[], messageBus: MessageBus) {
     for (const id of agentIds.slice(1)) {
-      const agentProcess = fork('./agent');
+      console.log('Create Agent', id);
+      const agentModulePath = path.join(__dirname, 'agent');
+
+      const agentProcess = fork(agentModulePath);
       const moduleManager = new ModuleManager(id, agentIds, [
         core,
         goals,
@@ -102,7 +103,7 @@ export class Control {
         if (last(events)?.type === 'decision') return;
 
         const actionText = await makeDecision(events);
-
+        console.log('actionText', actionText);
         // Reassign events in case summarization occurred
         events = await agent.memory.append({
           type: 'decision',

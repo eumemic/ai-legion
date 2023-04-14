@@ -1,6 +1,5 @@
 // agent.ts
 
-import { parentPort } from 'worker_threads';
 import TaskQueue from './task-queue';
 
 const ACTION_INTERVAL = 10 * 1000;
@@ -29,16 +28,15 @@ class Agent {
       agentId: this.agentId,
       type: 'takeAction'
     };
-    parentPort?.postMessage(agentMessage);
+
+    if (typeof process !== 'undefined' && process.send) {
+      if (process) process.send(agentMessage);
+    }
   }
 }
 
-if (!parentPort) {
-  throw new Error('Agent must be run as a worker thread');
-}
-
-parentPort.on('message', (message: Message) => {
-  if (message.type === 'init' && parentPort) {
+process.on('message', (message: Message) => {
+  if (message.type === 'init') {
     const agentId = message.id;
 
     const agent = new Agent(agentId);
@@ -48,7 +46,10 @@ parentPort.on('message', (message: Message) => {
       type: 'subscribed'
     };
 
-    parentPort.postMessage(agentMessage);
+    if (typeof process !== 'undefined' && process.send) {
+      if (process) process.send(agentMessage);
+    }
+
     const taskQueue = new TaskQueue();
 
     // Act on messages periodically

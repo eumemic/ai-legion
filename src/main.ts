@@ -19,5 +19,5 @@ main();
 
 async function main() {
   startConsole(agentIds, messageBus);
-  const control = new Control(agentIds);
+  const control = new Control(agentIds, messageBus);
 }
