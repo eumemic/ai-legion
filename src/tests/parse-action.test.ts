@@ -1,19 +1,19 @@
-import core from '../module/definitions/core';
-import filesystem from '../module/definitions/filesystem';
-import messaging from '../module/definitions/messaging';
-import notes from '../module/definitions/notes';
-import { ModuleManager } from '../module/module-manager';
-import { getUsageText } from '../module/util';
-import parseAction, { Action } from '../parse-action';
-import { MULTILINE_DELIMITER } from '../util';
+import core from "../module/definitions/core";
+import filesystem from "../module/definitions/filesystem";
+import messaging from "../module/definitions/messaging";
+import notes from "../module/definitions/notes";
+import { ModuleManager } from "../module/module-manager";
+import { getUsageText } from "../module/util";
+import parseAction, { Action } from "../utils/parse-action";
+import { MULTILINE_DELIMITER } from "../utils/util";
 
 const moduleManager = new ModuleManager(
-  '1',
-  ['1'],
+  "1",
+  ["1"],
   [core, notes, messaging, filesystem]
 );
 
-test('case 1', () => {
+test("case 1", () => {
   assertValid(`
 sendMessage
 targetAgentId: 0
@@ -26,7 +26,7 @@ This is another line.
   `);
 });
 
-test('case 2', () => {
+test("case 2", () => {
   assertValid(`
 sendMessage
 targetAgentId: 0
@@ -42,7 +42,7 @@ This is the third line.
     `);
 });
 
-test('case 3', () => {
+test("case 3", () => {
   assertValid(`
 writeFile
 path: ./schema/action-dictionary.json
@@ -81,7 +81,7 @@ content:
 `);
 });
 
-test('invalid multiline with no delimiter', () => {
+test("invalid multiline with no delimiter", () => {
   expect(
     assertInvalid(`
 sendMessage
@@ -97,7 +97,7 @@ message: Hello Control, here's a list of things,
   );
 });
 
-test('multiline delimiter not starting on its own line', () => {
+test("multiline delimiter not starting on its own line", () => {
   expect(
     assertValid(`
 sendMessage
@@ -119,7 +119,7 @@ message
   );
 });
 
-test('parameter after multiline parameter', () => {
+test("parameter after multiline parameter", () => {
   const { parameters, thoughts } = assertValid(`
 sendMessage
 targetAgentId: 0
@@ -139,18 +139,18 @@ parameter
 `.trim()
   );
   expect(thoughts).toBe(
-    'Trying a multi-line parameter followed by another parameter.'
+    "Trying a multi-line parameter followed by another parameter."
   );
 });
 
-test('invalid command name', () => {
-  expect(assertInvalid('foo')).toBe(
-    'Unknown action `foo`. Please refer to the list of available actions given in the introductory message.'
+test("invalid command name", () => {
+  expect(assertInvalid("foo")).toBe(
+    "Unknown action `foo`. Please refer to the list of available actions given in the introductory message."
   );
 });
 
-test('invalid raw text', () => {
-  expect(assertInvalid('Hello Control, how are you doing?')).toEqual(
+test("invalid raw text", () => {
+  expect(assertInvalid("Hello Control, how are you doing?")).toEqual(
     `
 Your action could not be parsed. Remember to always format your entire response as an action, like this:
 
@@ -164,35 +164,35 @@ Your action could not be parsed. Remember to always format your entire response 
   );
 });
 
-test('missing required parameter', () => {
-  expect(assertInvalid('sendMessage\ntargetAgentId: 0')).toBe(
+test("missing required parameter", () => {
+  expect(assertInvalid("sendMessage\ntargetAgentId: 0")).toBe(
     `Missing required parameter \`message\`. ${getUsageText(
       messaging.actions.sendMessage
     )}`
   );
 });
 
-test('extra parameter', () => {
-  expect(assertInvalid('noop\nfoo: bar')).toEqual(
+test("extra parameter", () => {
+  expect(assertInvalid("noop\nfoo: bar")).toEqual(
     `Extraneous parameter \`foo\`. ${getUsageText(core.actions.noop)}`
   );
 });
 
-describe('quotes', () => {
-  test('in-line parameter', () => {
+describe("quotes", () => {
+  test("in-line parameter", () => {
     const action = assertValid(`
 sendMessage
 targetAgentId: 0
 message: hello, "control"
 `);
-    expect(action.actionDef.name).toBe('sendMessage');
+    expect(action.actionDef.name).toBe("sendMessage");
     expect(action.parameters).toEqual({
-      targetAgentId: '0',
-      message: 'hello, "control"'
+      targetAgentId: "0",
+      message: 'hello, "control"',
     });
   });
 
-  test('multi-line parameter', () => {
+  test("multi-line parameter", () => {
     const action = assertValid(`
 sendMessage
 targetAgentId: 0
@@ -201,10 +201,10 @@ ${MULTILINE_DELIMITER}
 hello, "control"
 ${MULTILINE_DELIMITER}
 `);
-    expect(action.actionDef.name).toBe('sendMessage');
+    expect(action.actionDef.name).toBe("sendMessage");
     expect(action.parameters).toEqual({
-      targetAgentId: '0',
-      message: 'hello, "control"'
+      targetAgentId: "0",
+      message: 'hello, "control"',
     });
   });
 });
@@ -213,13 +213,13 @@ ${MULTILINE_DELIMITER}
 
 function assertValid(text: string): Action {
   const result = parseAction(moduleManager.actions, text);
-  if (result.type === 'error') throw Error(`Parse failed: ${result.message}`);
+  if (result.type === "error") throw Error(`Parse failed: ${result.message}`);
   return result.action;
 }
 
 function assertInvalid(text: string): string {
   const result = parseAction(moduleManager.actions, text);
-  if (result.type === 'success')
+  if (result.type === "success")
     throw Error(
       `Parse succeeded when it should've failed: ${JSON.stringify(
         result.action,

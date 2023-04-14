@@ -1,15 +1,15 @@
-import { Model } from '../openai';
-import { Event } from '.';
-import makeDecision, { toOpenAiMessage } from '../make-decision';
-import { messageBuilder } from '../message';
-import { ModuleManager } from '../module/module-manager';
-import { Store } from '../store';
+import { Model } from "../services/openai";
+import { Event } from ".";
+import makeDecision, { toOpenAiMessage } from "../make-decision";
+import { messageBuilder } from "../message";
+import { ModuleManager } from "../module/module-manager";
+import { Store } from "../store";
 import {
   AVG_WORDS_PER_TOKEN,
   agentName,
   countTokens as countTokensInText,
-  messageSourceName
-} from '../util';
+  messageSourceName,
+} from "../utils/util";
 
 export class Memory {
   private firstRetrieval = true;
@@ -27,7 +27,7 @@ export class Memory {
   async append(event: Event): Promise<Event[]> {
     this.printEvent(event);
     let events = await this.retrieve();
-    if (event.type === 'message' && event.message.type === 'ok') {
+    if (event.type === "message" && event.message.type === "ok") {
       // After an "ok" message is sent, remove all errors and their antecedents from memory,
       // since agents tend to repeat mistakes rather than learning from them.
       events = this.removeErrors(events);
@@ -45,7 +45,7 @@ export class Memory {
     const storedEvents = await this.store.get(this.key);
     let events = [
       introduction,
-      ...(storedEvents || [{ type: 'decision', actionText: 'noop' }])
+      ...(storedEvents || [{ type: "decision", actionText: "noop" }]),
     ];
     if (this.firstRetrieval) {
       this.firstRetrieval = false;
@@ -69,11 +69,11 @@ export class Memory {
       })
     );
     return {
-      type: 'message',
+      type: "message",
       message: messageBuilder.spontaneous(
         this.agentId,
-        nestedEvents.flat().join('\n\n')
-      )
+        nestedEvents.flat().join("\n\n")
+      ),
     };
   }
 
@@ -81,14 +81,14 @@ export class Memory {
     const cleaned: Event[] = [];
     for (let i = events.length - 1; i >= 0; i--) {
       const event = events[i];
-      if (event.type === 'message' && event.message.type === 'error') {
+      if (event.type === "message" && event.message.type === "error") {
         const prevEvent = events[i - 1];
         // console.log("REMOVING", JSON.stringify(prevEvent, null, 2));
         // console.log("REMOVING", JSON.stringify(event, null, 2));
-        if (prevEvent.type === 'decision') {
+        if (prevEvent.type === "decision") {
           i--; // skip the previous action which generated the error
         } else {
-          console.error('error event was not preceded by an action');
+          console.error("error event was not preceded by an action");
         }
         continue;
       }
@@ -154,12 +154,12 @@ export class Memory {
         [
           ...eventsToSummarize,
           {
-            type: 'message',
+            type: "message",
             message: messageBuilder.ok(
               this.agentId,
               `Write a summary in ${summaryWordLimit} words or less of what has happened since (but not including) the introductory message. Include key information that you learned which you don't want to forget. This information will serve as a note to yourself to help you understand what has gone before. Use the second person voice, as if you are someone filling in your replacement who knows nothing. The summarized messages will be omitted from your context window going forward and you will only have this summary to go by, so make it as useful and information-dense as possible. Be as specific as possible, but only include important information. If there are details that seem unimportant, or which you could recover outside of your memory (for instance the particular contents of a file which you could read any time), then omit them from your summary. Once again, your summary must not exceed ${summaryWordLimit} words. In this particular instance, your response should just be raw text, not formatted as an action.`
-            )
-          }
+            ),
+          },
         ],
         this.model
       );
@@ -168,8 +168,8 @@ export class Memory {
       // const summary =
       //   "Several events are omitted here to free up space in your context window.";
       const summaryEvent: Event = {
-        type: 'message',
-        message: messageBuilder.spontaneous(this.agentId, summary)
+        type: "message",
+        message: messageBuilder.spontaneous(this.agentId, summary),
       };
       const summaryTokens = countTokens(summaryEvent);
       const tokenSavings =
@@ -201,22 +201,22 @@ export class Memory {
   }
 
   private get key() {
-    return 'memory';
+    return "memory";
   }
 
   private printEvent(event: Event) {
     let sourceName: string;
     let targetNames: string[];
-    if (event.type === 'message') {
+    if (event.type === "message") {
       const { message } = event;
       sourceName = messageSourceName(message.source);
       targetNames = message.targetAgentIds?.map(agentName);
     } else {
       sourceName = agentName(this.agentId);
-      targetNames = ['System'];
+      targetNames = ["System"];
     }
     console.log(
-      `${sourceName} -> ${targetNames.join(', ')}:\n\n${
+      `${sourceName} -> ${targetNames.join(", ")}:\n\n${
         toOpenAiMessage(event).content
       }\n\n=============\n`
     );

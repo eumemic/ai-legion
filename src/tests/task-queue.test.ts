@@ -1,5 +1,5 @@
-import TaskQueue from "./task-queue";
-import { sleep } from "./util";
+import TaskQueue from "../services/task-queue";
+import { sleep } from "../utils/util";
 
 describe("TaskQueue", () => {
   let taskQueue: TaskQueue;

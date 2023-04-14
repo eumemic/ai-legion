@@ -2,7 +2,7 @@ import { AxiosError, AxiosRequestConfig } from "axios";
 import { memoize } from "lodash";
 import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 import TaskQueue from "./task-queue";
-import { sleep } from "./util";
+import { sleep } from "../utils/util";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";

@@ -1,5 +1,5 @@
 import { CODE_BLOCK_DELIMITER, messageBuilder } from "../../message";
-import { MULTILINE_DELIMITER, agentName } from "../../util";
+import { MULTILINE_DELIMITER, agentName } from "../../utils/util";
 import { defineModule } from "../define-module";
 import { getUsageText } from "../util";
 

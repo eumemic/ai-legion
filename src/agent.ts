@@ -4,7 +4,6 @@ import { last } from "lodash";
 import ActionHandler from "./action-handler_agent";
 import makeDecision from "./make-decision";
 import { Event, Memory } from "./memory";
-import { Message } from "./message";
 import core from "./module/definitions/core";
 import filesystem from "./module/definitions/filesystem";
 import goals from "./module/definitions/goals";
@@ -12,26 +11,16 @@ import messaging from "./module/definitions/messaging";
 import notes from "./module/definitions/notes";
 import web from "./module/definitions/web";
 import { ModuleManager } from "./module/module-manager";
-import { contextWindowSize, Model } from "./openai";
-import parseAction from "./parse-action";
+import { contextWindowSize, Model } from "./services/openai";
+import parseAction from "./utils/parse-action";
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
-import TaskQueue from "./task-queue";
-import { agentName, sleep } from "./util";
+import TaskQueue from "./services/task-queue";
+import { agentName, sleep } from "./utils/util";
+import { IAgentMessage } from "./interfaces/agent.interface";
+import { IControlMessage } from "./interfaces/control.interface";
 
 const ACTION_INTERVAL = 10 * 1000;
-
-interface ControlMessage {
-  type: string;
-  controlMessage: any;
-}
-
-export interface AgentMessage {
-  agentId: string;
-  type: string;
-  agentMessage?: Message | string;
-  data?: any;
-}
 
 class Agent {
   private agentId: string;
@@ -71,14 +60,14 @@ class Agent {
       this.model
     );
 
-    const agentMessage: AgentMessage = {
+    const agentMessage: IAgentMessage = {
       agentId,
       type: "subscribe",
     };
 
     if (process?.send) process.send(agentMessage);
 
-    process.on("message", (message: ControlMessage) => {
+    process.on("message", (message: IControlMessage) => {
       if (message.type === "appendMemory") {
         this.memory.append({
           type: "message",
@@ -107,7 +96,7 @@ class Agent {
       const result = parseAction(this.moduleManager.actions, actionText);
 
       if (result.type === "error") {
-        const agentMessage: AgentMessage = {
+        const agentMessage: IAgentMessage = {
           agentId: this.agentId,
           type: "error",
           agentMessage: result.message,
@@ -130,7 +119,7 @@ class Agent {
   }
 }
 
-process.on("message", (message: ControlMessage) => {
+process.on("message", (message: IControlMessage) => {
   if (message.type === "init") {
     const agentId = message.controlMessage?.id;
     const agents = message.controlMessage?.agents;
@@ -144,3 +133,4 @@ process.on("message", (message: ControlMessage) => {
     agent.takeAction();
   }
 });
+export { IAgentMessage };

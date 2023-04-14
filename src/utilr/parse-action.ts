@@ -1,7 +1,7 @@
-import { CODE_BLOCK_DELIMITER } from "./message";
-import { ActionDefinition } from "./module/action-definition";
-import { getUsageText } from "./module/util";
-import { MULTILINE_DELIMITER } from "./util";
+import { CODE_BLOCK_DELIMITER } from "../message";
+import { ActionDefinition } from "../module/action-definition";
+import { getUsageText } from "../module/util";
+import { MULTILINE_DELIMITER } from "../utils/util";
 
 type ParseResult =
   | {

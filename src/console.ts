@@ -1,16 +1,16 @@
-import readline from 'readline';
-import { messageBuilder } from './message';
-import { MessageBus } from './message-bus';
+import readline from "readline";
+import { messageBuilder } from "./message";
+import { IMessageBus } from "./interfaces/messageBus.interface";
 
-const AGENT_ID = '0';
+const AGENT_ID = "0";
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: '$ '
+  prompt: "$ ",
 });
 
-export function startConsole(agentIds: string[], messageBus: MessageBus) {
+export function startConsole(agentIds: string[], messageBus: IMessageBus) {
   messageBus.subscribe((message) => {
     if (message.targetAgentIds && !message.targetAgentIds.includes(AGENT_ID))
       return;
@@ -18,7 +18,7 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
     rl.prompt();
   });
 
-  rl.on('line', (input) => {
+  rl.on("line", (input) => {
     const colonIndex = -1; //input.indexOf(":");
     let targetAgentIds: string[];
     let content: string;
