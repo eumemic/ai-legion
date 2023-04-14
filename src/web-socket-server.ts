@@ -6,7 +6,6 @@ export class WebSocketServer {
   private wss: WebSocket.Server;
 
   constructor(private messageBus: MessageBus, port: number) {
-    console.log('constructure');
     this.wss = new WebSocket.Server({ port });
 
     this.messageBus.subscribe((message) => {
