@@ -4,7 +4,7 @@ import { last } from 'lodash';
 import ActionHandler from './action-handler_agent';
 import makeDecision from './make-decision';
 import { Event, Memory } from './memory';
-import { Message, messageBuilder } from './message';
+import { Message } from './message';
 import core from './module/definitions/core';
 import filesystem from './module/definitions/filesystem';
 import goals from './module/definitions/goals';
