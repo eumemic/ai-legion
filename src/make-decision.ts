@@ -11,8 +11,8 @@ const taskQueue = new TaskQueue();
 
 export default function makeDecision(events: Event[]): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
-    // console.log(`Reflecting on ${events.length} events...`);
-    // const t0 = Date.now();
+    console.log(`Reflecting on ${events.length} events...`);
+    const t0 = Date.now();
 
     const messages = events.map(toOpenAiMessage);
 
@@ -25,11 +25,9 @@ export default function makeDecision(events: Event[]): Promise<string> {
       temperature
     });
 
-    // console.log(
-    //   `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
-    //     1
-    //   )}s`
-    // );
+    console.log(
+      `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(1)}s`
+    );
 
     return responseContent;
   });
