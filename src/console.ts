@@ -30,16 +30,10 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
       content = input;
     }
 
-    if (content) {
-      console.log(
-        'content received',
-        content,
+    if (content)
+      messageBus.send(
         messageBuilder.agentToAgent(AGENT_ID, targetAgentIds, content)
       );
-    }
-    messageBus.send(
-      messageBuilder.agentToAgent(AGENT_ID, targetAgentIds, content)
-    );
 
     rl.prompt();
   });

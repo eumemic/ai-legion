@@ -38,11 +38,9 @@ interface AgentMessage {
 
 export class Control {
   private agents: Agent[] = [];
-  private messageBus: EventEmitter = new EventEmitter();
 
-  constructor(agentIds: string[], messageBus: MessageBus) {
+  constructor(agentIds: string[], private messageBus: MessageBus) {
     for (const id of agentIds.slice(1)) {
-      console.log('Create Agent', id);
       const agentModulePath = path.join(__dirname, 'agent');
 
       const agentProcess = fork(agentModulePath);
@@ -70,10 +68,14 @@ export class Control {
         if (message.agentId === id) {
           if (message.type === 'takeAction') {
             this.takeAction(message.agentId);
-          } else {
-            this.messageBus.emit(message.type, message.data);
           }
         }
+      });
+
+      this.messageBus.subscribe((message) => {
+        if (message.targetAgentIds && !message.targetAgentIds.includes(id))
+          return;
+        memory.append({ type: 'message', message });
       });
 
       this.agents.push({
