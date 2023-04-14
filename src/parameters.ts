@@ -16,3 +16,6 @@ switch (modelText) {
     throw Error(`Unrecognized OpenAI model: '${modelText}'`);
 }
 console.log(`Model: ${model}`);
+
+export const projectName  = args.length > 2 ? args[2] : 'BasicAgent';
+console.log(`Project Name: ${projectName}`);
