@@ -13,7 +13,7 @@ export default class ActionHandler {
       context: this.moduleManager.getModuleForAction(actionDef.name)!.context,
       parameters,
       sendMessage: (message: Message) => {
-        if (process?.send) process.send(message);
+        if (process?.send) process.send({type:'message', agentMessage: message});
       }
     });
   }
