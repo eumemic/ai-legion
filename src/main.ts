@@ -19,6 +19,9 @@ const messageBus: MessageBus = new InMemoryMessageBus();
 main();
 
 async function main() {
+  console.log(`Number of agents: ${numberOfAgents}`);
+  console.log(`Model: ${model}`);
+
   startConsole(agentIds, messageBus);
   const control = new Control(model, agentIds, messageBus);
 }
