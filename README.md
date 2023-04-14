@@ -2,6 +2,8 @@
 
 A framework for autonomous agents who can work together to accomplish tasks.
 
+![Discord](https://img.shields.io/discord/1095770840173383802?label=discord)
+
 ## Setup
 
 You will need at least Node 10.
