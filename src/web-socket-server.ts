@@ -1,6 +1,6 @@
 // WebSocketServer.ts
-import WebSocket from 'ws';
-import { MessageBus } from './message-bus';
+import WebSocket from "ws";
+import { MessageBus } from "./message-bus";
 
 export class WebSocketServer {
   private wss: WebSocket.Server;
@@ -16,13 +16,13 @@ export class WebSocketServer {
       });
     });
 
-    this.wss.on('connection', (ws: WebSocket) => {
-      console.log('WebSocket client connected');
-      ws.on('message', (message: string) => {
-        console.log('Received: %s', message);
+    this.wss.on("connection", (ws: WebSocket) => {
+      console.log("WebSocket client connected");
+      ws.on("message", (message: string) => {
+        console.log("Received: %s", message);
       });
-      ws.on('close', () => {
-        console.log('WebSocket client disconnected');
+      ws.on("close", () => {
+        console.log("WebSocket client disconnected");
       });
     });
   }

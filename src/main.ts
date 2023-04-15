@@ -1,22 +1,22 @@
-import dotenv from 'dotenv';
-import ActionHandler from './action-handler';
-import { Agent } from './agent';
-import { startConsole } from './console';
-import { InMemoryMessageBus } from './in-memory-message-bus';
-import { Event, Memory } from './memory';
-import { MessageBus } from './message-bus';
-import core from './module/definitions/core';
-import filesystem from './module/definitions/filesystem';
-import goals from './module/definitions/goals';
-import messaging from './module/definitions/messaging';
-import notes from './module/definitions/notes';
-import web from './module/definitions/web';
-import { ModuleManager } from './module/module-manager';
-import { contextWindowSize } from './openai';
-import { model, numberOfAgents } from './parameters';
-import FileStore from './store/file-store';
-import JsonStore from './store/json-store';
-import { WebSocketServer } from './web-socket-server';
+import dotenv from "dotenv";
+import ActionHandler from "./action-handler";
+import { Agent } from "./agent";
+import { startConsole } from "./console";
+import { InMemoryMessageBus } from "./in-memory-message-bus";
+import { Event, Memory } from "./memory";
+import { MessageBus } from "./message-bus";
+import core from "./module/definitions/core";
+import filesystem from "./module/definitions/filesystem";
+import goals from "./module/definitions/goals";
+import messaging from "./module/definitions/messaging";
+import notes from "./module/definitions/notes";
+import web from "./module/definitions/web";
+import { ModuleManager } from "./module/module-manager";
+import { contextWindowSize } from "./openai";
+import { model, numberOfAgents } from "./parameters";
+import FileStore from "./store/file-store";
+import JsonStore from "./store/json-store";
+import { WebSocketServer } from "./web-socket-server";
 
 dotenv.config();
 
@@ -38,7 +38,7 @@ async function main() {
       notes,
       messaging,
       filesystem,
-      web
+      web,
     ]);
     const actionHandler = new ActionHandler(
       agentIds,
