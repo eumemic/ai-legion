@@ -11,23 +11,23 @@ const taskQueue = new TaskQueue();
 
 export default function makeDecision(events: Event[]): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
-    // console.log(`Reflecting on ${events.length} events...`);
-    // const t0 = Date.now();
+    console.log(`Reflecting on ${events.length} events...`);
+    const t0 = Date.now();
 
     const messages = events.map(toOpenAiMessage);
 
     // console.log(JSON.stringify(messages, null, 2));
+    const temperature = 0.0;
 
     const responseContent = await createChatCompletion({
       model,
       messages,
+      temperature,
     });
 
-    // console.log(
-    //   `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
-    //     1
-    //   )}s`
-    // );
+    console.log(
+      `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(1)}s`
+    );
 
     return responseContent;
   });
