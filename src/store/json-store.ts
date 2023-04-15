@@ -1,4 +1,4 @@
-import { Store } from ".";
+import { Store } from "../interfaces/store.interface";
 
 export default class JsonStore<T> implements Store<T> {
   constructor(private stringStore: Store<string>) {}

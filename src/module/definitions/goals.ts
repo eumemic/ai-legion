@@ -1,6 +1,6 @@
 import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
-import { Store } from "../../store";
+import { Store } from "../../interfaces/store.interface";
 import FileStore from "../../store/file-store";
 import JsonStore from "../../store/json-store";
 

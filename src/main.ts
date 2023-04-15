@@ -4,6 +4,7 @@ import { InMemoryMessageBus } from "./services/in-memory-message-bus";
 import { IMessageBus } from "./interfaces/messageBus.interface";
 import { numberOfAgents, model } from "./parameters";
 import { Control } from "./control";
+import { WebSocketServer } from "./services/web-socket-server";
 
 dotenv.config();
 
@@ -14,9 +15,9 @@ const messageBus: IMessageBus = new InMemoryMessageBus();
 console.log(`Number of agents: ${numberOfAgents}`);
 console.log(`Model: ${model}`);
 
-main();
+(async function () {
+  const webSocketServer = new WebSocketServer(messageBus, 8080);
 
-async function main() {
   startConsole(agentIds, messageBus);
   const control = new Control(model, agentIds, messageBus);
-}
+})();

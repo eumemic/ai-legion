@@ -1,4 +1,4 @@
-import { Store } from ".";
+import { Store } from "../interfaces/store.interface";
 
 export default class InMemoryStore implements Store<string> {
   private map = new Map<string, string>();

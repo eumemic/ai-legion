@@ -1,4 +1,4 @@
-import { Store } from ".";
+import { Store } from "../interfaces/store.interface";
 import { readFile, writeFile, mkdir, stat, unlink, readdir } from "fs/promises";
 import path from "path";
 
