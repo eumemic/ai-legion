@@ -8,7 +8,7 @@
     "compile": "tsc",
     "format": "npm run prettier -- --write .",
     "format:check": "npm run prettier -- --check .",
-    "lint": "./node_modules/.bin/eslint src",
+    "lint": "eslint src --max-warnings=0",
     "prettier": "prettier --ignore-path .gitignore",
     "start": "ts-node src/main.ts",
     "test": "jest",
