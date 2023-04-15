@@ -1,6 +1,6 @@
 // WebSocketServer.ts
 import WebSocket from "ws";
-import { IMessageBus } from "../interfaces/messageBus.interface";
+import { IMessageBus } from "../interfaces/messageBus";
 
 export class WebSocketServer {
   private wss: WebSocket.Server;

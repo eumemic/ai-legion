@@ -3,7 +3,7 @@ import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder } from "../message";
 import { ModuleManager } from "../module/module-manager";
-import { Store } from "../interfaces/store.interface";
+import { Store } from "../interfaces/store";
 import {
   AVG_WORDS_PER_TOKEN,
   agentName,

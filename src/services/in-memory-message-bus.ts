@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
-import { IMessageBus } from "../interfaces/messageBus.interface";
-import { IMessage } from "../interfaces/message.interface";
+import { IMessageBus } from "../interfaces/messageBus";
+import { IMessage } from "../interfaces/message";
 
 export class InMemoryMessageBus extends EventEmitter implements IMessageBus {
   subscribe(listener: (message: IMessage) => void): void {

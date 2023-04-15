@@ -1,5 +1,5 @@
 import { ModuleContext } from ".";
-import { IMessage } from "../interfaces/message.interface";
+import { IMessage } from "../interfaces/message";
 
 export interface ActionDefinition<S = void, P extends string = string>
   extends PartialActionDefinition<S, P> {

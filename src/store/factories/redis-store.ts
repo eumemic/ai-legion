@@ -1,31 +1,36 @@
 import { createClient, RedisClientType } from "redis";
 import { promisify } from "util";
-import { Store } from "../interfaces/store.interface";
+import { Store } from "interfaces/store";
 
-// Create a RedisStore class that implements the Store interface
-export class RedisStore<T = string> implements Store<T> {
+export class RedisStore<T> implements Store<T> {
   private client: RedisClientType;
-  private getAsync: (key: string) => Promise<string | null>;
+  public modelState: T;
+
+  private getAsync: (key: string) => Promise<string>;
   private setAsync: (key: string, value: string) => Promise<void>;
   private delAsync: (key: string) => Promise<number>;
   private keysAsync: (pattern: string) => Promise<string[]>;
 
-  constructor() {
-    // Create a Redis client
+  constructor(modelState: T) {
     this.client = createClient();
+    this.modelState = modelState;
 
-    // Promisify Redis commands
     this.getAsync = promisify(this.client.get).bind(this.client);
     this.setAsync = promisify(this.client.set).bind(this.client);
     this.delAsync = promisify(this.client.del).bind(this.client);
     this.keysAsync = promisify(this.client.keys).bind(this.client);
+
+    this.client.on("error", (error) => {
+      console.error("Redis error:", error);
+    });
+
+    this.client.on("ready", async () => {
+      console.log("Redis is ready.");
+    });
   }
 
-  async get(key: string): Promise<T | undefined> {
+  async get(key: string): Promise<T> {
     const value = await this.getAsync(key);
-    if (value === null) {
-      return undefined;
-    }
     return JSON.parse(value);
   }
 
@@ -39,7 +44,10 @@ export class RedisStore<T = string> implements Store<T> {
   }
 
   async getKeys(): Promise<string[]> {
-    const keys = await this.keysAsync("*");
-    return keys;
+    return this.keysAsync("*");
+  }
+
+  close(): void {
+    this.client.quit();
   }
 }

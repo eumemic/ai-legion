@@ -13,12 +13,12 @@ import web from "./module/definitions/web";
 import { ModuleManager } from "./module/module-manager";
 import { contextWindowSize, Model } from "./services/openai";
 import parseAction from "./utils/parse-action";
-import FileStore from "./store/file-store";
+import FileStore from "./store/factories/file-store";
 import JsonStore from "./store/json-store";
 import TaskQueue from "./services/task-queue";
 import { agentName, sleep } from "./utils/util";
-import { IAgentMessage } from "./interfaces/agent.interface";
-import { IControlMessage } from "./interfaces/control.interface";
+import { IAgentMessage } from "./interfaces/agent";
+import { IControlMessage } from "./interfaces/control";
 
 const ACTION_INTERVAL = 10 * 1000;
 

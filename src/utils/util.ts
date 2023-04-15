@@ -1,5 +1,5 @@
 import { encode } from "gpt-3-encoder";
-import { IMessageSource } from "../interfaces/messageSource.interface";
+import { IMessageSource } from "../interfaces/messageSource";
 
 export function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));

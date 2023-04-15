@@ -1,10 +1,10 @@
 import { fork, ChildProcess } from "child_process";
-import { IMessage } from "./interfaces/message.interface";
+import { IMessage } from "./interfaces/message";
 import { messageBuilder } from "./message";
-import { IMessageBus } from "./interfaces/messageBus.interface";
+import { IMessageBus } from "./interfaces/messageBus";
 import path from "path";
-import { IAgentMessage } from "./interfaces/agent.interface";
-import { IControlMessage } from "./interfaces/control.interface";
+import { IAgentMessage } from "./interfaces/agent";
+import { IControlMessage } from "./interfaces/control";
 
 interface Agent {
   id: string;

@@ -1,4 +1,4 @@
-import { IMessage } from "./message.interface";
+import { IMessage } from "./message";
 
 export interface IAgentMessage {
   agentId: string;

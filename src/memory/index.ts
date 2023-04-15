@@ -1,4 +1,4 @@
-import { IMessage } from "../interfaces/message.interface";
+import { IMessage } from "../interfaces/message";
 export { Memory } from "./memory";
 
 export type Event = MessageEvent | DecisionEvent;

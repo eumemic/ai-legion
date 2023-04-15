@@ -1,5 +1,5 @@
 import { ModuleManager } from "./module/module-manager";
-import { IMessage } from "./interfaces/message.interface";
+import { IMessage } from "./interfaces/message";
 import { Action } from "./utils/parse-action";
 
 export default class ActionHandler {

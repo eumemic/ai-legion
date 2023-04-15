@@ -1,8 +1,8 @@
-import { IMessage } from "./interfaces/message.interface";
+import { IMessage } from "./interfaces/message";
 import {
   IAgentMessageSource,
   ISystemMessageSource,
-} from "./interfaces/messageSource.interface";
+} from "./interfaces/messageSource";
 
 type TypelessMessage = Omit<IMessage, "type">;
 
