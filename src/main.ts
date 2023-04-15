@@ -1,13 +1,13 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
-import { startConsole } from './console';
-import { InMemoryMessageBus } from './in-memory-message-bus';
+import { startConsole } from "./console";
+import { InMemoryMessageBus } from "./in-memory-message-bus";
 
-import { MessageBus } from './message-bus';
+import { MessageBus } from "./message-bus";
 
-import { numberOfAgents, model } from './parameters';
+import { numberOfAgents, model } from "./parameters";
 
-import { Control } from './control';
+import { Control } from "./control";
 
 dotenv.config();
 
@@ -20,8 +20,7 @@ console.log(`Model: ${model}`);
 
 main();
 
-async function main() { 
-
+async function main() {
   startConsole(agentIds, messageBus);
   const control = new Control(model, agentIds, messageBus);
 }
