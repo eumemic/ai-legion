@@ -1,5 +1,5 @@
 import { encode } from "gpt-3-encoder";
-import { MessageSource } from "./message";
+import { IMessageSource } from "../interfaces/message-source";
 
 export function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -17,7 +17,7 @@ export function sleepUntil(condition: () => boolean): Promise<void> {
   });
 }
 
-export function messageSourceName(source: MessageSource) {
+export function messageSourceName(source: IMessageSource) {
   return source.type === "system" ? "System" : agentName(source.id);
 }
 

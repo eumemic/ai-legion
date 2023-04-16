@@ -1,59 +1,39 @@
 import dotenv from "dotenv";
-import ActionHandler from "./action-handler";
-import { Agent } from "./agent";
 import { startConsole } from "./console";
-import { InMemoryMessageBus } from "./in-memory-message-bus";
-import { Event, Memory } from "./memory";
-import { MessageBus } from "./message-bus";
-import core from "./module/definitions/core";
-import filesystem from "./module/definitions/filesystem";
-import goals from "./module/definitions/goals";
-import messaging from "./module/definitions/messaging";
-import notes from "./module/definitions/notes";
-import web from "./module/definitions/web";
-import { ModuleManager } from "./module/module-manager";
-import { contextWindowSize } from "./openai";
-import { model, numberOfAgents } from "./parameters";
-import FileStore from "./store/file-store";
-import JsonStore from "./store/json-store";
+import { InMemoryMessageBus } from "services/in-memory-message-bus";
+import { IMessageBus } from "interfaces/message-bus";
+
+import { Control } from "./control";
+import { webSocketServer } from "services/web-socket-server";
+import { applicationStore } from "store/application";
+import { openAImodel } from "interfaces/open-ai-model";
 
 dotenv.config();
 
-const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
+const [numAgents, modelString] = process.argv.slice(2);
 
-const messageBus: MessageBus = new InMemoryMessageBus();
+const messageBus: IMessageBus = new InMemoryMessageBus();
 
-main();
+(async function () {
+  await applicationStore.connect();
 
-async function main() {
+  await applicationStore.set("numberOfAgents", Number(numAgents));
+
+  if (modelString)
+    await applicationStore.set("modelType", modelString as openAImodel);
+
+  const model = await applicationStore.get("modelType");
+  const numberOfAgents = await applicationStore.get("numberOfAgents");
+
+  console.log(`Number of agents: ${numberOfAgents}`);
+  console.log(`Model: ${model}`);
+
+  const agentIds = Array.from({ length: numberOfAgents + 1 }, (_, i) => `${i}`);
+
+  await applicationStore.set("agents", agentIds);
+
+  webSocketServer(messageBus, 8080);
   startConsole(agentIds, messageBus);
 
-  for (const id of agentIds.slice(1)) {
-    const moduleManager = new ModuleManager(id, agentIds, [
-      core,
-      goals,
-      notes,
-      messaging,
-      filesystem,
-      web,
-    ]);
-    const actionHandler = new ActionHandler(
-      agentIds,
-      messageBus,
-      moduleManager
-    );
-
-    const store = new JsonStore<Event[]>(new FileStore([id]));
-    // We have to leave room for the agent's next action, which is of unknown size
-    const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
-    const memory = new Memory(id, moduleManager, store, compressionThreshold);
-    const agent = new Agent(
-      id,
-      memory,
-      messageBus,
-      moduleManager,
-      actionHandler
-    );
-    await agent.start();
-  }
-}
+  const control = new Control(messageBus);
+})();

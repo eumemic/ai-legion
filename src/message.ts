@@ -1,32 +1,13 @@
-export interface Message {
-  type: MessageType;
-  source: MessageSource;
-  targetAgentIds: string[];
-  content: string;
-}
+import { IMessage } from "./interfaces/message";
+import {
+  IAgentMessageSource,
+  ISystemMessageSource,
+} from "./interfaces/message-source";
 
-type TypelessMessage = Omit<Message, "type">;
+type TypelessMessage = Omit<IMessage, "type">;
 
-export type MessageType = keyof typeof messageBuilder;
-
-export type MessageSource = SystemMessageSource | AgentMessageSource;
-
-interface MessageSourceBase {
-  id?: string;
-}
-
-interface SystemMessageSource extends MessageSourceBase {
-  type: "system";
-  id?: undefined;
-}
-
-interface AgentMessageSource extends MessageSourceBase {
-  type: "agent";
-  id: string;
-}
-
-export const systemSource: SystemMessageSource = { type: "system" };
-export const agentSource = (id: string): AgentMessageSource => ({
+export const systemSource: ISystemMessageSource = { type: "system" };
+export const agentSource = (id: string): IAgentMessageSource => ({
   type: "agent",
   id,
 });
@@ -53,7 +34,7 @@ export const messageBuilder = addMessageTypes({
 
 function addMessageTypes<
   T extends Record<string, (...args: any) => TypelessMessage>
->(record: T): { [K in keyof T]: (...args: Parameters<T[K]>) => Message } {
+>(record: T): { [K in keyof T]: (...args: Parameters<T[K]>) => IMessage } {
   for (const [type, builder] of Object.entries(record)) {
     (record as any)[type] = (...args: any) => ({
       type,

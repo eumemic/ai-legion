@@ -1,5 +1,5 @@
 import { ModuleContext } from ".";
-import { Message } from "../message";
+import { IMessage } from "../interfaces/message";
 
 export interface ActionDefinition<S = void, P extends string = string>
   extends PartialActionDefinition<S, P> {
@@ -27,6 +27,6 @@ export type ActionHandler<S = void, P extends string = string> = (
 export interface ActionHandlerInputs<S = void, P extends string = string> {
   parameters: Record<P, string>;
   context: ModuleContext<S>;
-  sendMessage: (message: Message) => void;
+  sendMessage: (message: IMessage) => void;
 }
 export { ModuleContext };

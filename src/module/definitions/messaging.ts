@@ -1,6 +1,6 @@
 import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
-import { agentName } from "../../util";
+import { agentName } from "../../utils/util";
 
 export default defineModule({
   name: "messaging",

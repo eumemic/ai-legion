@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { GPT_3_5_TURBO } from "../../openai";
+import { GPT_3_5_TURBO } from "../../services/openai";
 import { getPageSummary, getSearchResults } from "./web";
 
 dotenv.config();

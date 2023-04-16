@@ -1,11 +1,11 @@
-import core from "./module/definitions/core";
-import filesystem from "./module/definitions/filesystem";
-import messaging from "./module/definitions/messaging";
-import notes from "./module/definitions/notes";
-import { ModuleManager } from "./module/module-manager";
-import { getUsageText } from "./module/util";
-import parseAction, { Action } from "./parse-action";
-import { MULTILINE_DELIMITER } from "./util";
+import core from "../module/definitions/core";
+import filesystem from "../module/definitions/filesystem";
+import messaging from "../module/definitions/messaging";
+import notes from "../module/definitions/notes";
+import { ModuleManager } from "../module/module-manager";
+import { getUsageText } from "../module/util";
+import parseAction, { Action } from "../utils/parse-action";
+import { MULTILINE_DELIMITER } from "../utils/util";
 
 const moduleManager = new ModuleManager(
   "1",

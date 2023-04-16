@@ -1,8 +1,8 @@
 import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
-import { Store } from "../../store";
-import FileStore from "../../store/file-store";
-import JsonStore from "../../store/json-store";
+import { Store } from "interfaces/store";
+import FileStore from "store/factories/file-store";
+import JsonStore from "store/factories/json-store";
 
 interface Goal {
   text: string;

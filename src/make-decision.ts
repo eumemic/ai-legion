@@ -1,15 +1,18 @@
 import { ChatCompletionRequestMessage } from "openai";
 import { Event } from "./memory";
-import { createChatCompletion } from "./openai";
-import { model } from "./parameters";
-import TaskQueue from "./task-queue";
-import { messageSourceName, sleep } from "./util";
+import { createChatCompletion, Model } from "./services/openai";
+
+import TaskQueue from "./services/task-queue";
+import { messageSourceName, sleep } from "./utils/util";
 
 const openaiDelay = 10 * 1000;
 
 const taskQueue = new TaskQueue();
 
-export default function makeDecision(events: Event[]): Promise<string> {
+export default function makeDecision(
+  events: Event[],
+  model: Model
+): Promise<string> {
   const decisionPromise = taskQueue.run(async (): Promise<string> => {
     console.log(`Reflecting on ${events.length} events...`);
     const t0 = Date.now();

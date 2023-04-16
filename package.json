@@ -10,7 +10,7 @@
     "format:check": "npm run prettier -- --check .",
     "lint": "eslint src --max-warnings=0",
     "prettier": "prettier --ignore-path .gitignore",
-    "start": "ts-node src/main.ts",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -19,10 +19,14 @@
   "license": "MIT",
   "devDependencies": {
     "@types/postlight__mercury-parser": "^2.2.4",
+    "@types/redis": "^4.0.11",
+    "@types/uuid": "^9.0.1",
+    "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.37.0",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.2"
   },
   "dependencies": {
@@ -40,6 +44,8 @@
     "puppeteer": "^19.8.5",
     "redis": "^4.6.5",
     "ts-jest": "^29.0.5",
-    "turndown": "^7.1.2"
+    "turndown": "^7.1.2",
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
   }
 }

@@ -1,11 +1,10 @@
 import { ModuleManager } from "./module/module-manager";
-import { MessageBus } from "./message-bus";
-import { Action } from "./parse-action";
+import { IMessage } from "./interfaces/message";
+import { Action } from "./utils/parse-action";
 
 export default class ActionHandler {
   constructor(
     private agentIds: string[],
-    private messageBus: MessageBus,
     private moduleManager: ModuleManager
   ) {}
 
@@ -13,7 +12,10 @@ export default class ActionHandler {
     actionDef.execute({
       context: this.moduleManager.getModuleForAction(actionDef.name)!.context,
       parameters,
-      sendMessage: (message) => this.messageBus.send(message),
+      sendMessage: (message: IMessage) => {
+        if (process?.send)
+          process.send({ type: "message", agentMessage: message });
+      },
     });
   }
 }
