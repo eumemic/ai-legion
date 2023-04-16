@@ -16,7 +16,7 @@ import { contextWindowSize } from "./openai";
 import { model, numberOfAgents } from "./parameters";
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
-import { webSocketServer } from "./web-socket-server";
+import webSocketServer from "./web-socket-server";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ main();
 async function main() {
   startConsole(agentIds, messageBus);
 
-  webSocketServer(messageBus, 8080);
+  webSocketServer(messageBus, 4331);
 
   for (const id of agentIds.slice(1)) {
     const moduleManager = new ModuleManager(id, agentIds, [

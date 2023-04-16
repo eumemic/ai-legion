@@ -40,6 +40,7 @@
     "prettier": "^2.8.7",
     "puppeteer": "^19.8.5",
     "redis": "^4.6.5",
+    "socket.io": "^4.6.1",
     "ts-jest": "^29.0.5",
     "turndown": "^7.1.2",
     "ws": "^8.13.0"

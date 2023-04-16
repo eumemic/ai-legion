@@ -1,24 +1,30 @@
-import WebSocket from "ws";
+import { createServer, Server as HttpServer } from "http";
+import { Server as IOServer, Socket } from "socket.io";
 import { MessageBus } from "./message-bus";
 
-export const webSocketServer = (messageBus: MessageBus, port: number) => {
-  const wss = new WebSocket.Server({ port });
+function webSocketServer(messageBus: MessageBus, port: number): void {
+  const httpServer = createServer();
+  const io = new IOServer(httpServer, {
+    cors: {
+      origin: "*",
+    },
+  });
 
-  messageBus.subscribe((message) => {
-    wss.clients.forEach((client: WebSocket) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(message));
-      }
+  io.on("connection", (socket: Socket) => {
+    console.log("A user connected");
+
+    messageBus.subscribe((message) => {
+      socket.emit("message", message);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
     });
   });
 
-  wss.on("connection", (ws: WebSocket) => {
-    console.log("WebSocket client connected");
-    ws.on("message", (message: string) => {
-      console.log("Received: %s", message);
-    });
-    ws.on("close", () => {
-      console.log("WebSocket client disconnected");
-    });
+  httpServer.listen(port, () => {
+    console.log(`Socket.IO server is listening on port ${port}`);
   });
-};
+}
+
+export default webSocketServer;
