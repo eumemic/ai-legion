@@ -2,7 +2,7 @@ import { IMessage } from "./interfaces/message";
 import {
   IAgentMessageSource,
   ISystemMessageSource,
-} from "./interfaces/messageSource";
+} from "./interfaces/message-source";
 
 type TypelessMessage = Omit<IMessage, "type">;
 

@@ -1,29 +1,25 @@
 // WebSocketServer.ts
 import WebSocket from "ws";
-import { IMessageBus } from "../interfaces/messageBus";
+import { IMessageBus } from "interfaces/message-bus";
 
-export class WebSocketServer {
-  private wss: WebSocket.Server;
+export const webSocketServer = (messageBus: IMessageBus, port: number) => {
+  const wss = new WebSocket.Server({ port });
 
-  constructor(private messageBus: IMessageBus, port: number) {
-    this.wss = new WebSocket.Server({ port });
-
-    this.messageBus.subscribe((message) => {
-      this.wss.clients.forEach((client: WebSocket) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(message));
-        }
-      });
+  messageBus.subscribe((message) => {
+    wss.clients.forEach((client: WebSocket) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(message));
+      }
     });
+  });
 
-    this.wss.on("connection", (ws: WebSocket) => {
-      console.log("WebSocket client connected");
-      ws.on("message", (message: string) => {
-        console.log("Received: %s", message);
-      });
-      ws.on("close", () => {
-        console.log("WebSocket client disconnected");
-      });
+  wss.on("connection", (ws: WebSocket) => {
+    console.log("WebSocket client connected");
+    ws.on("message", (message: string) => {
+      console.log("Received: %s", message);
     });
-  }
-}
+    ws.on("close", () => {
+      console.log("WebSocket client disconnected");
+    });
+  });
+};

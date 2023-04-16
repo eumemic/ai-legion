@@ -7,13 +7,15 @@ import {
   contextWindowSize,
   createChatCompletion,
 } from "../../services/openai";
-import { model } from "../../parameters";
+
 import {
   AVG_CHARACTERS_PER_TOKEN,
   AVG_WORDS_PER_TOKEN,
   countTokens,
 } from "../../utils/util";
 import { defineModule } from "../define-module";
+import { applicationStore } from "store/application";
+import { openAImodel } from "interfaces/open-ai-model";
 
 export default defineModule({
   name: "web",
@@ -63,6 +65,8 @@ export default defineModule({
         sendMessage,
       }) {
         try {
+          const model: openAImodel = await applicationStore.get("modelType");
+
           const maxCompletionTokens = contextWindowSize[model] / 4;
           // console.log({ maxCompletionTokens });
           const pageSummary = await getPageSummary(

@@ -1,5 +1,5 @@
 import { messageBuilder } from "../message";
-import { IMessageSource } from "./messageSource";
+import { IMessageSource } from "./message-source";
 
 export type MessageType = keyof typeof messageBuilder;
 

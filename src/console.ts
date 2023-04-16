@@ -1,6 +1,6 @@
 import readline from "readline";
 import { messageBuilder } from "./message";
-import { IMessageBus } from "./interfaces/messageBus";
+import { IMessageBus } from "./interfaces/message-bus";
 
 const AGENT_ID = "0";
 

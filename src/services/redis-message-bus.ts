@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { IMessageBus } from "../interfaces/messageBus";
+import { IMessageBus } from "../interfaces/message-bus";
 import { IMessage } from "../interfaces/message";
 
 export class RedisMessageBus implements IMessageBus {

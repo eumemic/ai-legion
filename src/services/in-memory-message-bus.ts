@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { IMessageBus } from "../interfaces/messageBus";
+import { IMessageBus } from "../interfaces/message-bus";
 import { IMessage } from "../interfaces/message";
 
 export class InMemoryMessageBus extends EventEmitter implements IMessageBus {

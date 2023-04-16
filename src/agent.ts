@@ -14,7 +14,7 @@ import { ModuleManager } from "./module/module-manager";
 import { contextWindowSize, Model } from "./services/openai";
 import parseAction from "./utils/parse-action";
 import FileStore from "./store/factories/file-store";
-import JsonStore from "./store/json-store";
+import JsonStore from "./store/factories/json-store";
 import TaskQueue from "./services/task-queue";
 import { agentName, sleep } from "./utils/util";
 import { IAgentMessage } from "./interfaces/agent";

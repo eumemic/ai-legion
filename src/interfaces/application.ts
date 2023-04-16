@@ -1,4 +1,4 @@
-import { openAImodel } from "./openAImodel";
+import { openAImodel } from "./open-ai-model";
 
 export interface AppState {
   agents: string[];
