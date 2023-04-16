@@ -19,7 +19,8 @@ import JsonStore from "./store/json-store";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
 
-const ACTION_INTERVAL = 10 * 1000;
+const actionInterval = 1000;
+// const heartbeatInterval = 60 * 1000;
 
 interface ControlMessage {
   type: string;
@@ -125,7 +126,9 @@ class Agent {
       );
       console.error(e);
     } finally {
-      await sleep(5000);
+      if (process.env.AGENT_DELAY) {
+        await sleep(parseInt(process.env.AGENT_DELAY));
+      }
     }
   }
 }
@@ -139,7 +142,7 @@ process.on("message", (message: ControlMessage) => {
 
     const taskQueue = new TaskQueue();
 
-    taskQueue.runPeriodically(() => agent.takeAction(), ACTION_INTERVAL);
+    taskQueue.runPeriodically(() => agent.takeAction(), actionInterval);
 
     agent.takeAction();
   }

@@ -19,6 +19,7 @@ OPENAI_API_KEY=... # obtain from https://platform.openai.com/account/api-keys
 # the following are needed for the agent to be able to search the web:
 GOOGLE_SEARCH_ENGINE_ID=... # create a custom search engine at https://cse.google.com/cse/all
 GOOGLE_API_KEY=... # obtain from https://console.cloud.google.com/apis/credentials
+AGENT_DELAY=... # optionally, a delay in milliseconds following every agent action
 ```
 
 You'll also need to enable the Google Custom Search API for your Google Cloud account, e.g. <https://console.cloud.google.com/apis/library/customsearch.googleapis.com>
