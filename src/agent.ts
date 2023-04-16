@@ -20,7 +20,8 @@ import { agentName, sleep } from "./utils/util";
 import { IAgentMessage } from "./interfaces/agent";
 import { IControlMessage } from "./interfaces/control";
 
-const ACTION_INTERVAL = 10 * 1000;
+const actionInterval = 1000;
+// const heartbeatInterval = 60 * 1000;
 
 class Agent {
   private agentId: string;
@@ -114,7 +115,9 @@ class Agent {
       );
       console.error(e);
     } finally {
-      await sleep(5000);
+      if (process.env.AGENT_DELAY) {
+        await sleep(parseInt(process.env.AGENT_DELAY));
+      }
     }
   }
 }
@@ -128,7 +131,7 @@ process.on("message", (message: IControlMessage) => {
 
     const taskQueue = new TaskQueue();
 
-    taskQueue.runPeriodically(() => agent.takeAction(), ACTION_INTERVAL);
+    taskQueue.runPeriodically(() => agent.takeAction(), actionInterval);
 
     agent.takeAction();
   }

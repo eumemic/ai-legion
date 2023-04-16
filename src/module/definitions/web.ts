@@ -14,8 +14,8 @@ import {
   countTokens,
 } from "../../utils/util";
 import { defineModule } from "../define-module";
-import { applicationStore } from "store/application";
-import { openAImodel } from "interfaces/open-ai-model";
+import { applicationStore } from "../../store/application";
+import { openAImodel } from "../../interfaces/open-ai-model";
 
 export default defineModule({
   name: "web",
