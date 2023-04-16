@@ -1,20 +1,23 @@
 import { createClient, RedisClientType } from "redis";
 import { promisify } from "util";
-import { Store } from "interfaces/store";
+import { DataStore } from "interfaces/datastore";
 
-export class RedisStore<T> implements Store<T> {
+// Implement the RedisDataStore class with generics
+export class RedisStore<T> implements DataStore<T> {
   private client: RedisClientType;
   public modelState: T;
 
+  // Promisify Redis client methods
   private getAsync: (key: string) => Promise<string>;
   private setAsync: (key: string, value: string) => Promise<void>;
-  private delAsync: (key: string) => Promise<number>;
+  private delAsync: (key: string) => Promise<void>;
   private keysAsync: (pattern: string) => Promise<string[]>;
 
   constructor(modelState: T) {
     this.client = createClient();
     this.modelState = modelState;
 
+    // Bind and promisify Redis client methods
     this.getAsync = promisify(this.client.get).bind(this.client);
     this.setAsync = promisify(this.client.set).bind(this.client);
     this.delAsync = promisify(this.client.del).bind(this.client);
@@ -27,20 +30,21 @@ export class RedisStore<T> implements Store<T> {
     this.client.on("ready", async () => {
       console.log("Redis is ready.");
     });
+
+    this.client.connect();
   }
 
-  async get(key: string): Promise<T> {
-    const value = await this.getAsync(key);
+  async get<K extends keyof T>(key: K): Promise<T[K]> {
+    const value = await this.getAsync(key as string);
     return JSON.parse(value);
   }
 
-  async set(key: string, value: T): Promise<void> {
-    await this.setAsync(key, JSON.stringify(value));
+  async set<K extends keyof T>(key: K, value: T[K]): Promise<void> {
+    await this.setAsync(key as string, JSON.stringify(value));
   }
 
-  async delete(key: string): Promise<boolean> {
-    const numDeleted = await this.delAsync(key);
-    return numDeleted > 0;
+  async delete(key: keyof T): Promise<void> {
+    await this.delAsync(key as string);
   }
 
   async getKeys(): Promise<string[]> {

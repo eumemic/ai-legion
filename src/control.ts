@@ -5,6 +5,7 @@ import { IMessageBus } from "./interfaces/messageBus";
 import path from "path";
 import { IAgentMessage } from "./interfaces/agent";
 import { IControlMessage } from "./interfaces/control";
+// import { applicationStore } from "store/application";
 
 interface Agent {
   id: string;
@@ -19,6 +20,10 @@ export class Control {
     agentIds: string[],
     private messageBus: IMessageBus
   ) {
+    // applicationStore.get("numberOfAgents").then((res: any) => {
+    //   console.log(`Number of agents: ${res}`);
+    // });
+
     for (const id of agentIds.slice(1)) {
       const agentModulePath = path.join(__dirname, "agent");
 
