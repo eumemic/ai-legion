@@ -79,7 +79,9 @@ export class Agent {
       );
       console.error(e);
     } finally {
-      await sleep(5000);
+      if (process.env.AGENT_DELAY) {
+        await sleep(parseInt(process.env.AGENT_DELAY));
+      }
     }
   }
 }
