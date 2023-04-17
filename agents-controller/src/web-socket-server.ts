@@ -1,6 +1,9 @@
 import { createServer, Server as HttpServer } from "http";
 import { Server as IOServer, Socket } from "socket.io";
 import { MessageBus } from "./message-bus";
+import { messageBuilder } from "./message";
+
+const AGENT_ID = "0";
 
 function webSocketServer(
   messageBus: MessageBus,
@@ -19,6 +22,11 @@ function webSocketServer(
 
     messageBus.subscribe((message) => {
       socket.emit("message", { ...message, activeAgents: agentIds });
+    });
+
+    socket.on("message", (msg: string) => {
+      console.log(`Message received from ${socket.id}:`, msg);
+      messageBus.send(messageBuilder.agentToAgent(AGENT_ID, agentIds, msg));
     });
 
     socket.on("disconnect", () => {
