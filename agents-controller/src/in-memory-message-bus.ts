@@ -18,6 +18,7 @@ export class InMemoryMessageBus implements MessageBus {
   }
 
   send(message: Message): void {
+    console.log("message bus console ===>", message);
     this.emitter.emit("message", message);
   }
 }

@@ -1,6 +1,7 @@
 import { Event } from ".";
 import makeDecision, { toOpenAiMessage } from "../make-decision";
 import { messageBuilder } from "../message";
+import { MessageBus } from "../message-bus";
 import { ModuleManager } from "../module/module-manager";
 import { Store } from "../store";
 import {
@@ -17,7 +18,8 @@ export class Memory {
     private agentId: string,
     private moduleManager: ModuleManager,
     private store: Store<Event[]>,
-    private compressionThreshold: number
+    private compressionThreshold: number,
+    private messageBus: MessageBus
   ) {}
 
   async append(event: Event): Promise<Event[]> {
