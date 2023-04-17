@@ -29,7 +29,7 @@ main();
 async function main() {
   startConsole(agentIds, messageBus);
 
-  webSocketServer(messageBus, 4331);
+  webSocketServer(messageBus, 4331, agentIds);
 
   for (const id of agentIds.slice(1)) {
     const moduleManager = new ModuleManager(id, agentIds, [

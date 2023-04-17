@@ -2,7 +2,11 @@ import { createServer, Server as HttpServer } from "http";
 import { Server as IOServer, Socket } from "socket.io";
 import { MessageBus } from "./message-bus";
 
-function webSocketServer(messageBus: MessageBus, port: number): void {
+function webSocketServer(
+  messageBus: MessageBus,
+  port: number,
+  agentIds: string[]
+): void {
   const httpServer = createServer();
   const io = new IOServer(httpServer, {
     cors: {
@@ -14,7 +18,7 @@ function webSocketServer(messageBus: MessageBus, port: number): void {
     console.log("A user connected");
 
     messageBus.subscribe((message) => {
-      socket.emit("message", message);
+      socket.emit("message", { ...message, activeAgents: agentIds });
     });
 
     socket.on("disconnect", () => {

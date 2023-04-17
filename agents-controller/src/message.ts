@@ -3,6 +3,7 @@ export interface Message {
   source: MessageSource;
   targetAgentIds: string[];
   content: string;
+  activeAgents?: string[];
 }
 
 type TypelessMessage = Omit<Message, "type">;
