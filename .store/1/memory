@@ -1,0 +1,106 @@
+[
+  {
+    "type": "message",
+    "message": {
+      "type": "spontaneous",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Several events are omitted here to free up space in your context window, summarized as follows:\n\nYou received a message from Control asking for the temperature in San Diego. You used the `searchWeb` action to search for the current temperature in San Diego, but the search results did not provide a clear answer. You then used the `searchWeb` action again to search for the temperature in San Diego right now, and found several websites that provided the current temperature."
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "readPage\nthoughts: I can use this action to read a summary of a web page in markdown format.\nurl: https://www.accuweather.com/en/us/san-diego/92101/current-weather/347628"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Here is a summarized markdown version of the page, in a series of summarized chunks:\n\n=== SUMMARIZED CHUNK (61 tokens) ===\n\nUnfortunately, the requested webpage is not available at the provided link. Access to the page has been denied as you do not have the required permissions to view it. The reference number 18.ae9bd817.1681485635.26537847 can be used for further troubleshooting if required.\n\n"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "searchWeb\nthoughts: I can use this action to search the web for information.\nsearchString: temperature in San Diego right now accuweather"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Search results:\n\n- Title: \"San Diego, CA Weather Forecast | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/weather-forecast/347628\n\n- Title: \"San Diego, CA Daily Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/daily-weather-forecast/347628\n\n- Title: \"San Diego, CA Hourly Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/hourly-weather-forecast/347628\n\n- Title: \"San Diego, CA Current Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/current-weather/347628\n\n- Title: \"San Antonio, TX Weather Forecast | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-antonio/78205/weather-forecast/351198\n\n- Title: \"San Diego, CA Weather Radar | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/weather-radar/347628\n\n- Title: \"San Antonio, TX Current Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-antonio/78205/current-weather/351198\n\n- Title: \"San Diego, CA Monthly Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/february-weather/347628\n\n- Title: \"San Diego, CA Satellite Weather Map | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/satellite/347628\n\n- Title: \"San Diego, TX Weather Forecast | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/78384/weather-forecast/335877"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "readPage\nthoughts: I can use this action to read a summary of the current weather in San Diego.\nurl: https://www.accuweather.com/en/us/san-diego/92101/current-weather/347628"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Here is a summarized markdown version of the page, in a series of summarized chunks:\n\n=== SUMMARIZED CHUNK (78 tokens) ===\n\nUnfortunately, you don't have permission to access the webpage \"http://www.accuweather.com/en/us/san-diego/92101/current-weather/347628\" at this time. The server is denying your access with the error message \"Reference #18.ae9bd817.1681485653.2654409a\".\n\n"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "searchWeb\nthoughts: I can try searching for the temperature in San Diego using a different search engine.\nsearchString: temperature in San Diego right now"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "ok",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "1"
+      ],
+      "content": "Search results:\n\n- Title: \"San Diego, CA Current Weather | AccuWeather\"\n  URL: https://www.accuweather.com/en/us/san-diego/92101/current-weather/347628\n\n- Title: \"San Diego, CA 10-Day Weather Forecast - The Weather Channel ...\"\n  URL: https://weather.com/weather/tenday/l/San+Diego+CA?canonicalCityId=cb5c473781cc06501376639dce8f0823a99187dcb42c79471a4303c076d66452\n\n- Title: \"Weather for San Diego, California, USA\"\n  URL: https://www.timeanddate.com/weather/usa/san-diego\n\n- Title: \"San Diego 7-Day Weather Forecast | FOX 5 San Diego\"\n  URL: https://fox5sandiego.com/weather/forecast/\n\n- Title: \"San Diego, CA\"\n  URL: https://www.weather.gov/sgx/\n\n- Title: \"Zone Area Forecast for San Diego County Inland Valleys\"\n  URL: https://forecast.weather.gov/MapClick.php?zoneid=CAZ050\n\n- Title: \"San Diego, CA Weather Conditions | Weather Underground\"\n  URL: https://www.wunderground.com/weather/us/ca/san-diego\n\n- Title: \"Zone Area Forecast for San Diego County Coastal Areas\"\n  URL: https://forecast.weather.gov/MapClick.php?zoneid=CAZ043\n\n- Title: \"Water temperature in San Diego in Pacific Ocean now\"\n  URL: https://seatemperature.net/current/united-states/san-diego-california-united-states-sea-temperature\n\n- Title: \"San Diego, CA - Current Weather - The Weather Network\"\n  URL: https://www.theweathernetwork.com/us/weather/california/san-diego"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "readPage\nthoughts: I can use this action to read a summary of the current weather in San Diego from The Weather Channel website.\nurl: https://weather.com/weather/today/l/32.72,-117.16?par=google&temp=f"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1",
+        "2"
+      ],
+      "content": "how heavy is the earth"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "searchWeb\nthoughts: I can use this action to search the web for information.\nsearchString: weight of the earth"
+  }
+]

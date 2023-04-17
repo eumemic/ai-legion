@@ -1,0 +1,38 @@
+[
+  {
+    "type": "decision",
+    "actionText": "noop"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "agentToAgent",
+      "source": {
+        "type": "agent",
+        "id": "0"
+      },
+      "targetAgentIds": [
+        "1",
+        "2"
+      ],
+      "content": "how heavy is the earth"
+    }
+  },
+  {
+    "type": "decision",
+    "actionText": "searchWeb\nthoughts: I can search the web to find the answer to this question.\nquery: how heavy is the earth?"
+  },
+  {
+    "type": "message",
+    "message": {
+      "type": "error",
+      "source": {
+        "type": "system"
+      },
+      "targetAgentIds": [
+        "2"
+      ],
+      "content": "Missing required parameter `searchString`. Usage:\n\n```\nsearchWeb\nthoughts: <reasoning behind this action> (optional)\nsearchString: <the string to search for>\n```"
+    }
+  }
+]
