@@ -65,7 +65,7 @@ const AgentStream = () => {
           }`;
 
     return `${source} >>> ${message.targetAgentIds
-      .map((id: string) => `Agent ${id}`)
+      .map((id: string) => (id === '0' ? 'Control' : `Agent ${id}`))
       .join(', ')}`;
   };
 

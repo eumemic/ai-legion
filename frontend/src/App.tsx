@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import './App.css';
-import AgentStream from './components/agentStram';
+import AgentStream from './components/agentStream';
 
 function App() {
   return <AgentStream />;
