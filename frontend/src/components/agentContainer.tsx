@@ -42,19 +42,32 @@ const AgentsContainer = () => {
       container
       gap={2}
       flexDirection="row"
-      sx={{ width: '100%', height: 'calc(100vh - 80px)' }}
+      sx={{
+        width: '100%',
+        height: '100%'
+      }}
     >
       <Grid
+        container
         item
         sx={{
+          flexDirection: 'column',
+          flexWrap: 'nowrap',
           flex: 1,
-          height: '100%',
-          backgroundColor: '#444',
-          borderRadius: 1
+          borderRadius: 1,
+          backgroundColor: '#2a2a2a',
+          height: '100%'
         }}
       >
         <Agent agentId={'0'} messages={messages} />
-        <ControlInput socket={socket} />
+
+        <Grid
+          item
+          container
+          sx={{ alignItems: 'flex-end', height: '100%', width: '100%' }}
+        >
+          <ControlInput socket={socket} />
+        </Grid>
       </Grid>
       <Grid item sx={{ flex: 4, height: '100%' }}>
         <Box

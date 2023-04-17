@@ -26,7 +26,7 @@ const ControlInput = ({ socket }: ControlInputProps) => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label="Message"
+          label="Speak to agents"
           value={inputText}
           onChange={handleChange}
           multiline
@@ -34,9 +34,10 @@ const ControlInput = ({ socket }: ControlInputProps) => {
           InputProps={{
             style: {
               backgroundColor: '#222',
-              color: '#EEE' // Replace "lightgray" with your desired color
+              color: '#EEE'
             }
           }}
+          sx={{ label: { color: '#888' } }}
         />
       </Grid>
       <Grid item xs={12}>

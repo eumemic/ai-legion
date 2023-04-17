@@ -13,7 +13,6 @@ import {
 import { Message } from '../types/message';
 import { capitalizeFirstLetter } from '../utils/strings';
 import CommsIndicator from './commsIndicator';
-import { useEffect } from 'react';
 
 interface AgentProps {
   agentId: string;
@@ -39,16 +38,11 @@ const Agent = ({ agentId, messages }: AgentProps) => {
   };
 
   return (
-    <Paper
+    <Grid
       sx={{
-        overflow: 'auto',
+        overflowY: 'auto',
         backgroundColor: '#444',
         borderRadius: 1,
-        minHeight: '100px',
-        maxHeight:
-          agentId === '0'
-            ? 'calc(100% - 220px)'
-            : 'calc((100vh - 80px) / Math.ceil(numItems / 3))',
         display: 'flex',
         flexDirection: 'column',
         p: 1
@@ -62,7 +56,13 @@ const Agent = ({ agentId, messages }: AgentProps) => {
         }}
       >
         <Typography
-          sx={{ flex: 1, fontSize: 16, color: '#fff', fontWeight: 'bold' }}
+          sx={{
+            flex: 1,
+            fontSize: 16,
+            color: '#fff',
+            fontWeight: 'bold',
+            p: 1
+          }}
         >
           {agentId === '0' ? 'Control' : `Agent ${agentId}`}
         </Typography>
@@ -74,7 +74,14 @@ const Agent = ({ agentId, messages }: AgentProps) => {
           }
         />
       </Grid>
-      <List sx={{ overflow: 'auto' }}>
+      <List
+        sx={{
+          flex: 1,
+          overflow: 'auto',
+          backgroundColor: '#1a1a1a',
+          height: '100%'
+        }}
+      >
         {filteredMessages.map((message, idx) => (
           <ListItem
             key={idx}
@@ -82,8 +89,7 @@ const Agent = ({ agentId, messages }: AgentProps) => {
             sx={{
               backgroundColor: message.type === 'error' ? '#300105' : '#222',
               borderRadius: 1,
-              marginTop: 0.5,
-              marginBottom: 0.5,
+              marginBottom: 1,
               p: 1,
               boxShadow: 1
             }}
@@ -114,7 +120,7 @@ const Agent = ({ agentId, messages }: AgentProps) => {
           </ListItem>
         ))}
       </List>
-    </Paper>
+    </Grid>
   );
 };
 
