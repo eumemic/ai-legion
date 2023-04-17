@@ -1,8 +1,14 @@
 import './App.css';
-import AgentStream from './components/agentStream';
+import { Box } from '@mui/material';
+
+import AgentsContainer from './components/agentContainer';
 
 function App() {
-  return <AgentStream />;
+  return (
+    <>
+      <AgentsContainer />
+    </>
+  );
 }
 
 export default App;
