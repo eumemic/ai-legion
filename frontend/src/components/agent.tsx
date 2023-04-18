@@ -44,7 +44,6 @@ const Agent = ({ agentId }: AgentProps) => {
   return (
     <Grid
       sx={{
-        overflowY: 'auto',
         backgroundColor: '#444',
         borderRadius: 1,
         display: 'flex',
@@ -88,7 +87,7 @@ const Agent = ({ agentId }: AgentProps) => {
       <List
         sx={{
           flex: 1,
-          overflowY: 'auto',
+          overflowX: 'auto',
           backgroundColor: '#1a1a1a',
           height: '100%'
         }}
