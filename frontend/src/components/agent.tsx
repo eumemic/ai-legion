@@ -54,7 +54,9 @@ const Agent = ({ agentId }: AgentProps) => {
         maxHeight:
           agentId === '0'
             ? '80vh'
-            : `calc((100vh - 20px) / ${Math.ceil(activeAgents.length / 3)})`
+            : `calc((100vh - 20px) / ${Math.ceil(
+                (activeAgents.length - 1) / 3
+              )})`
       }}
     >
       <Grid
