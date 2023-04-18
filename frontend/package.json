@@ -6,7 +6,8 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -15,12 +16,17 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
-    "socket.io-client": "^4.6.1"
+    "react-testing-library": "^8.0.1",
+    "socket.io-client": "^4.6.1",
+    "vitest": "^0.30.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "jsdom": "^21.1.1",
     "typescript": "^4.9.3",
     "vite": "^4.2.0",
     "vite-plugin-eslint": "^1.8.1"
