@@ -25,27 +25,27 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd src/agents-controller
+          cd agents-controller
           npm i
 
       - name: Compile
         run: |
-          cd src/agents-controller
+          cd agents-controller
           npm run compile
 
       - name: Test
         run: |
-          cd src/agents-controller
+          cd agents-controller
           npm test
 
       - name: Lint
         run: |
-          cd src/agents-controller
+          cd agents-controller
           npm run lint
 
       - name: Format
         run: |
-          cd src/agents-controller
+          cd agents-controller
           npm run format:check
 
   build_frontend:
@@ -67,20 +67,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd src/frontend
+          cd frontend
           npm i
 
       - name: Test
         run: |
-          cd src/frontend
+          cd frontend
           npm run test
 
       - name: Lint
         run: |
-          cd src/frontend
+          cd frontend
           npm run lint
 
       - name: Format
         run: |
-          cd src/frontend
+          cd frontend
           npm run format:check
