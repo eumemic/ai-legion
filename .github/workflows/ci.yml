@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd src/agents-controller
-          npm ci
+          npm i
 
       - name: Compile
         run: |
@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd src/frontend
-          npm ci
+          npm i
 
       - name: Test
         run: |
