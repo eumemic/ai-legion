@@ -8,6 +8,9 @@ on:
 jobs:
   build_agent_controller:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./agents-controller
 
     strategy:
       matrix:
@@ -24,33 +27,27 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          cd agents-controller
-          npm i
+        run: npm i
 
       - name: Compile
-        run: |
-          cd agents-controller
-          npm run compile
+        run: npm run compile
 
       - name: Test
-        run: |
-          cd agents-controller
-          npm test
+        run: npm test
 
       - name: Lint
-        run: |
-          cd agents-controller
-          npm run lint
+        run: npm run lint
 
       - name: Format
-        run: |
-          cd agents-controller
-          npm run format:check
+        run: npm run format:check
 
   build_frontend:
     runs-on: ubuntu-latest
 
+defaults:
+      run:
+        working-directory: ./frontend
+
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
@@ -66,21 +63,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm i
+        run: npm i
 
       - name: Test
-        run: |
-          cd frontend
-          npm run test
+        run: npm run test
 
       - name: Lint
-        run: |
-          cd frontend
-          npm run lint
+        run: npm run lint
 
       - name: Format
-        run: |
-          cd frontend
-          npm run format:check
+        run: npm run format:check
