@@ -94,6 +94,7 @@ const Agent = ({ agentId }: AgentProps) => {
       >
         {filteredMessages.map((message, idx) => (
           <ListItem
+            key={idx}
             alignItems="flex-start"
             sx={{
               backgroundColor: message.type === 'error' ? '#300105' : '#222',

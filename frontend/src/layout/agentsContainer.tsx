@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Box, Grid, useTheme } from '@mui/material';
+import { Grid, useTheme } from '@mui/material';
 
 export interface AgentsContainerProps {
   children?: ReactNode;

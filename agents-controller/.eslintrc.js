@@ -4,11 +4,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   overrides: [],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -18,7 +14,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ["@typescript-eslint", "react", "react-hooks"],
+  plugins: ["@typescript-eslint"],
   rules: {
     "object-shorthand": "warn",
     "no-useless-rename": "warn",
@@ -26,6 +22,5 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "react/react-in-jsx-scope": "off",
   },
 };

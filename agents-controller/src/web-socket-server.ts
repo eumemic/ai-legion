@@ -1,8 +1,8 @@
-import { createServer, Server as HttpServer } from "http";
+import { createServer } from "http";
 import { Server as IOServer, Socket } from "socket.io";
 import { MessageBus } from "./message-bus";
 import { messageBuilder } from "./message";
-import { generateObject } from "./tests/utils/generateRandomMessage";
+// import { generateObject } from "./tests/utils/generateRandomMessage";
 
 const AGENT_ID = "0";
 
@@ -21,12 +21,12 @@ function webSocketServer(
   io.on("connection", (socket: Socket) => {
     console.log("A user connected");
 
-    let testStream: any;
-    function generateObjectEveryTwoSeconds(): void {
-      console.log(generateObject());
-      socket.emit("message", generateObject());
-      testStream = setTimeout(generateObjectEveryTwoSeconds, 2000);
-    }
+    // let testStream: any;
+    // function generateObjectEveryTwoSeconds(): void {
+    //   console.log(generateObject());
+    //   socket.emit("message", generateObject());
+    //   testStream = setTimeout(generateObjectEveryTwoSeconds, 2000);
+    // }
 
     // Test function to generate content
     //generateObjectEveryTwoSeconds();
@@ -40,7 +40,7 @@ function webSocketServer(
     });
 
     socket.on("disconnect", () => {
-      testStream && clearTimeout(testStream);
+      // testStream && clearTimeout(testStream);
       console.log("A user disconnected");
     });
   });
