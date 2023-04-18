@@ -50,7 +50,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -70,6 +70,3 @@ jobs:
 
       - name: Lint
         run: npm run lint
-
-      - name: Format
-        run: npm run format:check

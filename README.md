@@ -15,4 +15,4 @@ The application has two parts:
 
 [frontend](./frontend/README.md)
 
-#### note - You will need at least Node 10.
+#### note - You will need at least Node 10 for BE and Node 16 for FE.
