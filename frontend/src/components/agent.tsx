@@ -1,25 +1,23 @@
 import ReactMarkdown from 'react-markdown';
-import {
-  Paper,
-  List,
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-  Grid
-} from '@mui/material';
+import { List, ListItem, ListItemText, Typography, Grid } from '@mui/material';
 
 import { Message } from '../types/message';
 import { capitalizeFirstLetter } from '../utils/strings';
 import CommsIndicator from './commsIndicator';
+import AgentsControlContext from '../pages/AgentsControl/AgentsControl.context';
+import { memo, useContext, useEffect, useRef } from 'react';
 
 interface AgentProps {
   agentId: string;
-  messages: Message[];
 }
 
-const Agent = ({ agentId, messages }: AgentProps) => {
+const Agent = ({ agentId }: AgentProps) => {
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+
+  const {
+    state: { messages, activeAgents }
+  } = useContext(AgentsControlContext);
+
   const filteredMessages = messages.filter((message) =>
     message.targetAgentIds.includes(agentId)
   );
@@ -37,6 +35,12 @@ const Agent = ({ agentId, messages }: AgentProps) => {
       .join(', ')}`;
   };
 
+  useEffect(() => {
+    if (lastItemRef.current) {
+      lastItemRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
     <Grid
       sx={{
@@ -44,8 +48,13 @@ const Agent = ({ agentId, messages }: AgentProps) => {
         backgroundColor: '#444',
         borderRadius: 1,
         display: 'flex',
+        width: '100%',
         flexDirection: 'column',
-        p: 1
+        p: 1,
+        maxHeight:
+          agentId === '0'
+            ? '80vh'
+            : `calc((100vh - 20px) / ${Math.ceil(activeAgents.length / 3)})`
       }}
     >
       <Grid
@@ -77,14 +86,13 @@ const Agent = ({ agentId, messages }: AgentProps) => {
       <List
         sx={{
           flex: 1,
-          overflow: 'auto',
+          overflowY: 'auto',
           backgroundColor: '#1a1a1a',
           height: '100%'
         }}
       >
         {filteredMessages.map((message, idx) => (
           <ListItem
-            key={idx}
             alignItems="flex-start"
             sx={{
               backgroundColor: message.type === 'error' ? '#300105' : '#222',
@@ -119,6 +127,7 @@ const Agent = ({ agentId, messages }: AgentProps) => {
             />
           </ListItem>
         ))}
+        <div ref={lastItemRef}></div>
       </List>
     </Grid>
   );

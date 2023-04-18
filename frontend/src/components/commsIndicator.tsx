@@ -35,10 +35,6 @@ const CommsIndicator = ({ message }: CircleProps) => {
     }
   }, [message]);
 
-  useEffect(() => {
-    console.log('colorFlash', colorFlash);
-  }, [colorFlash]);
-
   return (
     <StyledCommsIndicator
       isError={message?.type === 'error' ? true : false}

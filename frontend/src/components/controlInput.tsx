@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { TextField, Button, Grid } from '@mui/material';
+import AgentsControlContext from '../pages/AgentsControl/AgentsControl.context';
+import socket from '../services/socket';
 
-import { Socket } from 'socket.io-client';
-
-interface ControlInputProps {
-  socket: Socket | null;
-}
-
-const ControlInput = ({ socket }: ControlInputProps) => {
+const ControlInput = () => {
   const [inputText, setInputText] = useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,25 +18,36 @@ const ControlInput = ({ socket }: ControlInputProps) => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ p: 1 }}>
-      <Grid item xs={12}>
+    <Grid
+      item
+      container
+      rowGap={1}
+      sx={{
+        pt: 2,
+        flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        height: '100%'
+      }}
+    >
+      <Grid item container sx={{ flex: 1 }}>
         <TextField
           fullWidth
           label="Speak to agents"
           value={inputText}
           onChange={handleChange}
           multiline
-          rows={4}
           InputProps={{
             style: {
-              backgroundColor: '#222',
-              color: '#EEE'
+              color: '#EEE',
+              height: '100%',
+              alignItems: 'flex-start'
             }
           }}
           sx={{ label: { color: '#888' } }}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item sx={{}}>
         <Button
           fullWidth
           variant="contained"

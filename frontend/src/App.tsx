@@ -1,13 +1,20 @@
-import { Grid } from '@mui/material';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import './App.css';
 
-import AgentsContainer from './components/agentContainer';
+import AgentsControl from './pages/AgentsControl';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark'
+  }
+});
 
 function App() {
   return (
-    <Grid sx={{ height: '100%', width: '100%', p: 1 }}>
-      <AgentsContainer />
-    </Grid>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <AgentsControl />
+    </ThemeProvider>
   );
 }
 
