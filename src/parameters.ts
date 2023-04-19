@@ -19,11 +19,10 @@ function processFlags(args: string[]): CommandLineFlags {
 
     switch (flag) {
       case "agents":
-        const agents = parseInt(value);
-        if (isNaN(agents)) {
+        if (isNaN(parseInt(value))) {
           throw new Error("Error: --agents flag value must be a number");
         }
-        flags.numberOfAgents = agents;
+        flags.numberOfAgents = parseInt(value);
         break;
 
       case "model":
