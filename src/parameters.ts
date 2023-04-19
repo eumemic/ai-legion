@@ -34,11 +34,13 @@ function processFlags(args: string[]): CommandLineFlags {
         break;
 
       case "test":
-        const test = value.toLowerCase();
-        if (test !== "true" && test !== "false") {
+        if (
+          !value ||
+          (value.toLowerCase() !== "true" && value.toLowerCase() !== "false")
+        ) {
           throw new Error('Error: --test flag value must be "true" or "false"');
         }
-        flags.test = test === "true";
+        flags.test = value.toLowerCase() === "true";
         break;
 
       case "help":

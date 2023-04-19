@@ -22,7 +22,7 @@ You'll also need to enable the Google Custom Search API for your Google Cloud ac
 Start the program:
 
 ```
-npm run start [# of agents] [gpt-3.5-turbo|gpt-4]
+npm run start agents=[# of agents] model=[gpt-3.5-turbo|gpt-4] test=[true|false]
 ```
 
 Interact with the agents through the console. Anything you type will be sent as a message to all agents currently.
