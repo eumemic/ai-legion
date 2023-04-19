@@ -8,9 +8,6 @@ on:
 jobs:
   build_agent_controller:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./agents-controller
 
     strategy:
       matrix:
