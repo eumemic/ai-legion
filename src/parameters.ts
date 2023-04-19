@@ -1,18 +1,69 @@
-import { GPT_3_5_TURBO, GPT_4, Model } from "./openai";
+import chalk from "chalk";
+import { Model } from "./openai";
 
-const args = process.argv.slice(2); // Remove the first two elements (Node.js executable and script path)
-
-export const numberOfAgents = args.length > 0 ? parseInt(args[0]) : 1;
-console.log(`Number of agents: ${numberOfAgents}`);
-
-const modelText = args.length > 1 ? args[1] : "gpt-3.5-turbo";
-export let model: Model;
-switch (modelText) {
-  case GPT_3_5_TURBO:
-  case GPT_4:
-    model = modelText;
-    break;
-  default:
-    throw Error(`Unrecognized OpenAI model: '${modelText}'`);
+interface CommandLineFlags {
+  numberOfAgents: number;
+  model: Model;
+  test: boolean;
 }
-console.log(`Model: ${model}`);
+
+function processFlags(args: string[]): CommandLineFlags {
+  const flags: CommandLineFlags = {
+    numberOfAgents: 1,
+    model: "gpt-3.5-turbo",
+    test: false,
+  };
+
+  for (const arg of args) {
+    const [flag, value] = arg.split("=");
+
+    switch (flag) {
+      case "agents":
+        const agents = parseInt(value);
+        if (isNaN(agents)) {
+          throw new Error("Error: --agents flag value must be a number");
+        }
+        flags.numberOfAgents = agents;
+        break;
+
+      case "model":
+        if (value !== "String") {
+          throw new Error('Error: --model flag value must be "String"');
+        }
+        flags.model = value as Model;
+        break;
+
+      case "test":
+        const test = value.toLowerCase();
+        if (test !== "true" && test !== "false") {
+          throw new Error('Error: --test flag value must be "true" or "false"');
+        }
+        flags.test = test === "true";
+        break;
+
+      case "help":
+        console.log(
+          chalk.green.bold(` Options:          
+          `) +
+            chalk.green(`
+        agents=X                       Set the value of numberOfAgents to X, where X is a number between 1-12
+        model=gpt-3.5-turbo | gpt-4    Set the value of the model to "String", which should match the Message interface
+        test=true|false                Set the test value as a boolean (either "true" or "false")
+        help                           Display this help message and exit
+    `)
+        );
+
+        process.exit();
+        break;
+      default:
+        break;
+    }
+  }
+
+  return flags;
+}
+
+const commandLineArgs = process.argv.slice(2);
+const { model, numberOfAgents, test } = processFlags(commandLineArgs);
+
+export { model, numberOfAgents, test };
