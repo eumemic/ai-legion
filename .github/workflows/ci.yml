@@ -1,17 +1,17 @@
 name: CI
 on:
   push:
-    branches: ["master"]
+    branches: ['master']
   pull_request:
-    branches: ["master"]
+    branches: ['master']
 
 jobs:
-  build_agent_controller:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -21,19 +21,29 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm i
+        run: |
+          cd src/agents-controller
+          npm ci
 
       - name: Compile
-        run: npm run compile
+        run: |
+          cd src/agents-controller
+          npm run compile
 
       - name: Test
-        run: npm test
+        run: |
+          cd src/agents-controller
+          npm test
 
       - name: Lint
-        run: npm run lint
+        run: |
+          cd src/agents-controller
+          npm run lint
 
       - name: Format
-        run: npm run format:check
+        run: |
+          cd src/agents-controller
+          npm run format:check
