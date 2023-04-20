@@ -1,9 +1,10 @@
 name: CI
+
 on:
   push:
-    branches: ['master']
+    branches: ["master"]
   pull_request:
-    branches: ['master']
+    branches: ["master"]
 
 jobs:
   build:
@@ -21,29 +22,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
-        run: |
-          cd src/agents-controller
-          npm ci
+        run: npm ci
 
       - name: Compile
-        run: |
-          cd src/agents-controller
-          npm run compile
+        run: npm run compile
 
       - name: Test
-        run: |
-          cd src/agents-controller
-          npm test
+        run: npm test
 
       - name: Lint
-        run: |
-          cd src/agents-controller
-          npm run lint
+        run: npm run lint
 
       - name: Format
-        run: |
-          cd src/agents-controller
-          npm run format:check
+        run: npm run format:check
