@@ -52,6 +52,6 @@ function processFlags(args: string[]): CommandLineFlags {
 }
 
 const commandLineArgs = process.argv.slice(2);
-const { model, numberOfAgents, test } = processFlags(commandLineArgs);
+const { model, numberOfAgents } = processFlags(commandLineArgs);
 
-export { model, numberOfAgents, test };
+export { model, numberOfAgents };

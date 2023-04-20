@@ -14,7 +14,7 @@ import web from "./module/definitions/web";
 import { ModuleManager } from "./module/module-manager";
 import { contextWindowSize } from "./openai";
 
-import { model, numberOfAgents, test } from "./parameters";
+import { model, numberOfAgents } from "./parameters";
 
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
