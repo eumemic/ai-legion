@@ -12,8 +12,6 @@ You can simply delete any of these things, or the whole agent folder (or the who
 
 A nice aspect of this is that when you want to debug a problem you ran into with a particular agent, you can delete the events in their memory subsequent to the point where the problem occurred, make changes to the code, and restart them to effectively replay that moment until you've fixed the bug. You can also ask an agent to implement a feature, and once they've done so you can restart, tell them that you've loaded the feature and ask them to try it out.
 
-
-
 # AI Legion: an LLM-powered autonomous agent platform
 
 A framework for autonomous agents who can work together to accomplish tasks.
