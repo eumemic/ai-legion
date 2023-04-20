@@ -31,6 +31,7 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.3",
     "@types/turndown": "^5.0.1",
+    "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
     "googleapis": "^114.0.0",
     "gpt-3-encoder": "^1.1.4",
@@ -40,6 +41,7 @@
     "prettier": "^2.8.7",
     "puppeteer": "^19.8.5",
     "redis": "^4.6.5",
+    "socket.io": "^4.6.1",
     "ts-jest": "^29.0.5",
     "turndown": "^7.1.2",
     "ws": "^8.13.0"

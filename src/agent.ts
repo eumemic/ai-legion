@@ -9,6 +9,7 @@ import parseAction from "./parse-action";
 import TaskQueue from "./task-queue";
 import { agentName, sleep } from "./util";
 
+const AGENT_ID = "0";
 const actionInterval = 1000;
 // const heartbeatInterval = 60 * 1000;
 
@@ -57,7 +58,26 @@ export class Agent {
       // Do not act again if the last event was a decision
       if (last(events)?.type === "decision") return;
 
+      const t0 = Date.now();
+      this.messageBus.send(
+        messageBuilder.agentToAgent(
+          this.id,
+          [AGENT_ID],
+          `Reflecting on ${events.length} events...`
+        )
+      );
+
       const actionText = await makeDecision(events);
+
+      this.messageBus.send(
+        messageBuilder.agentToAgent(
+          this.id,
+          [AGENT_ID],
+          `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(
+            1
+          )}s  \n\n ${actionText}`
+        )
+      );
 
       // Reassign events in case summarization occurred
       events = await this.memory.append({
@@ -66,6 +86,7 @@ export class Agent {
       });
 
       const result = parseAction(this.moduleManager.actions, actionText);
+
       if (result.type === "error") {
         this.messageBus.send(messageBuilder.error(this.id, result.message));
       } else {

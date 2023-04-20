@@ -13,10 +13,12 @@ import notes from "./module/definitions/notes";
 import web from "./module/definitions/web";
 import { ModuleManager } from "./module/module-manager";
 import { contextWindowSize } from "./openai";
+
 import { model, numberOfAgents } from "./parameters";
+
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
-import { webSocketServer } from "./web-socket-server";
+import webSocketServer from "./web-socket-server";
 
 dotenv.config();
 
@@ -29,34 +31,42 @@ main();
 async function main() {
   startConsole(agentIds, messageBus);
 
-  webSocketServer(messageBus, 8080);
+  webSocketServer(messageBus, 4331, agentIds);
 
-  for (const id of agentIds.slice(1)) {
-    const moduleManager = new ModuleManager(id, agentIds, [
-      core,
-      goals,
-      notes,
-      messaging,
-      filesystem,
-      web,
-    ]);
-    const actionHandler = new ActionHandler(
-      agentIds,
-      messageBus,
-      moduleManager
-    );
+  if (!test) {
+    for (const id of agentIds.slice(1)) {
+      const moduleManager = new ModuleManager(id, agentIds, [
+        core,
+        goals,
+        notes,
+        messaging,
+        filesystem,
+        web,
+      ]);
+      const actionHandler = new ActionHandler(
+        agentIds,
+        messageBus,
+        moduleManager
+      );
 
-    const store = new JsonStore<Event[]>(new FileStore([id]));
-    // We have to leave room for the agent's next action, which is of unknown size
-    const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
-    const memory = new Memory(id, moduleManager, store, compressionThreshold);
-    const agent = new Agent(
-      id,
-      memory,
-      messageBus,
-      moduleManager,
-      actionHandler
-    );
-    await agent.start();
+      const store = new JsonStore<Event[]>(new FileStore([id]));
+      // We have to leave room for the agent's next action, which is of unknown size
+      const compressionThreshold = Math.round(contextWindowSize[model] * 0.75);
+      const memory = new Memory(
+        id,
+        moduleManager,
+        store,
+        compressionThreshold,
+        messageBus
+      );
+      const agent = new Agent(
+        id,
+        memory,
+        messageBus,
+        moduleManager,
+        actionHandler
+      );
+      await agent.start();
+    }
   }
 }
