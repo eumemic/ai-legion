@@ -18,7 +18,7 @@ import { model, numberOfAgents, test } from "./parameters";
 
 import FileStore from "./store/file-store";
 import JsonStore from "./store/json-store";
-import webSocketServer from "./web-socket-server";
+import webSocketServer from "./socket-server/socket-server";
 
 dotenv.config();
 

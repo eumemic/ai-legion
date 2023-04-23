@@ -39,6 +39,6 @@ export function generateObject(): AgentEvent {
     source: { type: "agent", id: getRandomInt(0, 5).toString() },
     targetAgentIds: generateRandomArray(1, 5, 0, 5),
     content: "Reflecting on 22 events...",
-    activeAgents: ["1", "2", "3", "4", "5"],
+    activeAgents: ["0", "1", "2", "3", "4", "5"],
   };
 }

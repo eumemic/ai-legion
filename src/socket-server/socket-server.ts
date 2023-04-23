@@ -1,9 +1,10 @@
 import { createServer } from "http";
 import { Server as IOServer, Socket } from "socket.io";
-import { MessageBus } from "./message-bus";
-import { messageBuilder } from "./message";
-import { generateObject } from "./tests/utils/generateRandomMessage";
-import { test } from "./parameters";
+import { MessageBus } from "../message-bus";
+import { messageBuilder } from "../message";
+import { generateObject } from "../tests/utils/generateRandomMessage";
+import { test } from "../parameters";
+import { CommandMessage, commandMessageReducer } from "./command-reducer";
 
 const AGENT_ID = "0";
 
@@ -24,7 +25,7 @@ function webSocketServer(
     let testStream: any;
 
     function generateObjectEveryTwoSeconds(): void {
-      console.log(generateObject());
+      //console.log(generateObject());
       socket.emit("message", generateObject());
       testStream = setTimeout(generateObjectEveryTwoSeconds, 2000);
     }
@@ -38,13 +39,34 @@ function webSocketServer(
     });
 
     socket.on("message", (message) => {
-      messageBus.send(
-        messageBuilder.agentToAgent(
-          AGENT_ID,
-          message.agentIds || agentIds,
-          message.content
-        )
-      );
+      switch (message.type) {
+        case "state":
+          //stateMessageReducer(message.content);
+          break;
+
+        case "command":
+          commandMessageReducer(message.content);
+          break;
+
+        case "message":
+          messageBus.send(
+            messageBuilder.agentToAgent(
+              AGENT_ID,
+              message.agentIds || agentIds,
+              message.content
+            )
+          );
+          break;
+      }
+    });
+
+    socket.on("command", (message) => {
+      console.log("command", message);
+    });
+
+    socket.on("command", (message: CommandMessage) => {
+      console.log("command", message);
+      commandMessageReducer(message);
     });
 
     socket.on("disconnect", () => {
