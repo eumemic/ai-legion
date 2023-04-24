@@ -5,6 +5,7 @@ import { messageBuilder } from "../message";
 import { generateObject } from "../tests/utils/generateRandomMessage";
 import { test } from "../parameters";
 import { CommandMessage, commandMessageReducer } from "./command-reducer";
+import { CommandActions } from "./command-actions";
 
 const AGENT_ID = "0";
 
@@ -19,6 +20,8 @@ function webSocketServer(
       origin: "*",
     },
   });
+
+  const commandActions = CommandActions();
 
   io.on("connection", (socket: Socket) => {
     console.log("A user connected");
@@ -45,7 +48,7 @@ function webSocketServer(
           break;
 
         case "command":
-          commandMessageReducer(message.content);
+          commandMessageReducer(message.content, commandActions);
           break;
 
         case "message":
@@ -58,15 +61,6 @@ function webSocketServer(
           );
           break;
       }
-    });
-
-    socket.on("command", (message) => {
-      console.log("command", message);
-    });
-
-    socket.on("command", (message: CommandMessage) => {
-      console.log("command", message);
-      commandMessageReducer(message);
     });
 
     socket.on("disconnect", () => {

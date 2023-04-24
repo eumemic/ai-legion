@@ -1,39 +1,37 @@
-export enum CommandActions {
-  Start = "start",
-  Stop = "stop",
-  AddAgent = "addAgent",
-  RemoveAgent = "removeAgent",
-  StopAgent = "stopAgent",
-  StartAgent = "startAgent",
-  ChangeAgentType = "changeAgentType",
-  ChangeAgentName = "changeAgentName",
-}
+export const CommandActions = () => {
+  return {
+    startSystem: () => {
+      console.log("startSystem..........");
+      // Implement start system logic
+    },
 
-export type CommandActionToMessage = {
-  [CommandActions.Start]: { action: CommandActions.Start; content: null };
-  [CommandActions.Stop]: { action: CommandActions.Stop; content: null };
-  [CommandActions.AddAgent]: {
-    action: CommandActions.AddAgent;
-    content: { id: string; name?: string; type?: string };
-  };
-  [CommandActions.RemoveAgent]: {
-    action: CommandActions.RemoveAgent;
-    content: { id: string };
-  };
-  [CommandActions.StopAgent]: {
-    action: CommandActions.StopAgent;
-    content: { id: string };
-  };
-  [CommandActions.StartAgent]: {
-    action: CommandActions.StartAgent;
-    content: { id: string };
-  };
-  [CommandActions.ChangeAgentType]: {
-    action: CommandActions.ChangeAgentType;
-    content: { id: string; type: string };
-  };
-  [CommandActions.ChangeAgentName]: {
-    action: CommandActions.ChangeAgentName;
-    content: { id: string; name: string };
+    stopSystem: () => {
+      console.log("stopSystem..........");
+      // Implement stop system logic
+    },
+
+    addAgent: (content: { id: string; name?: string; type?: string }) => {
+      // Implement add agent logic
+    },
+
+    removeAgent: (content: { id: string }) => {
+      // Implement remove agent logic
+    },
+
+    stopAgent: (content: { id: string }) => {
+      // Implement stop agent logic
+    },
+
+    startAgent: (content: { id: string }) => {
+      // Implement start agent logic
+    },
+
+    changeAgentType: (content: { id: string; type: string }) => {
+      // Implement change agent type logic
+    },
+
+    changeAgentName: (content: { id: string; name: string }) => {
+      // Implement change agent name logic
+    },
   };
 };

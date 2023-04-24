@@ -1,71 +1,47 @@
-import { CommandActions, CommandActionToMessage } from "./command-actions";
+import {
+  CommandActionsEnum,
+  CommandActionsType,
+  CommandActionToMessage,
+} from "./command-types";
 
 export type CommandMessage =
   CommandActionToMessage[keyof CommandActionToMessage];
 
-type ProcessMessageFunction = (message: CommandMessage) => void;
+type ProcessMessageFunction = (
+  message: CommandMessage,
+  actions: CommandActionsType
+) => void;
 
-export const commandMessageReducer: ProcessMessageFunction = (message) => {
+export const commandMessageReducer: ProcessMessageFunction = (
+  message,
+  actions
+) => {
   switch (message.action) {
-    case CommandActions.Start:
-      startSystem();
+    case CommandActionsEnum.Start:
+      actions.startSystem();
       break;
-    case CommandActions.Stop:
-      stopSystem();
+    case CommandActionsEnum.Stop:
+      actions.stopSystem();
       break;
-    case CommandActions.AddAgent:
-      addAgent(message.content);
+    case CommandActionsEnum.AddAgent:
+      actions.addAgent(message.content);
       break;
-    case CommandActions.RemoveAgent:
-      removeAgent(message.content);
+    case CommandActionsEnum.RemoveAgent:
+      actions.removeAgent(message.content);
       break;
-    case CommandActions.StopAgent:
-      stopAgent(message.content);
+    case CommandActionsEnum.StopAgent:
+      actions.stopAgent(message.content);
       break;
-    case CommandActions.StartAgent:
-      startAgent(message.content);
+    case CommandActionsEnum.StartAgent:
+      actions.startAgent(message.content);
       break;
-    case CommandActions.ChangeAgentType:
-      changeAgentType(message.content);
+    case CommandActionsEnum.ChangeAgentType:
+      actions.changeAgentType(message.content);
       break;
-    case CommandActions.ChangeAgentName:
-      changeAgentName(message.content);
+    case CommandActionsEnum.ChangeAgentName:
+      actions.changeAgentName(message.content);
       break;
     default:
       console.error("Invalid action:");
   }
 };
-
-function startSystem() {
-  console.log("startSystem..........");
-  // Implement start system logic
-}
-
-function stopSystem() {
-  console.log("stopSystem..........");
-  // Implement stop system logic
-}
-
-function addAgent(content: { id: string; name?: string; type?: string }) {
-  // Implement add agent logic
-}
-
-function removeAgent(content: { id: string }) {
-  // Implement remove agent logic
-}
-
-function stopAgent(content: { id: string }) {
-  // Implement stop agent logic
-}
-
-function startAgent(content: { id: string }) {
-  // Implement start agent logic
-}
-
-function changeAgentType(content: { id: string; type: string }) {
-  // Implement change agent type logic
-}
-
-function changeAgentName(content: { id: string; name: string }) {
-  // Implement change agent name logic
-}
