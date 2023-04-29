@@ -2,41 +2,27 @@ import { ChatCompletionRequestMessage } from "openai";
 import { Event } from "./memory";
 import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
-import TaskQueue from "./task-queue";
-import { messageSourceName, sleep } from "./util";
+import { messageSourceName } from "./util";
 
-const openaiDelay = 10 * 1000;
+export default async function makeDecision(events: Event[]): Promise<string> {
+  console.log(`Reflecting on ${events.length} events...`);
+  const t0 = Date.now();
 
-const taskQueue = new TaskQueue();
+  const messages = events.map(toOpenAiMessage);
 
-export default function makeDecision(events: Event[]): Promise<string> {
-  const decisionPromise = taskQueue.run(async (): Promise<string> => {
-    console.log(`Reflecting on ${events.length} events...`);
-    const t0 = Date.now();
+  // console.log(JSON.stringify(messages, null, 2));
 
-    const messages = events.map(toOpenAiMessage);
-
-    // console.log(JSON.stringify(messages, null, 2));
-    const temperature = 0.0;
-
-    const responseContent = await createChatCompletion({
-      model,
-      messages,
-      temperature,
-    });
-
-    console.log(
-      `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(1)}s`
-    );
-
-    return responseContent;
+  const responseContent = await createChatCompletion({
+    model,
+    messages,
+    temperature: 0.0,
   });
 
-  // avoid rate limits
-  if (model === "gpt-4")
-    decisionPromise.finally(() => taskQueue.run(() => sleep(openaiDelay)));
+  console.log(
+    `Arrived at a decision after ${((Date.now() - t0) / 1000).toFixed(1)}s`
+  );
 
-  return decisionPromise;
+  return responseContent;
 }
 
 // lazy load to avoid accessing OPENAI_API_KEY before env has been loaded
