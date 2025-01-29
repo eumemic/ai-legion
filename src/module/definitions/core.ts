@@ -2,6 +2,7 @@ import { CODE_BLOCK_DELIMITER, messageBuilder } from "../../message";
 import { MULTILINE_DELIMITER, agentName } from "../../util";
 import { defineModule } from "../define-module";
 import { getUsageText } from "../util";
+import { exec } from "child_process";
 
 export default defineModule({
   name: "core",
@@ -108,6 +109,34 @@ export default defineModule({
         } else {
           sendMessage(messageBuilder.ok(agentId, getUsageText(actionDef)));
         }
+      },
+    },
+
+    runCommand: {
+      description: "Executes a command line instruction securely.",
+      parameters: {
+        command: {
+          description: "The command to execute.",
+        },
+      },
+      async execute({ parameters: { command }, context: { agentId }, sendMessage }) {
+        exec(command, (error, stdout, stderr) => {
+          if (error) {
+            sendMessage(
+              messageBuilder.error(agentId, `Command execution failed: ${error.message}`)
+            );
+            return;
+          }
+          if (stderr) {
+            sendMessage(
+              messageBuilder.error(agentId, `Command execution error: ${stderr}`)
+            );
+            return;
+          }
+          sendMessage(
+            messageBuilder.ok(agentId, `Command executed successfully: ${stdout}`)
+          );
+        });
       },
     },
   },
