@@ -6,7 +6,7 @@ import { InMemoryMessageBus } from "./in-memory-message-bus";
 import { Event, Memory } from "./memory";
 import { MessageBus } from "./message-bus";
 import core from "./module/definitions/core";
-import filesystem from "./module/definitions/filesystem";
+import system from "./module/definitions/system";
 import goals from "./module/definitions/goals";
 import messaging from "./module/definitions/messaging";
 import notes from "./module/definitions/notes";
@@ -37,7 +37,7 @@ async function main() {
       goals,
       notes,
       messaging,
-      filesystem,
+      system,
       web,
     ]);
     const actionHandler = new ActionHandler(

@@ -1,5 +1,5 @@
 import core from "./module/definitions/core";
-import filesystem from "./module/definitions/filesystem";
+import system from "./module/definitions/system";
 import messaging from "./module/definitions/messaging";
 import notes from "./module/definitions/notes";
 import { ModuleManager } from "./module/module-manager";
@@ -10,7 +10,7 @@ import { MULTILINE_DELIMITER } from "./util";
 const moduleManager = new ModuleManager(
   "1",
   ["1"],
-  [core, notes, messaging, filesystem]
+  [core, notes, messaging, system]
 );
 
 test("case 1", () => {

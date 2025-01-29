@@ -10,9 +10,10 @@ import {
 import { join as joinPath, resolve as resolvePath } from "path";
 import { defineModule } from "../define-module";
 import { messageBuilder } from "../../message";
+import { exec } from "child_process";
 
 export default defineModule({
-  name: "filesystem",
+  name: "system",
 }).with({
   actions: {
     listDirectory: {
@@ -173,6 +174,33 @@ export default defineModule({
         } catch (err) {
           sendMessage(messageBuilder.error(agentId, JSON.stringify(err)));
         }
+      },
+    },
+
+    runCommand: {
+      description: "Executes a command line instruction securely.",
+      parameters: {
+        command: {
+          description: "The command to execute.",
+        },
+      },
+      async execute({ parameters: { command }, context: { agentId }, sendMessage }) {
+        exec(command, (error, stdout, stderr) => {
+          if (error) {
+            sendMessage(
+              messageBuilder.error(agentId, `Command execution failed: ${error.message}`)
+            );
+            return;
+          }
+          if (stderr) {
+            sendMessage(
+              messageBuilder.error(agentId, `Command execution error: ${stderr}`)
+            );
+          }
+          sendMessage(
+            messageBuilder.ok(agentId, `Command executed successfully: ${stdout}`)
+          );
+        });
       },
     },
   },
