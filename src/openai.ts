@@ -4,13 +4,15 @@ import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";
+export const GPT_4O = "gpt-4o";
 
 export const contextWindowSize = {
   [GPT_3_5_TURBO]: 4000,
   [GPT_4]: 8000,
+  [GPT_4O]: 128000,
 };
 
-export type Model = typeof GPT_3_5_TURBO | typeof GPT_4;
+export type Model = typeof GPT_3_5_TURBO | typeof GPT_4 | typeof GPT_4O;
 
 export async function createChatCompletion(
   request: CreateChatCompletionRequest,
