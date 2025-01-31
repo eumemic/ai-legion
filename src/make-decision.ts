@@ -13,7 +13,6 @@ export default async function makeDecision(events: Event[]): Promise<string> {
   const responseContent = await createChatCompletion({
     model,
     messages,
-    temperature: 0.0,
   });
 
   console.log(
@@ -28,7 +27,7 @@ export function toOpenAiMessage(event: Event): ChatCompletionRequestMessage {
   switch (event.type) {
     case "message": {
       const { type: messageType, source, content } = event.message;
-      const role = source.type === "system" ? "system" : "user";
+      const role = "user";
       let header: string;
       switch (messageType) {
         case "spontaneous":

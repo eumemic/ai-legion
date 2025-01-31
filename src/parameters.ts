@@ -1,4 +1,4 @@
-import { GPT_3_5_TURBO, GPT_4, GPT_4O, Model } from "./openai";
+import { GPT_3_5_TURBO, GPT_4, GPT_4O, GPT_O1_PREVIEW, Model } from "./openai";
 
 const args = process.argv.slice(2); // Remove the first two elements (Node.js executable and script path)
 
@@ -11,6 +11,7 @@ switch (modelText) {
   case GPT_3_5_TURBO:
   case GPT_4:
   case GPT_4O:
+  case GPT_O1_PREVIEW:
     model = modelText;
     break;
   default:

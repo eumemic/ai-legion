@@ -16,7 +16,7 @@ interface MessageSourceBase {
 }
 
 interface SystemMessageSource extends MessageSourceBase {
-  type: "system";
+  type: "user";
   id?: undefined;
 }
 
@@ -25,7 +25,7 @@ interface AgentMessageSource extends MessageSourceBase {
   id: string;
 }
 
-export const systemSource: SystemMessageSource = { type: "system" };
+export const systemSource: SystemMessageSource = { type: "user" };
 export const agentSource = (id: string): AgentMessageSource => ({
   type: "agent",
   id,

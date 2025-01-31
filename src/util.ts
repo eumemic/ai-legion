@@ -18,11 +18,13 @@ export function sleepUntil(condition: () => boolean): Promise<void> {
 }
 
 export function messageSourceName(source: MessageSource) {
-  return source.type === "system" ? "System" : agentName(source.id);
+  return agentName(source.id);
 }
 
-export function agentName(agentId: string) {
-  return `${agentId === "0" ? "Control" : `Agent ${agentId}`}`;
+export function agentName(agentId?: string) {
+  return agentId
+    ? `${agentId === "0" ? "Control" : `Agent ${agentId}`}`
+    : "System";
 }
 
 export const MULTILINE_DELIMITER = `% ${"ff9d7713-0bb0-40d4-823c-5a66de48761b"}`;
