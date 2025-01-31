@@ -1,6 +1,7 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { memoize } from "lodash";
-import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
+import { Configuration, OpenAIApi } from "openai";
+import { CreateChatCompletionRequest } from "./types";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";

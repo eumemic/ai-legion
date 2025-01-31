@@ -1,4 +1,4 @@
-import { ChatCompletionRequestMessage } from "openai";
+import { ChatCompletionRequestMessage } from "./types";
 import { Event } from "./memory";
 import { createChatCompletion } from "./openai";
 import { model } from "./parameters";
@@ -9,8 +9,6 @@ export default async function makeDecision(events: Event[]): Promise<string> {
   const t0 = Date.now();
 
   const messages = events.map(toOpenAiMessage);
-
-  // console.log(JSON.stringify(messages, null, 2));
 
   const responseContent = await createChatCompletion({
     model,
