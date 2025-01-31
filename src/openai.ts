@@ -7,19 +7,22 @@ export const GPT_3_5_TURBO = "gpt-3.5-turbo";
 export const GPT_4 = "gpt-4";
 export const GPT_4O = "gpt-4o";
 export const GPT_O1_PREVIEW = "o1-preview";
+export const GPT_O3_MINI = "o3-mini";
 
 export const contextWindowSize = {
   [GPT_3_5_TURBO]: 4000,
   [GPT_4]: 8000,
   [GPT_4O]: 128000,
   [GPT_O1_PREVIEW]: 200000,
+  [GPT_O3_MINI]: 200000,
 };
 
 export type Model =
   | typeof GPT_3_5_TURBO
   | typeof GPT_4
   | typeof GPT_4O
-  | typeof GPT_O1_PREVIEW;
+  | typeof GPT_O1_PREVIEW
+  | typeof GPT_O3_MINI;
 
 export async function createChatCompletion(
   request: CreateChatCompletionRequest
