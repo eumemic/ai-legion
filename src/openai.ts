@@ -1,6 +1,6 @@
-import { AxiosError, AxiosRequestConfig } from "axios";
+import { AxiosError } from "axios";
 import { memoize } from "lodash";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import { CreateChatCompletionRequest } from "./types";
 
 export const GPT_3_5_TURBO = "gpt-3.5-turbo";
@@ -16,12 +16,13 @@ export const contextWindowSize = {
 export type Model = typeof GPT_3_5_TURBO | typeof GPT_4 | typeof GPT_4O;
 
 export async function createChatCompletion(
-  request: CreateChatCompletionRequest,
-  options?: AxiosRequestConfig
+  request: CreateChatCompletionRequest
 ): Promise<string> {
   try {
-    const response = await openai().createChatCompletion(request, options);
-    return response.data.choices[0].message!.content;
+    const response = await openai().chat.completions.create(request);
+    const { content } = response.choices[0].message;
+    if (!content) throw Error(`Empty completion content.`);
+    return content;
   } catch (e) {
     const { response } = e as AxiosError;
     switch (response?.status) {
@@ -42,8 +43,7 @@ const openai = memoize(() => {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw Error("OPENAI_API_KEY is not configured!");
 
-  const configuration = new Configuration({
+  return new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  return new OpenAIApi(configuration);
 });
