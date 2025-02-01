@@ -17,7 +17,7 @@ export default defineModule<Store<Goal[]>>({
 }).with({
   async pinnedMessage({ state }) {
     const goals = (await state.get(KEY)) || [];
-    const currentGloals = goals.length
+    const currentGoals = goals.length
       ? `This is your current goal list:\n\n${goals
           .map(
             ({ text, complete }, index) =>
@@ -28,7 +28,7 @@ export default defineModule<Store<Goal[]>>({
     return `
 You are responsible for maintaining your list of goals, based on higher-level objectives which will be given to you. Whenever you start doing something, first add a goal. Whenever you finish doing something, mark it complete. This list of goals will always be pinned to the top of your context and won't be summarized away. Goals should be medium-term (requiring several actions to complete) and concrete. Do not invent goals out of nothing, they should encapsulate instructions that have been given to you.
 
-${currentGloals}
+${currentGoals}
 `.trim();
   },
   actions: {
