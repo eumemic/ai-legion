@@ -19,7 +19,7 @@ export function startConsole(agentIds: string[], messageBus: MessageBus) {
   });
 
   rl.on("line", (input) => {
-    const colonIndex = -1; //input.indexOf(":");
+    const colonIndex = input.indexOf(":");
     let targetAgentIds: string[];
     let content: string;
     if (colonIndex >= 0) {
