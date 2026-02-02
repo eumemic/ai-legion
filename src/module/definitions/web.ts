@@ -95,6 +95,27 @@ export async function getSearchResults(searchString: string) {
   return data.items;
 }
 
+export async function getBochaResults(searchString: string): Promise<{ title: string; link: string }[]> {
+  const url = "https://api.bocha.cn/v1/web-search";
+  const body: any = {
+    query: searchString,
+  };
+
+  const { data } = await axios.post(url, body, {
+    headers: {
+      Authorization: `Bearer ${process.env.BOCHA_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const results = data.data.webPages.value;
+
+  return results.map((item: any) => ({
+    title: item.name,
+    link: item.url,
+  }));
+}
+
 export async function getPageSummary(
   model: Model,
   maxSummaryTokens: number,
