@@ -12,6 +12,8 @@ import {
 
 export class Memory {
   private firstRetrieval = true;
+  // Serialize read/modify/write operations within this Memory instance only.
+  private pendingOperation: Promise<void> = Promise.resolve();
 
   constructor(
     private agentId: string,
@@ -20,9 +22,27 @@ export class Memory {
     private compressionThreshold: number
   ) {}
 
-  async append(event: Event): Promise<Event[]> {
+  append(event: Event): Promise<Event[]> {
+    return this.enqueue(() => this.appendUnlocked(event));
+  }
+
+  retrieve(): Promise<Event[]> {
+    return this.enqueue(() => this.retrieveUnlocked());
+  }
+
+  private enqueue<T>(operation: () => Promise<T>): Promise<T> {
+    const result = this.pendingOperation.then(operation);
+    // Preserve the caller's rejection while allowing subsequent work to run.
+    this.pendingOperation = result.then(
+      () => undefined,
+      () => undefined
+    );
+    return result;
+  }
+
+  private async appendUnlocked(event: Event): Promise<Event[]> {
     this.printEvent(event);
-    let events = await this.retrieve();
+    let events = await this.retrieveUnlocked();
     if (event.type === "message" && event.message.type === "ok") {
       // After an "ok" message is sent, remove all errors and their antecedents from memory,
       // since agents tend to repeat mistakes rather than learning from them.
@@ -36,7 +56,7 @@ export class Memory {
     return events;
   }
 
-  async retrieve(): Promise<Event[]> {
+  private async retrieveUnlocked(): Promise<Event[]> {
     const introduction = await this.getIntroduction();
     const storedEvents = await this.store.get(this.key);
     let events = [
@@ -44,9 +64,9 @@ export class Memory {
       ...(storedEvents || [{ type: "decision", actionText: "noop" }]),
     ];
     if (this.firstRetrieval) {
-      this.firstRetrieval = false;
       events = await this.summarize(events);
       await this.store.set(this.key, events.slice(1));
+      this.firstRetrieval = false;
     }
     // events.forEach((event) => this.printEvent(event));
     return events;
