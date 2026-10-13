@@ -1,7 +1,19 @@
 type Task<T = void> = () => Promise<T>;
 
+export class TaskQueueStoppedError extends Error {
+  constructor() {
+    super("Task cancelled because the queue was stopped");
+    this.name = "TaskQueueStoppedError";
+  }
+}
+
+type QueuedTask = {
+  run: Task;
+  cancel: () => void;
+};
+
 export default class TaskQueue {
-  private tasks: Task[] = [];
+  private tasks: QueuedTask[] = [];
   private running: Promise<void> | undefined;
   private intervals: NodeJS.Timer[] = [];
 
@@ -11,7 +23,10 @@ export default class TaskQueue {
 
   run<T>(task: Task<T>): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.tasks.push(() => task().then(resolve).catch(reject));
+      this.tasks.push({
+        run: () => Promise.resolve().then(task).then(resolve).catch(reject),
+        cancel: () => reject(new TaskQueueStoppedError()),
+      });
       this.runNext();
     });
   }
@@ -22,15 +37,21 @@ export default class TaskQueue {
       setInterval(() => {
         if (pending) return;
         pending = true;
-        this.run(task).finally(() => {
-          pending = false;
-        });
+        this.run(task)
+          .catch((error) => {
+            if (!(error instanceof TaskQueueStoppedError)) throw error;
+          })
+          .finally(() => {
+            pending = false;
+          });
       }, milliseconds)
     );
   }
 
+  // Cancel currently queued tasks and timers, and wait for the active task.
+  // The queue remains reusable; tasks submitted after this call are accepted.
   async stop() {
-    this.tasks.length = 0;
+    this.tasks.splice(0).forEach((task) => task.cancel());
     this.intervals.forEach(clearInterval);
     this.intervals = [];
     if (this.running) {
@@ -45,7 +66,7 @@ export default class TaskQueue {
     if (!task) return;
 
     try {
-      await (this.running = task());
+      await (this.running = task.run());
     } finally {
       this.running = undefined;
     }
