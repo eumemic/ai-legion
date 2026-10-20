@@ -9,9 +9,16 @@ export default class ActionHandler {
     private moduleManager: ModuleManager
   ) {}
 
-  async handle(agentId: string, { actionDef, parameters }: Action) {
-    actionDef.execute({
-      context: this.moduleManager.getModuleForAction(actionDef.name)!.context,
+  async handle(
+    agentId: string,
+    { actionDef, parameters }: Action,
+    signal?: AbortSignal
+  ) {
+    await actionDef.execute({
+      context: {
+        ...this.moduleManager.getModuleForAction(actionDef.name)!.context,
+        signal,
+      },
       parameters,
       sendMessage: (message) => this.messageBus.send(message),
     });

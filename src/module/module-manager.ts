@@ -1,8 +1,11 @@
+import { randomBytes } from "crypto";
 import { ModuleDefinition } from ".";
 import { ActionDefinition } from "./action-definition";
 import { ModuleInstance } from "./module-instance";
 
 export class ModuleManager {
+  // Each running agent is an independent research run.
+  readonly researchSessionId = randomBytes(16).toString("hex");
   modules: ModuleInstance[];
   actions: Map<string, ActionDefinition>;
   private actionToModule: Map<string, ModuleInstance>;

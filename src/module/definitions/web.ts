@@ -10,6 +10,7 @@ import {
   countTokens,
 } from "../../util";
 import { defineModule } from "../define-module";
+import { callParallel } from "../parallel-search";
 
 export default defineModule({
   name: "web",
@@ -24,30 +25,43 @@ export default defineModule({
       },
       async execute({
         parameters: { searchString },
-        context: { agentId },
+        context: { agentId, researchSessionId, signal },
         sendMessage,
       }) {
-        const items = await getSearchResults(searchString);
-
-        if (!items) {
-          return sendMessage(
-            messageBuilder.ok(agentId, "Search returned no results.")
+        try {
+          if (getWebProvider() === "parallel") {
+            const content = await callParallel(
+              "web_search",
+              { objective: searchString, search_queries: [searchString] },
+              researchSessionId,
+              signal
+            );
+            return sendMessage(messageBuilder.ok(agentId, content));
+          }
+          const items = await getSearchResults(searchString);
+          sendMessage(
+            messageBuilder.ok(
+              agentId,
+              items?.length
+                ? `Search results:\n\n${items
+                    .map(
+                      (item) => `- Title: "${item.title}"\n  URL: ${item.link}`
+                    )
+                    .join("\n\n")}`
+                : "Search returned no results."
+            )
+          );
+        } catch (e: any) {
+          sendMessage(
+            messageBuilder.error(agentId, `Search failed: ${e.message}`)
           );
         }
-
-        sendMessage(
-          messageBuilder.ok(
-            agentId,
-            `Search results:\n\n${items
-              .map((item) => `- Title: "${item.title}"\n  URL: ${item.link}`)
-              .join("\n\n")}`
-          )
-        );
       },
     },
 
     readPage: {
-      description: "View a markdown summary of a web page.",
+      description:
+        "Read relevant markdown excerpts from a web page (a summary with Google).",
       parameters: {
         url: {
           description: "The URL of the web page to read",
@@ -55,10 +69,29 @@ export default defineModule({
       },
       async execute({
         parameters: { url },
-        context: { agentId },
+        context: { agentId, researchSessionId, signal },
         sendMessage,
       }) {
         try {
+          if (getWebProvider() === "parallel") {
+            const parsedUrl = new URL(url);
+            if (
+              !["https:", "http:"].includes(parsedUrl.protocol) ||
+              parsedUrl.username ||
+              parsedUrl.password
+            ) {
+              throw new Error(
+                "readPage requires an HTTP(S) URL without credentials."
+              );
+            }
+            const content = await callParallel(
+              "web_fetch",
+              { urls: [url] },
+              researchSessionId,
+              signal
+            );
+            return sendMessage(messageBuilder.ok(agentId, content));
+          }
           const maxCompletionTokens = contextWindowSize[model] / 4;
           // console.log({ maxCompletionTokens });
           const pageSummary = await getPageSummary(
@@ -86,7 +119,27 @@ export default defineModule({
   },
 });
 
+export function getWebProvider(): "google" | "parallel" {
+  const provider = process.env.WEB_SEARCH_PROVIDER?.trim();
+  if (provider === "none") throw new Error("Web access is disabled.");
+  if (provider === "google" || provider === "parallel") return provider;
+  if (provider) throw new Error(`Unknown WEB_SEARCH_PROVIDER: ${provider}`);
+  // Even partial credentials are intentional configuration, never a fallback trigger.
+  return process.env.GOOGLE_API_KEY?.trim() ||
+    process.env.GOOGLE_SEARCH_ENGINE_ID?.trim()
+    ? "google"
+    : "parallel";
+}
+
 export async function getSearchResults(searchString: string) {
+  if (
+    !process.env.GOOGLE_SEARCH_ENGINE_ID?.trim() ||
+    !process.env.GOOGLE_API_KEY?.trim()
+  ) {
+    throw new Error(
+      "Google search requires GOOGLE_SEARCH_ENGINE_ID and GOOGLE_API_KEY."
+    );
+  }
   const { data } = await google.customsearch("v1").cse.list({
     q: searchString,
     cx: process.env.GOOGLE_SEARCH_ENGINE_ID,

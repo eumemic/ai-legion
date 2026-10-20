@@ -184,7 +184,11 @@ export default defineModule({
           description: "The command to execute.",
         },
       },
-      async execute({ parameters: { command }, context: { agentId }, sendMessage }) {
+      async execute({
+        parameters: { command },
+        context: { agentId },
+        sendMessage,
+      }) {
         exec(command, (error, stdout, stderr) => {
           let combinedOutput = stdout;
           if (stderr && stderr.trim().length > 0) {
@@ -192,12 +196,18 @@ export default defineModule({
           }
           if (error) {
             sendMessage(
-              messageBuilder.error(agentId, `Command execution failed: ${error.message}\nOutput:\n${combinedOutput}`)
+              messageBuilder.error(
+                agentId,
+                `Command execution failed: ${error.message}\nOutput:\n${combinedOutput}`
+              )
             );
             return;
           }
           sendMessage(
-            messageBuilder.ok(agentId, `Command executed successfully: ${combinedOutput}`)
+            messageBuilder.ok(
+              agentId,
+              `Command executed successfully: ${combinedOutput}`
+            )
           );
         });
       },

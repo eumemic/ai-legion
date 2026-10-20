@@ -22,6 +22,7 @@ export class ModuleInstance<S = void, A extends string = string> {
   get context(): ModuleContext<S> {
     return {
       agentId: this.moduleManager.agentId,
+      researchSessionId: this.moduleManager.researchSessionId,
       allAgentIds: this.moduleManager.allAgentIds,
       actionDictionary: this.moduleManager.actions,
       state: this.state,

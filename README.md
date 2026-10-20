@@ -16,13 +16,16 @@ Rename the `.env.template` file at the root of the project to `.env` and add you
 
 ```
 OPENAI_API_KEY=... # obtain from https://platform.openai.com/account/api-keys
-# the following are needed for the agent to be able to search the web:
+# optional: keep Google Custom Search instead of the default Parallel Search MCP:
 GOOGLE_SEARCH_ENGINE_ID=... # create a custom search engine at https://cse.google.com/cse/all
 GOOGLE_API_KEY=... # obtain from https://console.cloud.google.com/apis/credentials
+WEB_SEARCH_PROVIDER=... # optionally parallel, google, or none (disable web access)
 AGENT_DELAY=... # optionally, a delay in milliseconds following every agent action
 ```
 
-You'll also need to enable the Google Custom Search API for your Google Cloud account, e.g. <https://console.cloud.google.com/apis/library/customsearch.googleapis.com>
+`searchWeb` and `readPage` use [Parallel Search MCP](https://docs.parallel.ai/integrations/mcp/search-mcp) when Google credentials are unset. Search uses Fast mode, with no account or API key required. `readPage` returns relevant markdown excerpts; responses are limited to 12,000 characters. Anonymous usage has service quotas, and each MCP operation has a 30-second deadline (plus up to 5 seconds for connection cleanup). Queries and page URLs are sent to Parallel. Each running agent has a separate research session, reused across its search and page calls; restarting creates a new research run.
+
+Existing Google credentials keep Google Custom Search and the browser-based page summarizer. Both Google settings are required for search, including when `WEB_SEARCH_PROVIDER=google` is explicit. Enable the Google Custom Search API for your Google Cloud account, e.g. <https://console.cloud.google.com/apis/library/customsearch.googleapis.com>. `WEB_SEARCH_PROVIDER=parallel` explicitly selects Parallel even with Google credentials present. `WEB_SEARCH_PROVIDER=none` disables both web actions. Provider errors are reported to the agent without switching providers.
 
 ## Running
 

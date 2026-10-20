@@ -22,6 +22,8 @@ export interface ModuleStateInputs {
 
 export interface ModuleContext<S> {
   agentId: string;
+  researchSessionId: string;
+  signal?: AbortSignal;
   allAgentIds: string[];
   actionDictionary: Map<string, ActionDefinition>;
   state: S;
